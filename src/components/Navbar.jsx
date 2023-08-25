@@ -44,14 +44,16 @@ export default function Navbar() {
                 <FiShoppingBag />
                 <h1>Shoppy</h1>
             </Link>
-            <input 
-                type="text"
-                placeholder="제품명을 입력하세요"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-1/2 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-1"
-            />
-            <Button text={ '검색' } onClick={handleSearch} />
+            <div className="w-1/2 flex items-center p-2 rounded-lg"> 
+                <input 
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
+                />
+                <Button text={ '검색' } onClick={handleSearch} />
+            </div>
+
 
             <nav className="flex items-center gap-4 font-semibold">
                 <Link to='/carts'>
