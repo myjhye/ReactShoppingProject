@@ -13,6 +13,7 @@ import MyCart from './pages/MyCart';
 import ProtectedRoute from './pages/ProtectedRoute';
 import MyProduct from './pages/MyProduct';
 import EditMyProduct from './pages/EditMyProduct';
+import ProductSearch from './pages/ProductSearch';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,12 @@ const router = createBrowserRouter([
         path: '/edit/:id',
         element: (
             <EditMyProduct />
+        )
+      },
+      {
+        path: '/search',
+        element: (
+            <ProductSearch />
         )
       },
     ]

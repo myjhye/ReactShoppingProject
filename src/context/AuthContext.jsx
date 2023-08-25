@@ -7,6 +7,8 @@ const AuthContext = createContext();
 export function AuthContextProvider({ children }) {
 
     const [user, setUser] = useState(); 
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]); 
 
     useEffect(() => {
         onUserStateChange((user) => {
@@ -20,10 +22,14 @@ export function AuthContextProvider({ children }) {
         login: login,
         logout: logout,
         uid: user && user.uid,
+        searchTerm: searchTerm,
+        setSearchTerm: setSearchTerm,
+        searchResults: searchResults,
+        setSearchResults: setSearchResults
     }
 
     return (
-        <AuthContext.Provider value={ authContextValue }>
+        <AuthContext.Provider value={authContextValue}>
             { children }
         </AuthContext.Provider>
     )

@@ -160,8 +160,11 @@ export async function removeFromCart( userId, productId ) {
 
 
 
+// 제품 검색
 export async function searchProductByName(name) {
-    try {
+    
+    try 
+    {
         const productsRef = ref(database, 'products');
         const queryRef = query(
             productsRef,
@@ -180,7 +183,9 @@ export async function searchProductByName(name) {
         });
 
         return results;
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error('Error searching products by name:', error);
         return [];
     }
