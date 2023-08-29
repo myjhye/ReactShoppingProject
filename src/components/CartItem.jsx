@@ -10,32 +10,50 @@ export default function CartItem({ product, uid, updateTotalPrice }) {
     const [productState, setProductState] = useState(product);
     const queryClient = useQueryClient(); // Initialize query client
 
-    const handleMinus = () => {
-        if (productState.quantity < 2) {
-            return;
+    const handleMinus = useMutation(
+        async () => {
+            if (productState.quantity < 2) {
+                return;
+            }
+    
+            const updatedProduct = {
+                ...productState,
+                quantity: productState.quantity - 1,
+            };
+    
+            await addOrUpdateToCart(uid, updatedProduct);
+    
+            setProductState(updatedProduct);
+        },
+        {
+            // 성공 시 실행되는 콜백
+            onSuccess: () => {
+                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영합니다.
+                queryClient.invalidateQueries("cart");
+            },
         }
-
-        const updatedProduct = {
-            ...productState,
-            quantity: productState.quantity - 1,
-        };
-
-        addOrUpdateToCart(uid, updatedProduct);
-
-        setProductState(updatedProduct);
-    };
-
-    const handlePlus = () => {
-        const updatedProduct = {
-            ...productState,
-            quantity: productState.quantity + 1,
-        };
-
-        addOrUpdateToCart(uid, updatedProduct);
-
-        setProductState(updatedProduct);
-    };
-
+    );
+    
+    const handlePlus = useMutation(
+        async () => {
+            const updatedProduct = {
+                ...productState,
+                quantity: productState.quantity + 1,
+            };
+    
+            await addOrUpdateToCart(uid, updatedProduct);
+    
+            setProductState(updatedProduct);
+        },
+        {
+            // 성공 시 실행되는 콜백
+            onSuccess: () => {
+                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영합니다.
+                queryClient.invalidateQueries("cart");
+            },
+        }
+    );
+    
     const handleDelete = useMutation(
         (productId) => removeFromCart(uid, productId), // Use the removeFromCart function to perform the deletion
         {
@@ -62,12 +80,12 @@ export default function CartItem({ product, uid, updateTotalPrice }) {
                 <div className="text-2xl flex items-center">
                     <AiOutlineMinusSquare
                         className="transition-all cursor-pointer hover:text-brand hover:scale-105 mx-1"
-                        onClick={handleMinus}
+                        onClick={() => handleMinus.mutate()}
                     />
                     <span>{productState.quantity}</span>
                     <AiOutlinePlusSquare
                         className="transition-all cursor-pointer hover:text-brand hover:scale-105 mx-1"
-                        onClick={handlePlus}
+                        onClick={() => handlePlus.mutate()}
                     />
                     <RiDeleteBin5Fill
                         className="transition-all cursor-pointer hover:text-brand hover:scale-105 mx-1"
