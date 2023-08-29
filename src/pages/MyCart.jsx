@@ -8,22 +8,31 @@ import CartItem from "../components/CartItem";
 import PriceCard from "../components/PriceCard";
 import Button from "../components/ui/Button";
 
+// 배송비 상수
 const SHIPPING = 3000;
 
 export default function MyCart() {
+    
+    
     const { uid } = useAuthContext();
+    
+    // 장바구니 데이터 읽어옴
     const { data: products } = useQuery(['carts'], () => getCart(uid));
 
+    // 장바구니 내 모든 상품의 총 가격 계산 함수
     const updateTotalPrice = () => {
         return products.reduce((prev, current) => prev + parseInt(current.price) * current.quantity, 0);
     }
 
+    // 장바구니 총 가격 상태관리
     const [totalPrice, setTotalPrice] = useState(updateTotalPrice);
 
-    useEffect(() => {
+    // useEffect로 장바구니 데이터가 변경될 때마다 총 가격을 업데이트
+    useEffect(() => { 
         setTotalPrice(updateTotalPrice);
     }, [products]);
 
+    // 장바구니에 상품이 있는지 확인
     const hasProducts = products.length > 0;
 
     return (
