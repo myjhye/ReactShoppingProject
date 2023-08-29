@@ -7,22 +7,36 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function ProductDetail() {
 
+    // context에서 사용자 uid 가져옴
     const { uid } = useAuthContext();
+
+    // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
+    
+    // 선택된 옵션을 상태로 관리
     const [ selected, setSelected ] = useState(product.options[0]);
+    
+    // 옵션 선택 핸들러
     const handleSelect = (e) => setSelected(e.target.value);
+
+    // 사용자의 장바구니 정보 가져옴
     const { data: cartData } = useQuery(['carts'], () => getCart(uid));
+    
+    // 선택된 제품과 옵션이 장바구니에 이미 있는지 확인
     const isProductInCart = cartData.some((item) =>
         item.id === product.id && item.option === selected
     );
 
+    // '장바구니에 추가' 버튼 클릭 핸들러
     const handleClick = () => {
 
-        if(isProductInCart) {
+        if(isProductInCart) 
+        {
             alert('이미 장바구니에 추가된 상품입니다!');
-        } else {
-            alert('제품이 장바구니에 추가 되었습니다!');
-
+        } 
+        else 
+        {
+            // 사용자가 지정한 제품 정보를 가지고 장바구니에 추가
             const products = {
                 id: product.id,
                 image: product.image,
@@ -31,7 +45,11 @@ export default function ProductDetail() {
                 option: selected,
                 quantity: 1
             };
+
+            // 장바구니에 제품 추가
             addOrUpdateToCart(uid, products);
+
+            alert('제품이 장바구니에 추가 되었습니다!');
         }
     }
 

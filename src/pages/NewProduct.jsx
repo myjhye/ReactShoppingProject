@@ -8,6 +8,8 @@ import { useAuthContext } from "../context/AuthContext";
 export default function NewProduct() {
 
     const navigate = useNavigate();
+
+    // 새 제품 정보 관리할 상태변수
     const [product, setProduct] = useState({
         title: "",
         price: "",
@@ -15,31 +17,47 @@ export default function NewProduct() {
         description: "",
         options: ""
     });
+
+    // 업로드할 이미지 파일 관리할 상태변수
     const [file, setFile] = useState();
+
+    // 이미지 업로드 중 여부를 관리할 상태 변수
     const [isUploading, setIsUploading] = useState(false);
+
+    // 제품 등록 성공 여부 관리할 상태 변수
     const [success, setSuccess] = useState();
+    
+    // 사용자 인증 정보 훅에서 사용자 uid 가져옴
     const { uid } = useAuthContext();
 
+    // 입력 값 변경 시 호출되는 함수
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
         if(name === 'file') {
+            // 선택한 이미지 파일 설정
             setFile(files && files[0]);
             return;
         }
 
+        // 제품 정보 업데이트
         setProduct((product) => ({
             ...product,
-            [name]: value
+            [name]: value // 해당 필드 값을 업데이트 해서 새 제품 정보 생성
         }));
         
     }
 
+
+    // 제품 등록 폼 제출 시 호출되는 함수
     const handleSubmit = (e) => {
 
         e.preventDefault();
 
+        // 이미지 업로드 중임을 표시
         setIsUploading(true);
+
+        // 이미지 업로드 후 url을 받아와서 firebase에 제품 정보 추가
         uploadImage(file)
             .then(url => {
                 console.log(url);
@@ -117,7 +135,10 @@ export default function NewProduct() {
                     required
                     onChange={ handleChange }
                 />
-                <Button text={ '제품 등록하기' } />
+                <Button 
+                    text={ isUploading ? '업로드 중..' : '제품 등록하기' }
+                    disabled={isUploading} 
+                />
             </form>
         </section>
     )

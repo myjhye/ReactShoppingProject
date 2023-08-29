@@ -34,31 +34,39 @@ export async function logout() {
 }
 
 
+
+// (1)사용자 로그인 상태 변화를 감지하고, (2)관리자 여부를 확인하는 함수
 export function onUserStateChange(callback) {
 
+    // firebase authentication에서 사용자의 로그인 상태 변화를 감지하는 함수
     onAuthStateChanged(auth, async(user) => {
+
+        // 만약 사용자가 로그인 했으면 사용자 정보 업데이트하고 관리자 여부 확인
         const updatedUser = user ? await adminUser(user) : null;
+
+        // 콜백함수에 업데이트된 사용자 정보 전달
         callback(updatedUser);
     });
 }
 
 
-// 주어진 사용자가 admin인지 확인하고 console에 출력하는 함수
+// 주어진 사용자가 관리자인지 확인하고 관리자 여부를 추가하여 반환하는 함수
 function adminUser(user) {
 
     // firebase의 realtime database에서 'admins' 경로에 저장된 관리자 정보를 조회
     return get(ref(database, 'admins'))
         .then((snapshot) => {
+
             // 만약 관리자 정보가 존재하면
             if(snapshot.exists()) {
-                // 관리자 정보를 객체로 변환하여 출력
+                
+                // 관리자 정보를 객체로 변환하여 가져옴
                 const admins = snapshot.val(); // .val() : 값 가져오기
+                
                 // 사용자의 고유 식별자(uid)가 관리자 목록(admins)에 포함 되어 있는지 확인
                 const isAdmin = admins.includes(user.uid); // true/false로 반환
 
-                //console.log('user : ', user);
-
-                // 사용자 정보 업데이트 해서 관리자 여부(isAdmin) 추가
+                // 사용자 정보 업데이트 해서 관리자 여부(isAdmin) 추가하고 반환
                 return {
                     ...user, // 기존 사용자 정보
                     isAdmin // isAdmin 필드 추가
@@ -165,28 +173,35 @@ export async function searchProductByName(name) {
     
     try 
     {
+        // 'products' 경로에 대한 참조 생성
         const productsRef = ref(database, 'products');
+
+        // 이름을 기준으로 제품을 정렬하는 쿼리 생성
         const queryRef = query(
             productsRef,
             orderByChild('title')
         );
 
+        // 쿼리 실행하여 결과 가져오기
         const querySnapshot = await get(queryRef);
 
         const results = [];
 
-        querySnapshot.forEach((doc) => {
+        // 쿼리 결과를 반복하며 제품을 검색하여 results 배열에 추가
+        querySnapshot.forEach((doc) => { // doc: product의 전체 데이터
             const productTitle = doc.child('title').val();
             if (productTitle.includes(name)) {
                 results.push(doc.val());
             }
         });
 
+        // 검색 결과 반환
         return results;
     } 
     catch (error) 
     {
         console.error('Error searching products by name:', error);
+        // 오류 발생 시 빈 배열 반환
         return [];
     }
 }
