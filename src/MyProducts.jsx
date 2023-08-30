@@ -34,6 +34,7 @@ export default function MyProducts({ product, onUpdate }) {
     return (
         <li className="flex justify-between my-2 items-center">
             <img
+                onClick={ () => { navigate(`/products/${ product.id }`, { state: { product }})} } 
                 className="w-24 md:w-48 rounded-lg"
                 src={product.image}
                 alt={product.title}
