@@ -21,7 +21,10 @@ export default function CommentEdit({ comment, commentList, setCommentList, setE
                 const updatedCommentList = commentList.map((c) => {
                     if (c.id === comment.id) 
                     {
-                        return { ...c, text: editedText };
+                        return { 
+                            ...c, 
+                            text: editedText 
+                        };
                     }
                     return c;
                 });

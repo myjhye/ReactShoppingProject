@@ -135,6 +135,8 @@ export async function getMyProducts(userId) {
     return productList;
 }
 
+
+// 내가 등록한 제품 삭제
 export async function removeMyProducts(productId) {
 
     return remove(ref(database, `products/${productId}`));
