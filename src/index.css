@@ -24,3 +24,90 @@ code {
 input {
   @apply p-4 outline-none border border-gray-300 my-1
 }
+
+/* 제품 등록 */
+.checkbox-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 6px;
+  width: 20px;
+  height: 20px;
+  /* You can customize the appearance of the checkbox */
+  appearance: none;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: #007bff; /* Change to the desired checked color */
+  border-color: #007bff; /* Change to the desired checked color */
+}
+
+
+/* 댓글 */
+.comment-container {
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+}
+
+.comment-input-container {
+  display: flex;
+  margin-bottom: 10px;
+  height: 80px;
+}
+
+.comment-input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px; /* 오른쪽 마진 추가 */
+  
+}
+
+.comment-submit-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px; /* 왼쪽 마진 추가 */
+}
+
+.comment-list {
+  margin-top: 10px;
+}
+
+.comment-item {
+  padding: 5px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+
+
+.comment-cancel-button {
+  margin-right: 10px; /* Adjust margin as needed */
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+

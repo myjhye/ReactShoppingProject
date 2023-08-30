@@ -15,7 +15,8 @@ export default function NewProduct() {
         price: "",
         category: "",
         description: "",
-        options: ""
+        gender: '',
+        options: []
     });
 
     // 업로드할 이미지 파일 관리할 상태변수
@@ -32,11 +33,29 @@ export default function NewProduct() {
 
     // 입력 값 변경 시 호출되는 함수
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value, files, checked } = e.target;
 
         if(name === 'file') {
             // 선택한 이미지 파일 설정
             setFile(files && files[0]);
+            return;
+        }
+
+        if (name === 'options') {
+            
+            // 선택된 옵션을 배열에 추가 또는 제거
+            const updatedOptions = checked
+                ? [...product.options, value]
+                : product.options.filter(option => option !== value);
+            
+            // 옵션을 "XS", "S", "M", "L", "XL" 순서대로 정렬
+            const sortedOptions = ["XS", "S", "M", "L", "XL"].filter(option => updatedOptions.includes(option));
+
+            setProduct((product) => ({
+                ...product,
+                options: sortedOptions
+            }));
+
             return;
         }
 
@@ -111,14 +130,6 @@ export default function NewProduct() {
                     required
                     onChange={ handleChange }
                 />
-                <input
-                    type='text'
-                    name='category'
-                    value={product.category }
-                    placeholder='카테고리'
-                    required
-                    onChange={ handleChange }
-                />
                 <input 
                     type='text'
                     name='description'
@@ -127,14 +138,152 @@ export default function NewProduct() {
                     required
                     onChange={ handleChange }
                 />
-                <input 
-                    type='text'
-                    name='options'
-                    value={ product.options }
-                    placeholder="옵션들 콤마(,)로 구분"
-                    required
-                    onChange={ handleChange }
-                />
+                <div className="checkbox-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="gender"
+                            value="여성"
+                            checked={product.gender.includes("여성")}
+                            onChange={handleChange}
+                        />
+                        여성
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="gender"
+                            value="남성"
+                            checked={product.gender.includes("남성")}
+                            onChange={handleChange}
+                        />
+                        남성
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="gender"
+                            value="공용"
+                            checked={product.gender.includes("공용")}
+                            onChange={handleChange}
+                        />
+                        공용
+                    </label>
+                </div>
+                <div className="checkbox-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="상의"
+                            checked={product.category.includes("상의")}
+                            onChange={handleChange}
+                        />
+                        상의
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="하의"
+                            checked={product.category.includes("하의")}
+                            onChange={handleChange}
+                        />
+                        하의
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="원피스"
+                            checked={product.category.includes("원피스")}
+                            onChange={handleChange}
+                        />
+                        원피스
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="모자"
+                            checked={product.category.includes("모자")}
+                            onChange={handleChange}
+                        />
+                        모자
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="신발"
+                            checked={product.category.includes("신발")}
+                            onChange={handleChange}
+                        />
+                        신발
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="category"
+                            value="기타"
+                            checked={product.category.includes("기타")}
+                            onChange={handleChange}
+                        />
+                        기타
+                    </label>
+                </div>
+                <div className="checkbox-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="options"
+                            value="XS"
+                            checked={product.options.includes("XS")}
+                            onChange={handleChange}
+                        />
+                        XS
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="options"
+                            value="S"
+                            checked={product.options.includes("S")}
+                            onChange={handleChange}
+                        />
+                        S
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="options"
+                            value="M"
+                            checked={product.options.includes("M")}
+                            onChange={handleChange}
+                        />
+                        M
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="options"
+                            value="L"
+                            checked={product.options.includes("L")}
+                            onChange={handleChange}
+                        />
+                        L
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="options"
+                            value="XL"
+                            checked={product.options.includes("XL")}
+                            onChange={handleChange}
+                        />
+                        XL
+                    </label>
+                </div>
                 <Button 
                     text={ isUploading ? '업로드 중..' : '제품 등록하기' }
                     disabled={isUploading} 

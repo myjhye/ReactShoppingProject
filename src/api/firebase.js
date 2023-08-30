@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update } from 'firebase/database';
+import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push } from 'firebase/database';
 import { v4 as uuid } from 'uuid';
 import { AuthContextProvider } from "../context/AuthContext";
 
@@ -89,7 +89,6 @@ export async function addNewProduct(product, imageUrl, userId) {
         uid: userId,
         price: parseInt(product.price),
         image: imageUrl,
-        options: product.options.split(','),
         date: currentDate.toISOString(),
     })
 }
@@ -204,4 +203,95 @@ export async function searchProductByName(name) {
         // 오류 발생 시 빈 배열 반환
         return [];
     }
+}
+
+
+
+// 댓글 작성
+export async function addNewComment(commentText, userId, productId, userPhotoUrl, userName) {
+
+    const commentRef = ref(database, 'comments');
+
+    const newCommentRef = push(commentRef);
+    const commentId = newCommentRef.key;
+
+    const currentDate = new Date();
+    // 날짜를 yyyy/mm/dd 형식으로 변환
+    const formattedDate = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+    // 시간을 hh:mm 형식으로 변환
+    const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+
+    const newCommentData = {
+        id: commentId,
+        text: commentText,
+        userId: userId,
+        productId: productId,  
+        date: `${formattedDate} ${formattedTime}`,
+        userPhotoUrl: userPhotoUrl,
+        userName: userName,
+    };
+
+    await set(newCommentRef, newCommentData);
+}
+
+
+// 댓글 데이터 읽어오기
+export async function getCommentsByProductId(productId) {
+
+    const commentRef = ref(database, 'comments');
+
+    try {
+
+        const snapshot = await get(commentRef);
+        const commentData = [];
+
+        if(snapshot.exists())
+        {
+            snapshot.forEach((commentSnapshot) => {
+                
+                const comment = commentSnapshot.val();
+                
+                if(comment.productId === productId)
+                {
+                    commentData.push(comment);
+                }
+            });
+        }
+        
+        return commentData;
+    
+    } catch(error) {
+
+        console.error(error);
+        throw error;
+    }
+}
+
+
+// 댓글 데이터 삭제
+export async function deleteComment(commentId) {
+
+    const commentRef = ref(database, `comments/${commentId}`);
+
+    try {
+        await remove(commentRef);
+        console.log('댓글이 성공적으로 삭제됨');
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+
+// 댓글 데이터 수정
+export async function updateComment(commentId, updatedText) {
+
+    const commentRef = ref(database, `comments/${commentId}`);
+
+    try {
+        await update(commentRef, { text: updatedText });
+        console.log('댓글이 성공적으로 수정됨');
+    } catch(error) {
+        console.error(error);
+    }
+
 }

@@ -15,7 +15,7 @@ export default function ProductCard({ product }) {
                 <h3 className="truncate">{ product.title }</h3>
                 <p>{ `₩${ product.price }` }</p>
             </div>
-            <p className="mb-2 px-2 text-gray-600">{ product.category }</p>
+            <p className="mb-2 px-2 text-gray-600">{ product.category } / { product.gender }</p>
         </li>
     )
 }

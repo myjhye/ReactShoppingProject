@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { addOrUpdateToCart, getCart } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
+import Comment from "../components/Comment";
 
 export default function ProductDetail() {
 
@@ -23,9 +24,10 @@ export default function ProductDetail() {
     const { data: cartData } = useQuery(['carts'], () => getCart(uid));
     
     // 선택된 제품과 옵션이 장바구니에 이미 있는지 확인
-    const isProductInCart = cartData.some((item) =>
+    const isProductInCart = cartData && cartData.some((item) =>
         item.id === product.id && item.option === selected
     );
+
 
     // '장바구니에 추가' 버튼 클릭 핸들러
     const handleClick = () => {
@@ -56,9 +58,9 @@ export default function ProductDetail() {
 
     return (
         <>
-            <p className="mx-12 mt-4 text-gray-700">{ product.category }</p>
+            <p className="mx-12 mt-4 text-gray-700">{ product.category } / { product.gender }</p>
             <section className="flex flex-col md:flex-row p-4">
-                <img className="w-full px-4 basis-7/12" src={ product.image } alt={ product.title } />
+                <img className="max-w-xl mx-auto px-4" src={product.image} alt={product.title} />
                 <div className="w-full basis-5/12 flex flex-col p-4">
                     <h2 className="text-3xl font-bold py-2">{ product.title }</h2>
                     <p className="text-2xl font-bold py-2 border-b border-gray-400">₩{ product.price }</p>
@@ -82,6 +84,7 @@ export default function ProductDetail() {
                     />
                 </div>
             </section>
+            <Comment product={product} />
         </>
     )
 }
