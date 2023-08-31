@@ -4,23 +4,36 @@ import { useState } from "react";
 import { updateProduct } from "../api/firebase";
 
 export default function EditMyProduct() {
+
+    // 현재 경로의 state에서 제품 정보 가져옴
     const { state: { product } } = useLocation();
+
+    // 수정된 제품정보 상태관리
     const [editedProduct, setEditedProduct] = useState(product);
 
+    // 입력 값 변경 핸들러
     const handleChange = (e) => {
+        
+        // 사용자가 발생시킨 이벤트의 타겟 요소에서 값을 추출해 'value'와 'name' 변수에 저장
         const { value, name } = e.target;
 
+        // 옵션 값이 변경되는 경우에 아래 코드 블록 실행
         if (name === "options") {
 
-            // 옵션을 복사해서 업데이트
+            // 현재 옵션 배열 복사 => 얕은 복사 => 수정된 데이터가 원본 데이터에도 영향 미침
             const updatedOptions = [...editedProduct.options]; 
+            
+            // 배열에서 선택한 옵션 값의 인덱스 찾기 (배열 몇 번째에 있는지 => 순서)
             const index = updatedOptions.indexOf(value);
 
+            // 사용자가 이미 선택한 옵션을 다시 선택했을 경우
             if (index !== -1) {
-                // 이미 선택된 경우 값 제거
+                // 배열에서 해당 옵션 제거 => 선택 취소
                 updatedOptions.splice(index, 1); 
+            
+            // 사용자가 미선택된 옵션을 선택했을 경우
             } else {
-                // 선택되지 않은 경우 값 추가
+                // 배열에 선택한 옵션 추가
                 updatedOptions.push(value); 
             }
 
@@ -29,11 +42,15 @@ export default function EditMyProduct() {
                 updatedOptions.includes(option)
             );
 
+            // 수정된 옵션 배열로 제품 정보 업데이트
             setEditedProduct((prev) => ({
                 ...prev,
                 options: sortedOptions,
             }));
+
         } else {
+
+            // 다른 입력 값들의 경우 해당 값을 업데이트
             setEditedProduct((prev) => ({
                 ...prev,
                 [name]: value,
@@ -93,6 +110,7 @@ export default function EditMyProduct() {
                     onChange={ handleChange }
                 />
                 <div className="checkbox-group">
+                    {/* 성별 */}
                     <label>
                         <input
                             type="checkbox"
@@ -124,6 +142,8 @@ export default function EditMyProduct() {
                         공용
                     </label>
                 </div>
+
+                {/* 옷 카테고리 */}
                 <div className="checkbox-group">
                     <label>
                         <input
@@ -186,6 +206,8 @@ export default function EditMyProduct() {
                         기타
                     </label>
                 </div>
+
+                {/* 사이즈 옵션 */}
                 <div className="checkbox-group">
                     <label>
                         <input

@@ -5,36 +5,46 @@ import { useAuthContext  } from '../context/AuthContext';
 import CommentList from './CommentList';
 
 export default function Comment({ product }) {
+
+    // 사용자 입력 댓글
     const [commentText, setCommentText] = useState('');
+    
+    // 댓글 목록
     const [comments, setComments] = useState([]);
 
+    // 사용자가 댓글 입력창에 텍스트를 입력할 때 핸들러
     const handleCommentChange = (event) => {
         setCommentText(event.target.value);
     };
 
+    // 사용자 uid, 사용자 정보 가져오기
     const { uid, user } = useAuthContext();
 
+    // 댓글 등록 버튼 클릭 핸들러
     const handleCommentSubmit = async () => {
+
+        // 빈 댓글이 아닌 경우만 처리
         if (commentText.trim() !== '') {
-            try {
+            
+            try 
+            {
                 // 새 댓글 데이터 데이터베이스에 추가
                 await addNewComment(commentText, uid, product.id, user.photoURL, user.displayName);
                 
-                const updatedComments = await getCommentsByProductId(product.id);
-
                 // 댓글 등록 후 새롭게 댓글 리스트를 가져오게 함 (화면에 실시간 반영)
-                // reverse: 댓글 최상단에 등록되게
-                setComments(updatedComments.reverse());
+                const updatedComments = await getCommentsByProductId(product.id);
+                setComments(updatedComments.reverse()); // reverse: 댓글 최상단에 등록되게
                 
                 // 댓글 등록 후 댓글 박스 clear
                 setCommentText('');
             
             } catch (error) {
-                console.error('Error adding comment:', error);
+                console.error(error);
             }
         }
     };
 
+    // 컴포넌트 마운트 시(컴포넌트가 화면에 나타날 때) 댓글 가져오기
     useEffect(() => {
         
         const fetchComments = async () => {
@@ -47,8 +57,11 @@ export default function Comment({ product }) {
             }
         };
 
+        // 컴포넌트 마운트 시 댓글 데이터 가져오기
         fetchComments();
 
+    // 'product.id'가 변경될 때마다 댓글 가져오기 
+    // => 다른 제품을 선택하거나 컴포넌트가 처음 렌더링 될 때 product.id가 변경됨
     }, [product .id]);
 
     return (
@@ -65,6 +78,8 @@ export default function Comment({ product }) {
                 {/* 댓글 등록 버튼 */}
                 <Button text={ '등록' } className="comment-submit-button" onClick={handleCommentSubmit} />
             </div>
+
+            {/* 작성된 댓글 목록 */}
             <CommentList 
                 comments={comments} 
             />

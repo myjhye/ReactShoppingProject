@@ -48,7 +48,7 @@ export default function MyProducts({ product, onUpdate }) {
                 <div className="text-2xl flex items-center">
                     
                 <div 
-                    onClick={ () => { navigate(`/edit/${ product.id }`, { state: { product }})} } 
+                    onClick={ () => { navigate(`/edit/${ product.id }`, { state: { product }})} }
                     className="flex items-center cursor-pointer hover:text-brand"
                 >
                     <BsFillPencilFill

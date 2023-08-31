@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push } from 'firebase/database';
 import { v4 as uuid } from 'uuid';
-import { AuthContextProvider } from "../context/AuthContext";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
