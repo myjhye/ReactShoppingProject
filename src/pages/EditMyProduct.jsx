@@ -52,6 +52,9 @@ export default function EditMyProduct() {
     }
 
     const navigate = useNavigate();
+    const isOptionsSelected = editedProduct.options.length > 0;
+    const isGenderSelected = editedProduct.gender.length > 0;
+    const isCategorySelected = editedProduct.category.length > 0;
 
     return (
         <section className="w-full text-center">
@@ -235,7 +238,11 @@ export default function EditMyProduct() {
                         XL
                     </label>
                 </div>
-                <Button text={ '제품 수정하기' } />
+                { isGenderSelected && isCategorySelected && isOptionsSelected ? (
+                    <Button text={ '제품 수정하기' } />
+                ) : (
+                    <p className="text-red-500">모든 필수 선택 사항을 완료 해주세요</p>
+                )}
             </form>
         </section>
     )

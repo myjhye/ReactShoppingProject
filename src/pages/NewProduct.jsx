@@ -89,6 +89,10 @@ export default function NewProduct() {
             .finally(() => setIsUploading(false));
     }
 
+    const isOptionsSelected = product.options.length > 0;
+    const isGenderSelected = product.gender.length > 0;
+    const isCategorySelected = product.category.length > 0;
+
     return (
         <section className="w-full text-center">
             <h2 className="text-2xl font-bold my-4">새로운 제품 등록</h2>
@@ -284,10 +288,14 @@ export default function NewProduct() {
                         XL
                     </label>
                 </div>
-                <Button 
-                    text={ isUploading ? '업로드 중..' : '제품 등록하기' }
-                    disabled={isUploading} 
-                />
+                { isGenderSelected && isCategorySelected && isOptionsSelected ? (
+                    <Button 
+                        text={ isUploading ? '업로드 중..' : '제품 등록하기' }
+                        disabled={isUploading} 
+                    />
+                ) : (
+                    <p className="text-red-500">모든 필수 선택 사항을 완료 해주세요</p>
+                )}
             </form>
         </section>
     )

@@ -56,7 +56,10 @@ export default function MyProducts({ product, onUpdate }) {
                     />
                     수정
                 </div>
-                <div onClick={handleDelete} className="flex items-center cursor-pointer hover:text-brand">
+                <div 
+                    onClick={handleDelete} 
+                    className="flex items-center cursor-pointer hover:text-brand"
+                >
                     <RiDeleteBin5Fill
                         className="transition-all hover:scale-105 mx-1"
                     />

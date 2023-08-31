@@ -6,11 +6,7 @@ import { getMyProducts } from "../api/firebase";
 
 export default function MyProduct() {
     const { uid } = useAuthContext();
-    const {
-        isLoading, 
-        error, 
-        data: uploaded 
-    } = useQuery(['products', uid], () => getMyProducts(uid));
+    const { data: uploaded } = useQuery(['products', uid], () => getMyProducts(uid));
 
     // 화면에 표시되는 상품 리스트
     // 초기값으로 'uploaded' 사용 => 이전에 업로드된 상품 리스트
