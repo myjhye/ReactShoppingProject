@@ -29,6 +29,7 @@ export default function CommentList({ comments }) {
                 console.error(error);
             }
         }
+
     };
 
 

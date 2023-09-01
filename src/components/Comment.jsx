@@ -78,11 +78,17 @@ export default function Comment({ product }) {
                 {/* 댓글 등록 버튼 */}
                 <Button text={ '등록' } className="comment-submit-button" onClick={handleCommentSubmit} />
             </div>
-
             {/* 작성된 댓글 목록 */}
-            <CommentList 
-                comments={comments} 
-            />
+            {comments.length === 0 ? (
+                <p>
+                    <span style={{ fontSize: '18px', fontWeight: 'bold' }}>아직 댓글이 없습니다.</span> <br />
+                    가장 먼저 댓글을 남겨보세요.
+                </p>
+            ) : (
+                <CommentList 
+                    comments={comments} 
+                />
+            )}
         </div>
     );
 }
