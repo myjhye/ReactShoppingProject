@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { formatAgo } from "./util/date";
 
 export default function ProductCard({ product }) {
 
@@ -16,6 +17,7 @@ export default function ProductCard({ product }) {
                 <p>{ `₩${ product.price }` }</p>
             </div>
             <p className="mb-2 px-2 text-gray-600">{ product.category } / { product.gender }</p>
+            <p className="mb-2 px-2 text-gray-600">{ formatAgo(product.date, 'ko') } 등록</p>
         </li>
     )
 }
