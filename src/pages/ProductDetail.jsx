@@ -14,7 +14,7 @@ export default function ProductDetail() {
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
     
-    // 선택된 옵션을 상태로 관리
+    // 선택된 옵션
     const [ selected, setSelected ] = useState(product.options[0]);
     
     // 옵션 선택 핸들러
@@ -74,7 +74,9 @@ export default function ProductDetail() {
                             value={ selected }
                         >
                             { product.options.map((option, index) => (
-                                <option key={ index }>{ option }</option>
+                                <option key={ index }>
+                                    { option }
+                                </option>
                             ))}
                         </select>
                     </div>
