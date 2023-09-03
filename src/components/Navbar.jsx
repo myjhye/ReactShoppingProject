@@ -1,6 +1,7 @@
 import React from "react";
 import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
+import { FaBookmark } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
 import { searchProductByName } from "../api/firebase";
 import User from "../User/User";
@@ -68,6 +69,12 @@ export default function Navbar() {
             <nav className="flex items-center gap-4 font-semibold">
                 <Link to='/carts'>
                     <CartStatus />
+                </Link>
+                <Link
+                    to='/bookmark' 
+                    className="text-2xl"
+                >
+                    <FaBookmark />
                 </Link>
                 <Link 
                     to='/products/new'

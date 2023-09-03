@@ -59,7 +59,7 @@ export default function Products() {
     };
 
     // 상품 카테고리, 성별 카테고리 목록
-    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발'];
+    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
     const genderCategories = ['전체', '여성', '남성', '공용'];
 
     // 선택한 [상품 카테고리, 성별 카테고리]에 따라 상품 필터링

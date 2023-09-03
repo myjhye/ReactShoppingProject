@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; /
 import { addOrUpdateToCart, getCart, getProducts, removeFromCart } from "../api/firebase";
 import { useNavigate } from "react-router-dom";
 
-export default function CartItem({ product, uid, updateTotalPrice }) {
+export default function CartItem({ product, uid }) {
 
     // 현재 상품 상태 상태관리    
     const [productState, setProductState] = useState(product);

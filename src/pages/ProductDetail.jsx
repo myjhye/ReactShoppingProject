@@ -22,6 +22,14 @@ export default function ProductDetail() {
     // 옵션 선택 핸들러
     const handleSelect = (e) => setSelected(e.target.value);
 
+
+
+
+
+    
+    ////////////// 장바구니
+
+
     // 사용자의 장바구니 정보 가져옴
     const { data: cartData } = useQuery(['carts'], () => getCart(uid));
     
@@ -56,6 +64,12 @@ export default function ProductDetail() {
             alert('제품이 장바구니에 추가 되었습니다!');
         }
     }
+
+
+
+
+
+    ////////////// 북마크
 
     const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(product.id));
 

@@ -14,6 +14,7 @@ import ProtectedRoute from './pages/ProtectedRoute';
 import MyProduct from './pages/MyProduct';
 import EditMyProduct from './pages/EditMyProduct';
 import ProductSearch from './pages/ProductSearch';
+import Bookmark from './pages/Bookmark';
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,12 @@ const router = createBrowserRouter([
         path: '/search',
         element: (
             <ProductSearch />
+        )
+      },
+      {
+        path: '/bookmark',
+        element: (
+            <Bookmark />
         )
       },
     ]
