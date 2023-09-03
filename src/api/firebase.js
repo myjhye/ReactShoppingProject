@@ -13,7 +13,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+  prompt: 'select_account',
+});
 const database = getDatabase(app);
+
+
+
 
 // 로그인
 export function login() {
@@ -295,4 +301,56 @@ export async function updateComment(commentId, updatedText) {
         console.error(error);
     }
 
+}
+
+
+// 상품 북마크 추가
+export async function addBookmark(productId, userId) {
+    const bookmarkRef = ref(database, `bookmarks/${productId}`);
+
+    const bookmarksData = {
+        userIds: {
+            [userId]: true // 해당 사용자 ID를 키로 사용하여 true로 저장
+        }
+    };
+
+    await push(bookmarkRef, bookmarksData);
+}
+
+
+// 상품 북마크 읽어오기
+export async function getBookmarks(productId) {
+    const bookmarksRef = ref(database, `bookmarks/${productId}`);
+    const snapshot = await get(bookmarksRef);
+
+    if (snapshot.val() !== null) {
+        const bookmarksData = snapshot.val();
+        return Object.keys(bookmarksData).map((bookmarkId) => ({
+            id: bookmarkId,
+            userIds: bookmarksData[bookmarkId].userIds
+        }));
+    } else {
+        return [];
+    }
+}
+
+// 북마크 삭제
+export async function removeBookmark(productId, userId) {
+    const bookmarksRef = ref(database, `bookmarks/${productId}`);
+    const snapshot = await get(bookmarksRef);
+
+    if (snapshot.exists()) {
+        const bookmarksData = snapshot.val();
+        const bookmarkIdToRemove = Object.keys(bookmarksData).find((bookmarkId) =>
+            bookmarksData[bookmarkId].userIds && bookmarksData[bookmarkId].userIds[userId]
+        );
+
+        if (bookmarkIdToRemove) {
+            const bookmarkToRemoveRef = ref(database, `bookmarks/${productId}/${bookmarkIdToRemove}`);
+            await remove(bookmarkToRemoveRef);
+            return true; // 북마크가 삭제되었음을 반환
+        }
+    }
+
+    return false;
 }

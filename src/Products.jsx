@@ -59,7 +59,7 @@ export default function Products() {
     };
 
     // 상품 카테고리, 성별 카테고리 목록
-    const mainCategories = ['전체', '원피스', '모자', '상의', '하의'];
+    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발'];
     const genderCategories = ['전체', '여성', '남성', '공용'];
 
     // 선택한 [상품 카테고리, 성별 카테고리]에 따라 상품 필터링
@@ -138,14 +138,17 @@ export default function Products() {
             ) : error ? (
                 <p>{error.message}</p>
             ) : (
-                <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                    {filteredProducts.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                        />
-                    ))}
-                </ul>
+                <div>
+                    <div>상품 { filteredProducts.length }개</div>
+                    <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                        {filteredProducts.map((product) => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                            />
+                        ))}
+                    </ul>
+                </div>
             )}
         </div>
     );

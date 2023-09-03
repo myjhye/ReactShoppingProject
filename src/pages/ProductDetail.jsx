@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import Button from "../components/ui/Button";
-import { addOrUpdateToCart, getCart } from "../api/firebase";
+import { addBookmark, addOrUpdateToCart, getBookmarks, getCart, removeBookmark } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 import Comment from "../components/Comment";
+import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
+import DefaultButton from "../components/ui/DefaultButton";
 
 export default function ProductDetail() {
 
@@ -55,6 +57,38 @@ export default function ProductDetail() {
         }
     }
 
+    const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(product.id));
+
+    const isUserBookmarked = bookmarksData && bookmarksData.some((bookmark) =>
+        bookmark.userIds && bookmark.userIds[uid]
+    );
+
+
+    // 북마크를 클릭한 사용자 목록에서 현재 사용자 id 찾음
+    const handleBookmarkClick = async () => {
+        if (isUserBookmarked) {
+            const removed = await removeBookmark(product.id, uid);
+            if (removed) {
+                alert('북마크가 삭제되었습니다');
+            } else {
+                alert('북마크 삭제에 실패했습니다');
+            }
+        } else {
+            await addBookmark(product.id, uid);
+            alert('북마크가 추가되었습니다');
+        }
+    }
+
+    const bookmarkIcon = isUserBookmarked ? <FaBookmark /> : <FaRegBookmark />;
+    const buttonText = (
+        <span className="flex items-center justify-center">
+            {bookmarkIcon}
+            <span className="ml-2">{bookmarksData ? bookmarksData.length : 0}</span>
+            <span className="ml-2">관심상품</span>
+        </span>
+    );
+    
+
 
     return (
         <>
@@ -84,6 +118,13 @@ export default function ProductDetail() {
                         text='장바구니에 추가'
                         onClick={ handleClick }
                     />
+
+                    <div>
+                        <DefaultButton 
+                            text={buttonText}
+                            onClick={handleBookmarkClick}
+                        />
+                    </div>
                 </div>
             </section>
             <Comment product={product} />
