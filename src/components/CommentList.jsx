@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import User from '../User/User';
+import { LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
 import { useAuthContext } from '../context/AuthContext';
-import { deleteComment, getCommentsByProductId } from '../api/firebase';
+import { deleteComment, dislikeComment, getCommentsByProductId, likeComment } from '../api/firebase';
 import CommentEdit from './CommentEdit';
 
 // 댓글 목록
@@ -38,6 +38,44 @@ export default function CommentList({ comments }) {
         setEditingCommentId(commentId);
     };
 
+
+
+    // 댓글 좋아요 핸들러
+    const handleLikeButtonClick = async (commentId, productId) => {
+
+        try {
+            // 좋아요 증가 함수 호출
+            await likeComment(commentId, uid);
+
+            // 좋아요 수가 업데이트된 댓글 목록 가져오기
+            const updatedComments = await getCommentsByProductId(productId);
+            setCommentList(updatedComments.reverse());
+            
+        } catch(error) {
+            console.error(error);
+        }
+    }
+
+
+
+    // 댓글 좋아요 핸들러
+    const handlDislikeButtonClick = async (commentId, productId) => {
+
+        try {
+            // 좋아요 증가 함수 호출
+            await dislikeComment(commentId);
+
+            // 좋아요 수가 업데이트된 댓글 목록 가져오기
+            const updatedComments = await getCommentsByProductId(productId);
+            setCommentList(updatedComments.reverse());
+            
+        } catch(error) {
+            console.error(error);
+        }
+    }
+
+
+
     // 댓글 목록이 변경 될 때마다(새 댓글이 입력 될 때마다) 댓글 목록 업데이트
     useEffect(() => {
         setCommentList(comments);
@@ -59,10 +97,20 @@ export default function CommentList({ comments }) {
                         {comment.userId === uid && (
                             <div className="ml-auto flex space-x-2">
                                 <button onClick={() => handleEditButtonClick(comment.id)}>수정</button>
-                                <button onClick={() => handleDeleteComment(comment.id, comment.productId)}>삭제</button>
+                                <button onClick={() => handleDeleteComment(comment.id)}>삭제</button>
                             </div>
                         )}
+
+                        <button onClick={() => handleLikeButtonClick(comment.id, comment.productId)}>
+                            <LuThumbsUp />
+                        </button>
+                        {comment.likes.count}
+                        <button onClick={() => handlDislikeButtonClick(comment.id, comment.productId)}>
+                            <LuThumbsDown />
+                        </button>
+                        {comment.dislikes}
                     </div>
+
                     <div className="ml-8">
                         <p>{comment.text}</p> {/* 기존 댓글 텍스트 */}
                         {editingCommentId === comment.id && (

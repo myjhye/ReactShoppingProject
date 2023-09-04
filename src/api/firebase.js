@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push } from 'firebase/database';
+import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push, increment } from 'firebase/database';
 import { v4 as uuid } from 'uuid';
 
 const firebaseConfig = {
@@ -259,6 +259,8 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
         date: `${formattedDate} ${formattedTime}`,
         userPhotoUrl: userPhotoUrl,
         userName: userName,
+        likes: { count: 0, likedBy: [] },
+        dislikes: 0
     };
 
     await set(newCommentRef, newCommentData);
@@ -324,6 +326,40 @@ export async function updateComment(commentId, updatedText) {
         console.error(error);
     }
 
+}
+
+
+// 댓글 좋아요
+export async function likeComment(commentId, userId) {
+    const commentRef = ref(database, `comments/${commentId}`);
+    const commentSnapshot = await get(commentRef);
+
+    if(commentSnapshot.exists()) {
+        const commentData = commentSnapshot.val();
+        const newLikesCount = commentData.likes.count + 1; // 좋아요 수 증가
+
+        let newLikedBy = commentData.likes.likedBy || [];
+        if(!newLikedBy.includes(userId)) {
+            newLikedBy.push(userId);
+
+            await update(commentRef, {
+                likes: {
+                    count: newLikesCount,
+                    likedBy: newLikedBy,
+                }
+            })
+        }
+    }
+}
+
+
+
+// 댓글 싫어요
+export async function dislikeComment(commentId) {
+    const commentRef = ref(database, `comments/${commentId}`);
+    await update(commentRef, {
+        dislikes: increment(1),
+    })
 }
 
 
