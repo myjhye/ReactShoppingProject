@@ -3,11 +3,12 @@ import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { FaBookmark } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
-import { searchProductByName } from "../api/firebase";
+import { getProducts, searchProductByName } from "../api/firebase";
 import User from "../User/User";
 import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Navbar() {
     const { 
@@ -43,6 +44,8 @@ export default function Navbar() {
             handleSearch();
         }
     }
+
+    const { data: products } = useQuery(['products'], () => getProducts());
 
 
     return (

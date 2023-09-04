@@ -71,28 +71,50 @@ export default function ProductDetail() {
 
     ////////////// 북마크
 
+
+    // 특정 상품 북마크 데이터 가져옴
     const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(product.id));
 
-    const isUserBookmarked = bookmarksData && bookmarksData.some((bookmark) =>
-        bookmark.userIds && bookmark.userIds[uid]
-    );
+    
 
-
-    // 북마크를 클릭한 사용자 목록에서 현재 사용자 id 찾음
+    
+    
+    // 현재 사용자가 해당 상품을 북마크한 상태인지 확인 => 조건을 만족하는 북마크 데이터가 하나 이상 있으면 isUserBookmarked는 true로 설정됨
+    const isUserBookmarked = bookmarksData && Object.values(bookmarksData).some(bookmark => {
+        return bookmark.uid === uid;
+      });
+      
+    
+    // 상품 북마크 클릭 핸들러
     const handleBookmarkClick = async () => {
+
         if (isUserBookmarked) {
-            const removed = await removeBookmark(product.id, uid);
-            if (removed) {
-                alert('북마크가 삭제되었습니다');
-            } else {
-                alert('북마크 삭제에 실패했습니다');
-            }
+            
+            await removeBookmark(product.id, uid);
+            
+            alert('북마크가 삭제되었습니다');
         } else {
-            await addBookmark(product.id, uid);
+            const products = {
+                id: product.id,
+                image: product.image,
+                title: product.title,
+                price: product.price,
+                option: selected,
+                uid: uid
+            };
+
+            // 북마크에 제품 추가
+            addBookmark(uid, products);
+
+            //console.log(JSON.stringify(bookmarksData, null, 2));
+            //console.log(bookmarksData[product.id][uid].id);
+
             alert('북마크가 추가되었습니다');
         }
     }
 
+
+    // 북마크가 클릭된 상태면 <FaBookmark /> 사용, 아니면 <FaRegBookmark /> 사용
     const bookmarkIcon = isUserBookmarked ? <FaBookmark /> : <FaRegBookmark />;
     const buttonText = (
         <span className="flex items-center justify-center">

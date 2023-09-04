@@ -82,6 +82,13 @@ function adminUser(user) {
 }
 
 
+
+
+
+
+///////////////////// 제품
+
+
 // 새 제품 등록
 export async function addNewProduct(product, imageUrl, userId) {
 
@@ -149,30 +156,6 @@ export async function removeMyProducts(productId) {
 
 
 
-// cart에 product 데이터 추가
-export async function addOrUpdateToCart(userId, product) {
-
-    return set(ref(database, `carts/${ userId }/${ product.id }`), product);
-}
-
-
-// cart 데이터 읽어오기
-export async function getCart(userId) {
-
-    return get(ref(database, `carts/${ userId }`))
-        .then((snapshot) => {
-            const items = snapshot.val() || {};
-            return Object.values(items);
-        })
-}
-
-// cart 데이터 삭제
-export async function removeFromCart( userId, productId ) {
-
-    return remove(ref(database, `carts/${ userId }/${ productId }`));
-}
-
-
 
 // 제품 검색
 export async function searchProductByName(name) {
@@ -212,6 +195,46 @@ export async function searchProductByName(name) {
     }
 }
 
+
+
+
+
+
+
+
+////////////////// 장바구니
+
+
+// cart에 product 데이터 추가
+export async function addOrUpdateToCart(userId, product) {
+
+    return set(ref(database, `carts/${ userId }/${ product.id }`), product);
+}
+
+
+// cart 데이터 읽어오기
+export async function getCart(userId) {
+
+    return get(ref(database, `carts/${ userId }`))
+        .then((snapshot) => {
+            const items = snapshot.val() || {};
+            return Object.values(items);
+        })
+}
+
+// cart 데이터 삭제
+export async function removeFromCart( userId, productId ) {
+
+    return remove(ref(database, `carts/${ userId }/${ productId }`));
+}
+
+
+
+
+
+
+
+////////////////// 댓글
 
 
 // 댓글 작성
@@ -304,53 +327,31 @@ export async function updateComment(commentId, updatedText) {
 }
 
 
+
+////////////////// 북마크
+
+
 // 상품 북마크 추가
-export async function addBookmark(productId, userId) {
-    const bookmarkRef = ref(database, `bookmarks/${productId}`);
+export async function addBookmark(userId, product) {
 
-    const bookmarksData = {
-        userIds: {
-            [userId]: true // 해당 사용자 ID를 키로 사용하여 true로 저장
-        }
-    };
-
-    await push(bookmarkRef, bookmarksData);
+    return set(ref(database, `bookmarks/${ product.id }/${ userId }`), product);
 }
 
 
-// 상품 북마크 읽어오기
+// 상품 북마크 데이터 읽어오기
 export async function getBookmarks(productId) {
-    const bookmarksRef = ref(database, `bookmarks/${productId}`);
-    const snapshot = await get(bookmarksRef);
 
-    if (snapshot.val() !== null) {
-        const bookmarksData = snapshot.val();
-        return Object.keys(bookmarksData).map((bookmarkId) => ({
-            id: bookmarkId,
-            userIds: bookmarksData[bookmarkId].userIds
-        }));
-    } else {
-        return [];
-    }
+    return get(ref(database, `bookmarks/${ productId }`))
+        .then((snapshot) => {
+            const items = snapshot.val() || {};
+            return Object.values(items);
+        })
 }
+
+
 
 // 북마크 삭제
 export async function removeBookmark(productId, userId) {
-    const bookmarksRef = ref(database, `bookmarks/${productId}`);
-    const snapshot = await get(bookmarksRef);
 
-    if (snapshot.exists()) {
-        const bookmarksData = snapshot.val();
-        const bookmarkIdToRemove = Object.keys(bookmarksData).find((bookmarkId) =>
-            bookmarksData[bookmarkId].userIds && bookmarksData[bookmarkId].userIds[userId]
-        );
-
-        if (bookmarkIdToRemove) {
-            const bookmarkToRemoveRef = ref(database, `bookmarks/${productId}/${bookmarkIdToRemove}`);
-            await remove(bookmarkToRemoveRef);
-            return true; // 북마크가 삭제되었음을 반환
-        }
-    }
-
-    return false;
+    return remove(ref(database, `bookmarks/${ productId }/${ userId }`));
 }
