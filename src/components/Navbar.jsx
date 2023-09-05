@@ -9,6 +9,7 @@ import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
 import { useQuery } from "@tanstack/react-query";
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Navbar() {
     const { 
@@ -90,7 +91,7 @@ export default function Navbar() {
                         <User user={ user } />
                     </Link>
                 )}
-                { !user  && <Button text={ 'Login' } onClick={ login } /> }
+                {!user && <FcGoogle className="text-4xl cursor-pointer" onClick={login} />}
                 { user  && <Button text={ 'Logout' } onClick={ logout }  /> }
             </nav>
         </header>
