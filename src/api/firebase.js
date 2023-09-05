@@ -259,8 +259,6 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
         date: `${formattedDate} ${formattedTime}`,
         userPhotoUrl: userPhotoUrl,
         userName: userName,
-        likes: 0,
-        dislikes: 0,
     };
 
     await set(newCommentRef, newCommentData);
@@ -290,6 +288,7 @@ export async function getCommentsByProductId(productId) {
             });
         }
         
+        console.log(commentData.length);
         return commentData;
     
     } catch(error) {

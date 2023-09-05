@@ -66,6 +66,11 @@ export default function Comment({ product }) {
 
     return (
         <div className="comment-container">
+            <div>
+                <span class="text-red-500 text-4xl">
+                    {comments.length}
+                </span>개의 댓글
+            </div>
             <div className="comment-input-container">
                 {/* 댓글 작성 박스 */}
                 <input
