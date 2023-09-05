@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useAuthContext } from '../context/AuthContext';
+import { deleteComment, dislikeComment, getCommentsByProductId, likeComment } from '../api/firebase';
+import CommentEdit from './CommentEdit';
 import { LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
 import { MdThumbUp, MdThumbDown } from 'react-icons/md';
-import { useAuthContext } from '../context/AuthContext';
-import { deleteComment, dislikeComment, getCommentsByProductId, getLikedUsers, likeComment, unlikeComment } from '../api/firebase';
-import CommentEdit from './CommentEdit';
-import { useQuery } from '@tanstack/react-query';
 
 // 댓글 목록
-export default function CommentList({ comments, product }) {
+export default function CommentList({ comments }) {
 
     const { uid } = useAuthContext();
 
@@ -37,20 +36,20 @@ export default function CommentList({ comments, product }) {
 
     // 댓글 수정 핸들러
     const handleEditButtonClick = (commentId) => {
-        setEditingCommentId(commentId);
+        setEditingCommentId(commentId); 
+        
     };
 
 
-    
     // 댓글 좋아요 핸들러
     const handleLikeButtonClick = async (commentId, productId) => {
 
-            // 좋아요 증가 함수 호출
-            await likeComment(commentId, uid);
+        // 좋아요 증가 함수 호출
+        await likeComment(commentId, uid);
 
-            // 좋아요 수가 업데이트된 댓글 목록 가져오기
-            const updatedComments = await getCommentsByProductId(productId);
-            setCommentList(updatedComments.reverse());
+        // 좋아요 수가 업데이트된 댓글 목록 가져오기
+        const updatedComments = await getCommentsByProductId(productId);
+        setCommentList(updatedComments.reverse());
 
     }
 
@@ -59,14 +58,16 @@ export default function CommentList({ comments, product }) {
     //댓글 싫어요 핸들러
     const handlDislikeButtonClick = async (commentId, productId) => {
 
-            // 싫어요 증가 함수 호출
-            await dislikeComment(commentId, uid);
+        // 싫어요 증가 함수 호출
+        await dislikeComment(commentId, uid);
 
-            // 싫어요 수가 업데이트된 댓글 목록 가져오기
-            const updatedComments = await getCommentsByProductId(productId);
-            setCommentList(updatedComments.reverse());
+        // 싫어요 수가 업데이트된 댓글 목록 가져오기
+        const updatedComments = await getCommentsByProductId(productId);
+        setCommentList(updatedComments.reverse());
 
     }
+
+
 
     // 댓글 목록이 변경 될 때마다(새 댓글이 입력 될 때마다) 댓글 목록 업데이트
     useEffect(() => {
@@ -75,11 +76,7 @@ export default function CommentList({ comments, product }) {
 
 
 
-    //const likesCount = likesData.length;
 
-
-
-    
 
 
     return (
@@ -98,7 +95,7 @@ export default function CommentList({ comments, product }) {
                         {comment.userId === uid && (
                             <div className="ml-auto flex space-x-2">
                                 <button onClick={() => handleEditButtonClick(comment.id)}>수정</button>
-                                <button onClick={() => handleDeleteComment(comment.id)}>삭제</button>
+                                <button onClick={() => handleDeleteComment(comment.id, comment.productId)}>삭제</button>
                             </div>
                         )}
 
@@ -110,9 +107,9 @@ export default function CommentList({ comments, product }) {
                         { <button onClick={() => handlDislikeButtonClick(comment.id, comment.productId)}>
                             <LuThumbsDown />
                         </button> }
-                            { comment.dislikes }
-                    </div>
+                          { comment.dislikes }
 
+                    </div>
                     <div className="ml-8">
                         <p>{comment.text}</p> {/* 기존 댓글 텍스트 */}
                         {editingCommentId === comment.id && (
