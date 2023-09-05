@@ -93,6 +93,7 @@ export default function ProductDetail() {
             await removeBookmark(product.id, uid);
             
             alert('북마크가 삭제되었습니다');
+
         } else {
             const products = {
                 id: product.id,
@@ -105,9 +106,6 @@ export default function ProductDetail() {
 
             // 북마크에 제품 추가
             addBookmark(uid, products);
-
-            //console.log(JSON.stringify(bookmarksData, null, 2));
-            //console.log(bookmarksData[product.id][uid].id);
 
             alert('북마크가 추가되었습니다');
         }

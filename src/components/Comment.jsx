@@ -78,6 +78,8 @@ export default function Comment({ product }) {
                 {/* 댓글 등록 버튼 */}
                 <Button text={ '등록' } className="comment-submit-button" onClick={handleCommentSubmit} />
             </div>
+
+            
             {/* 작성된 댓글 목록 */}
             {comments.length === 0 ? (
                 <p>
@@ -85,7 +87,8 @@ export default function Comment({ product }) {
                     가장 먼저 댓글을 남겨보세요.
                 </p>
             ) : (
-                <CommentList 
+                <CommentList
+                    product={product} 
                     comments={comments} 
                 />
             )}

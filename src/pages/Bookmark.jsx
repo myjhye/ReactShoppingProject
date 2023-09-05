@@ -3,12 +3,12 @@ import { useAuthContext } from "../context/AuthContext";
 import { getBookmarks } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 import BookmarkItem from "../components/BookmarkItem";
-import { useLocation } from "react-router-dom";
 
 export default function Bookmark() {
 
     const { uid } = useAuthContext();
-    const { data: bookmarks, isLoading, isError } = useQuery(['bookmarks', productId], () => getBookmarks(productId));
+
+    const { data: bookmarks, isLoading, isError } = useQuery(['bookmarks'], () => getBookmarks());
 
     if (isLoading) {
         return <div>Loading...</div>;

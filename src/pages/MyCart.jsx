@@ -13,7 +13,6 @@ const SHIPPING = 3000;
 
 export default function MyCart() {
     
-    
     const { uid } = useAuthContext();
     
     // 장바구니 데이터 읽어옴
