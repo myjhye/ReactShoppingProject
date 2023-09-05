@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
 import { MdThumbUp, MdThumbDown } from 'react-icons/md';
 import { useAuthContext } from '../context/AuthContext';
-import { deleteComment, dislikeComment, getCommentsByProductId, likeComment, unlikeComment } from '../api/firebase';
+import { deleteComment, dislikeComment, getCommentsByProductId, getLikedUsers, likeComment, unlikeComment } from '../api/firebase';
 import CommentEdit from './CommentEdit';
 import { useQuery } from '@tanstack/react-query';
 
@@ -41,59 +41,17 @@ export default function CommentList({ comments, product }) {
     };
 
 
-
-
-    // 댓글 데이터 가져옴
-    const { data: commentData } = useQuery(['comments'], () => getCommentsByProductId(product.id));
-
-
-
-    // 좋아요 눌렀는지 확인
-    // 좋아요 누른 사용자가 현재 사용자와 일치하는 지 확인 => 일치하면 true
-    const isUserLiked = commentData && Object.values(commentData).some(comment => {
-        return comment.likes && comment.likes.likedBy && comment.likes.likedBy.includes(uid);
-    });
-
-
-
-    // 싫어요 눌렀는지 확인
-    // 싫어요 누른 사용자가 현재 사용자와 일치하는 지 확인 => 일치하면 true
-    const isUserDisliked = commentData && Object.values(commentData).some(comment => {
-        return comment.dislikes && comment.dislikes.dislikedBy && comment.dislikes.dislikedBy.includes(uid);
-    });
-
-
-
-
-    // 좋아요나 싫어요 눌렀는지 확인
-    const isUserLikedOrDisliked = commentData && Object.values(commentData).some(comment => {
-        const isLiked = comment.likes && comment.likes.likedBy && comment.likes.likedBy.includes(uid);
-        const isDisliked = comment.dislikes && comment.dislikes.dislikedBy && comment.dislikes.dislikedBy.includes(uid);
-        return isLiked || isDisliked;
-    });
-
-
     
-
-
     // 댓글 좋아요 핸들러
     const handleLikeButtonClick = async (commentId, productId) => {
 
-        if (isUserLikedOrDisliked) {
-
-            alert('이미 참여하셨습니다.')
-
-        } else {
-            
             // 좋아요 증가 함수 호출
             await likeComment(commentId, uid);
-    
+
             // 좋아요 수가 업데이트된 댓글 목록 가져오기
             const updatedComments = await getCommentsByProductId(productId);
             setCommentList(updatedComments.reverse());
-            
-            alert('추천했습니다.');
-        }
+
     }
 
 
@@ -101,13 +59,6 @@ export default function CommentList({ comments, product }) {
     //댓글 싫어요 핸들러
     const handlDislikeButtonClick = async (commentId, productId) => {
 
-        
-        if (isUserLikedOrDisliked) {
-
-            alert('이미 참여하셨습니다.')
-
-        } else {
-            
             // 싫어요 증가 함수 호출
             await dislikeComment(commentId, uid);
 
@@ -115,9 +66,6 @@ export default function CommentList({ comments, product }) {
             const updatedComments = await getCommentsByProductId(productId);
             setCommentList(updatedComments.reverse());
 
-            alert('반대했습니다.')
-            
-        } 
     }
 
     // 댓글 목록이 변경 될 때마다(새 댓글이 입력 될 때마다) 댓글 목록 업데이트
@@ -127,7 +75,7 @@ export default function CommentList({ comments, product }) {
 
 
 
-    
+    //const likesCount = likesData.length;
 
 
 
@@ -155,13 +103,14 @@ export default function CommentList({ comments, product }) {
                         )}
 
                         <button onClick={() => handleLikeButtonClick(comment.id, comment.productId)}>
-                            {isUserLiked ? <MdThumbUp /> : <LuThumbsUp />}
+                           <LuThumbsUp />
                         </button>
-                            {comment.likes.count}
+                            { comment.likes }
+
                         { <button onClick={() => handlDislikeButtonClick(comment.id, comment.productId)}>
-                            {isUserDisliked ? <MdThumbDown /> :<LuThumbsDown />}
+                            <LuThumbsDown />
                         </button> }
-                        {comment.dislikes.count}
+                            { comment.dislikes }
                     </div>
 
                     <div className="ml-8">

@@ -259,8 +259,8 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
         date: `${formattedDate} ${formattedTime}`,
         userPhotoUrl: userPhotoUrl,
         userName: userName,
-        likes: { count: 0, likedBy: [] },
-        dislikes: { count: 0, dislikedBy: [] },
+        likes: 0,
+        dislikes: 0,
     };
 
     await set(newCommentRef, newCommentData);
@@ -332,80 +332,25 @@ export async function updateComment(commentId, updatedText) {
 // 댓글 좋아요
 export async function likeComment(commentId, userId) {
 
-    const commentRef = ref(database, `comments/${commentId}`);
-    const commentSnapshot = await get(commentRef);
-
-    if(commentSnapshot.exists()) {
-        const commentData = commentSnapshot.val();
-        const newLikesCount = commentData.likes.count + 1; // 좋아요 수 증가
-
-        let newLikedBy = commentData.likes.likedBy || [];
-        if(!newLikedBy.includes(userId)) {
-            newLikedBy.push(userId);
-
-            await update(commentRef, {
-                likes: {
-                    count: newLikesCount,
-                    likedBy: newLikedBy,
-                }
-            })
-        }
-    }
-}
-
-
-
-// 댓글 좋아요 취소
-export async function unlikeComment(commentId, userId) {
+    const likesRef = ref(database, `likes/${commentId}/${userId}`);
+    await set(likesRef, true);
 
     const commentRef = ref(database, `comments/${commentId}`);
-    const commentSnapshot = await get(commentRef);
-
-    if(commentSnapshot.exists()) {
-        const commentData = commentSnapshot.val();
-        
-        if(commentData.likes) {
-            const newLikesCount = Math.max(0, commentData.likes.count - 1);
-        
-            let newLikedBy = commentData.likes.likedBy || [];
-            if(newLikedBy.includes(userId)) {
-                newLikedBy = newLikedBy.filter(id => id !== userId);
-
-                await update(commentRef, {
-                    likes: {
-                        count: newLikesCount,
-                        likedBy: newLikedBy,
-                    }
-                })
-            }
-        }
-    }
+    await update(commentRef, { likes: increment(1) }); 
+    
 }
+
 
 
 
 // 댓글 싫어요
 export async function dislikeComment(commentId, userId) {
 
+    const dislikesRef = ref(database, `dislikes/${commentId}/${userId}`);
+    await set(dislikesRef, true);
+
     const commentRef = ref(database, `comments/${commentId}`);
-    const commentSnapshot = await get(commentRef);
-
-    if(commentSnapshot.exists()) {
-        const commentData = commentSnapshot.val();
-        const newDislikesCount = commentData.dislikes.count + 1; // 좋아요 수 증가
-
-        let newDisikedBy = commentData.dislikes.dislikedBy || [];
-        if(!newDisikedBy.includes(userId)) {
-            newDisikedBy.push(userId);
-
-            await update(commentRef, {
-                dislikes: {
-                    count: newDislikesCount,
-                    dislikedBy: newDisikedBy,
-                }
-            })
-        }
-    }
+    await update(commentRef, { dislikes: increment(1) }); 
 }
 
 
