@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { loginWithEmailandPassword } from "../api/firebase";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from 'react-icons/fc';
+import { useAuthContext } from "../context/AuthContext";
+import DefaultButton from "../components/ui/DefaultButton";
 
 export default function Login() {
 
@@ -9,6 +12,7 @@ export default function Login() {
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
+    const { login } = useAuthContext();
 
 
     const handleLogin = async (e) => {
@@ -65,10 +69,13 @@ export default function Login() {
                         />
                     </div>
                     {message && <p className="text-red-500 text-sm mt-1">{message}</p>}
+
+                    
                     <button 
                         type="submit" 
-                        className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110"
-                    >Sign Up</button>
+                        className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110 mb-5"
+                    >로그인</button>
+                    <FcGoogle className="text-4xl cursor-pointer" onClick={login} />
                 </form>
             </div>
         </div>

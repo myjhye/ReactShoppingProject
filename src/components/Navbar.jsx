@@ -9,7 +9,6 @@ import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
 import { FcGoogle } from 'react-icons/fc';
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 export default function Navbar() {
     const {
