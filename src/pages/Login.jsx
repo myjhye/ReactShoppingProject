@@ -41,7 +41,7 @@ export default function Login() {
                 <h2 className="text-2xl font-semibold mb-4">로그인</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label htmlFor="email" className="block font-medium mb-1">Email</label>
+                        <label htmlFor="email" className="block font-medium mb-1">이메일</label>
                         <input 
                             type="email" 
                             id="email" 
@@ -49,10 +49,11 @@ export default function Login() {
                             className="w-full border rounded-md px-3 py-2" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="password" className="block font-medium mb-1">Password</label>
+                        <label htmlFor="password" className="block font-medium mb-1">비밀번호</label>
                         <input 
                             type="password" 
                             id="password" 
@@ -60,6 +61,7 @@ export default function Login() {
                             className="w-full border rounded-md px-3 py-2"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                         />
                     </div>
                     {message && <p className="text-red-500 text-sm mt-1">{message}</p>}
