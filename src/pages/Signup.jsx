@@ -14,7 +14,7 @@ export default function Signup() {
     const [showPrivacyPopup, setShowPrivacyPopup] = useState(false); // State for '개인정보 수집' pop-up
 
     const navigate = useNavigate();
-    const photoUrl = 'https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg';
+    const photoUrl = 'https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg'; // 일반 로그인 시 사용하는 기본 프로필
 
     const isPasswordValid = (password) => {
 

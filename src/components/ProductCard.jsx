@@ -2,15 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatAgo } from "./util/date";
 import { AiOutlineMessage } from 'react-icons/ai';
-import { getCommentsByProductId } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ProductCard({ product }) {
 
     const navigate = useNavigate();
-    const { data: commentData, isLoading } = useQuery(['comments'], () => getCommentsByProductId(product.id));
-
-    const commentCount = commentData?.data?.length ?? 0; // 데이터가 없으면 0을 사용
 
     return (
         <li

@@ -89,67 +89,125 @@ export default function Products() {
     return (
         <div className="mt-4">
             <div className="mb-4 space-x-2">
+                {/* Sorting buttons */}
                 <Button text={'가격 낮은 순'} onClick={() => handleSortByPrice("asc")} />
                 <Button text={'가격 높은 순'} onClick={() => handleSortByPrice("desc")} />
                 <Button text={'최신 순'} onClick={() => handleSortByDate("latest")} />
                 <Button text={'오래된 순'} onClick={() => handleSortByDate("oldest")} />
             </div>
 
-            <div className="mb-4 space-x-2">
-                {mainCategories.map(category => (
-                    <label key={category} className="inline-flex items-center">
-                        <input
-                            type="radio"
-                            name="category"
-                            value={category}
-                            checked={selectedCategory === category || (selectedCategory === null && category === '전체')}
-                            onChange={() => handleCategorySelect(category)}
-                            className="mr-1"
-                        />
-                        {category}
-                    </label>
-                ))}
-            </div>
-
-            <div className="mb-4 space-x-2">
-                {genderCategories.map(genderCategory => (
-                    <label key={genderCategory} className="inline-flex items-center">
-                        <input
-                            type="radio"
-                            name="genderCategory"
-                            value={genderCategory}
-                            checked={
-                                // 선택한 성별 카테고리와 현재 라디오 버튼의 성별 카테고리가 일치하거나
-                                selectedGenderCategory === genderCategory ||
-                                // 선택한 성별 카테고리나 'null'이고 현재 라디오 버튼의 성별 카테고리가 '전체'인 경우
-                                // 해당 라디오 버튼을 체크한 상태로 설정
-                                (selectedGenderCategory === null && genderCategory === '전체')
-                            }
-                            onChange={() => handleGenderCategorySelect(genderCategory)}
-                            className="mr-1"
-                        />
-                        {genderCategory}
-                    </label>
-                ))}
-            </div>
-
-            {isLoading ? (
-                <p>Loading...</p>
-            ) : error ? (
-                <p>{error.message}</p>
-            ) : (
-                <div>
-                    <div>상품 { filteredProducts.length }개</div>
-                    <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                        {filteredProducts.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
+            <div className="mb-4 flex items-start space-x-6">
+                {/* Category radio buttons on the left */}
+                <div className="flex flex-col">
+                    <p className="text-lg font-semibold mb-2">상품 카테고리</p>
+                    {mainCategories.map(category => (
+                        <label
+                            key={category}
+                            className="inline-flex items-center cursor-pointer space-x-2"
+                        >
+                            <input
+                                type="radio"
+                                name="category"
+                                value={category}
+                                checked={selectedCategory === category || (selectedCategory === null && category === '전체')}
+                                onChange={() => handleCategorySelect(category)}
+                                className="hidden"
                             />
-                        ))}
-                    </ul>
+                            <div
+                                className={`w-8 h-8 flex items-center justify-center border rounded-full ${
+                                    selectedCategory === category
+                                        ? 'bg-blue-500 text-white border-blue-500'
+                                        : 'border-gray-300 hover:bg-gray-100'
+                                }`}
+                            >
+                                {selectedCategory === category && (
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <span className="text-gray-700">{category}</span>
+                        </label>
+                    ))}
                 </div>
-            )}
+
+                {/* Gender category radio buttons on the left */}
+                <div className="flex flex-col">
+                    <p className="text-lg font-semibold mb-2">성별 카테고리</p>
+                    {genderCategories.map(genderCategory => (
+                        <label
+                            key={genderCategory}
+                            className="inline-flex items-center cursor-pointer space-x-2"
+                        >
+                            <input
+                                type="radio"
+                                name="genderCategory"
+                                value={genderCategory}
+                                checked={
+                                    selectedGenderCategory === genderCategory ||
+                                    (selectedGenderCategory === null && genderCategory === '전체')
+                                }
+                                onChange={() => handleGenderCategorySelect(genderCategory)}
+                                className="hidden"
+                            />
+                            <div
+                                className={`w-8 h-8 flex items-center justify-center border rounded-full ${
+                                    selectedGenderCategory === genderCategory
+                                        ? 'bg-blue-500 text-white border-blue-500'
+                                        : 'border-gray-300 hover:bg-gray-100'
+                                }`}
+                            >
+                                {selectedGenderCategory === genderCategory && (
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <span className="text-gray-700">{genderCategory}</span>
+                        </label>
+                    ))}
+                </div>
+                {/* Rest of the content */}
+                <div className="flex-grow">
+                    {isLoading ? (
+                        <p>Loading...</p>
+                    ) : error ? (
+                        <p>{error.message}</p>
+                    ) : (
+                        <div>
+                            <div>상품 {filteredProducts.length}개</div>
+                            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                                {filteredProducts.map((product) => (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                    />
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

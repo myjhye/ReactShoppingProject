@@ -29,7 +29,7 @@ export async function signUpWithEmailandPassword(email, password, displayName, p
         
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // 사용자 프로필 업데이트
+        // 사용자 프로필 업데이트 => 닉네임, photoURL 데이터 넘기기
         await updateProfile(userCredential.user, { displayName, photoURL});
 
         return { 

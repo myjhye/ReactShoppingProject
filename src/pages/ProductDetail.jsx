@@ -7,11 +7,12 @@ import { useQuery } from "@tanstack/react-query";
 import Comment from "../components/Comment";
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import DefaultButton from "../components/ui/DefaultButton";
+import { formatAgo } from "../components/util/date";
 
 export default function ProductDetail() {
 
     // context에서 사용자 uid 가져옴
-    const { uid } = useAuthContext();
+    const { uid, user } = useAuthContext();
 
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
@@ -126,7 +127,7 @@ export default function ProductDetail() {
 
     return (
         <>
-            <p className="mx-12 mt-4 text-gray-700">{ product.category } / { product.gender }</p>
+            <p className="mx-12 mt-4 text-gray-700">{ product.category } / { product.gender } - {formatAgo(product.date, 'ko')} 등록</p>
             <section className="flex flex-col md:flex-row p-4">
                 <img className="max-w-xl mx-auto px-4" src={product.image} alt={product.title} />
                 <div className="w-full basis-5/12 flex flex-col p-4">
