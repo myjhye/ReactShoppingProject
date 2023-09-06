@@ -15,6 +15,9 @@ import MyProduct from './pages/MyProduct';
 import EditMyProduct from './pages/EditMyProduct';
 import ProductSearch from './pages/ProductSearch';
 import Bookmark from './pages/Bookmark';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Welcome from './pages/Welcome';
 
 const router = createBrowserRouter([
   {
@@ -66,6 +69,24 @@ const router = createBrowserRouter([
         path: '/bookmark',
         element: (
             <Bookmark />
+        )
+      },
+      {
+        path: '/signup',
+        element: (
+            <Signup />
+        )
+      },
+      {
+        path: '/login',
+        element: (
+            <Login />
+        )
+      },
+      {
+        path: '/welcome',
+        element: (
+            <Welcome />
         )
       },
     ]

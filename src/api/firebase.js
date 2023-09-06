@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push, increment } from 'firebase/database';
 import { v4 as uuid } from 'uuid';
 
@@ -21,11 +21,72 @@ const database = getDatabase(app);
 
 
 
+// 회원가입
+export async function signUpWithEmailandPassword(email, password) {
+    
+
+    // 회원가입 처리
+    try {
+        
+        await createUserWithEmailAndPassword(auth, email, password);
+        return { 
+            success: true,
+        }
+
+    
+    // 유효성 검사
+    } catch (error) {
+        
+        let message = '';
+
+        if (error.code === 'auth/email-already-in-use') {
+            
+            message = '이미 사용 중인 이메일입니다.'
+            return {
+                success: false,
+                message: message
+            };
+
+        } else {
+            throw error; // 다른 오류는 다시 throw하여 처리하도록 수정
+        }
+    }
+}
+
+// 이메일, 패스워드로 로그인
+export async function loginWithEmailandPassword(email, password) {
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password)
+
+        return {
+            success: true,
+        }
+
+    } catch(error) {
+        let message = '';
+        
+        if(error.code === 'auth/wrong-password') {
+            message = '비밀번호가 틀립니다.'
+        }
+        else if(error.code === 'auth/user-not-found') {
+            message = '존재하지 않는 이메일입니다.'
+        }
+        
+        return {
+            success: false,
+            message
+        }
+    }
+}
+
+
 // 로그인
 export function login() {
 
     // google 팝업으로 로그인 시작
     return signInWithPopup(auth, provider)
+
         // 오류 발생 시 오류 콘솔 출력
         .catch(console.error);
 }
@@ -381,3 +442,4 @@ export async function removeBookmark(productId, userId) {
 
     return remove(ref(database, `bookmarks/${ productId }/${ userId }`));
 }
+

@@ -3,24 +3,24 @@ import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { FaBookmark } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
-import { getProducts, searchProductByName } from "../api/firebase";
+import { searchProductByName } from "../api/firebase";
 import User from "../User/User";
 import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
-import { useQuery } from "@tanstack/react-query";
 import { FcGoogle } from 'react-icons/fc';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 export default function Navbar() {
-    const { 
-        user, 
+    const {
         login, 
+        user, 
         logout, 
         searchTerm, 
         setSearchTerm, 
-        searchResults, 
         setSearchResults 
     } = useAuthContext();
+
 
     // 검색어 변경 핸들러
     const handleSearchChange = (e) => {
@@ -46,9 +46,6 @@ export default function Navbar() {
         }
     }
 
-    const { data: products } = useQuery(['products'], () => getProducts());
-
-
     return (
         <header className="flex justify-between border-b border-gray-300 p-2">
             <Link 
@@ -71,28 +68,44 @@ export default function Navbar() {
 
 
             <nav className="flex items-center gap-4 font-semibold">
-                <Link to='/carts'>
-                    <CartStatus />
-                </Link>
-                <Link
-                    to='/bookmark' 
-                    className="text-2xl"
-                >
-                    <FaBookmark />
-                </Link>
-                <Link 
-                    to='/products/new'
-                    className="text-2xl"
-                >
-                    <BsFillPencilFill />
-                </Link>
+                { user && (
+                    <Link to='/carts'>
+                        <CartStatus />
+                    </Link>
+                )}
+                { user && (
+                    <Link
+                        to='/bookmark' 
+                        className="text-2xl"
+                    >
+                        <FaBookmark />
+                    </Link>
+                )}
+                { user && (
+                    <Link 
+                        to='/products/new'
+                        className="text-2xl"
+                    >
+                        <BsFillPencilFill />
+                    </Link>
+                )}
                 { user && (
                     <Link to='/uploaded'>
                         <User user={ user } />
                     </Link>
                 )}
                 {!user && <FcGoogle className="text-4xl cursor-pointer" onClick={login} />}
-                { user  && <Button text={ 'Logout' } onClick={ logout }  /> }
+                {!user && (
+                    <Link to='signup'>
+                        <button>회원가입</button>
+                    </Link> 
+                )}
+                {!user && (
+                    <Link to='login'>
+                        <button>로그인</button>
+                    </Link> 
+                )}
+                { user  && <Button text={ 'Logout' } onClick={ logout }  />}
             </nav>
         </header>
     )
