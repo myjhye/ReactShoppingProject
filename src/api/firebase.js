@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push, increment } from 'firebase/database';
 import { v4 as uuid } from 'uuid';
 
@@ -22,13 +22,16 @@ const database = getDatabase(app);
 
 
 // 회원가입
-export async function signUpWithEmailandPassword(email, password) {
-    
+export async function signUpWithEmailandPassword(email, password, displayName, photoURL) {
 
     // 회원가입 처리
     try {
         
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        // 사용자 프로필 업데이트
+        await updateProfile(userCredential.user, { displayName, photoURL});
+
         return { 
             success: true,
         }

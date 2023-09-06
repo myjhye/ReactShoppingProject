@@ -3,6 +3,7 @@ import { signUpWithEmailandPassword } from '../api/firebase';
 import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+    const [nickName, setNickName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -13,6 +14,7 @@ export default function Signup() {
     const [showPrivacyPopup, setShowPrivacyPopup] = useState(false); // State for '개인정보 수집' pop-up
 
     const navigate = useNavigate();
+    const photoUrl = 'https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg';
 
     const isPasswordValid = (password) => {
 
@@ -36,7 +38,7 @@ export default function Signup() {
 
         try {
             
-            const result = await signUpWithEmailandPassword(email, password);
+            const result = await signUpWithEmailandPassword(email, password, nickName, photoUrl);
             
             // 회원가입 성공
             if (result.success) {
@@ -57,6 +59,18 @@ export default function Signup() {
             <div className="bg-white p-8 shadow-md rounded-md w-96">
                 <h2 className="text-2xl font-semibold mb-4">회원가입</h2>
                 <form onSubmit={handleSignUp}>
+                    <div className="mb-4">
+                        <label htmlFor="nickName" className="block font-medium mb-1">닉네임</label>
+                        <input
+                            type="nickName"
+                            id="nickName"
+                            name="nickName"
+                            className="w-full border rounded-md px-3 py-2"
+                            value={nickName}
+                            onChange={(e) => setNickName(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="mb-4">
                         <label htmlFor="email" className="block font-medium mb-1">이메일</label>
                         <input

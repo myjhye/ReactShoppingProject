@@ -3,7 +3,6 @@ import { loginWithEmailandPassword } from "../api/firebase";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc';
 import { useAuthContext } from "../context/AuthContext";
-import DefaultButton from "../components/ui/DefaultButton";
 
 export default function Login() {
 
