@@ -1,13 +1,16 @@
 import { RiDeleteBin5Fill } from 'react-icons/ri';
-import { removeMyProducts } from './api/firebase';
+import { removeMyProducts, removeProductAndCartData } from './api/firebase';
 import { useState } from 'react';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from './context/AuthContext';
 
 export default function MyProducts({ product, onUpdate }) {
 
     // 상태 진행 중  상태
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const { uid } = useAuthContext();
 
     const handleDelete = async () => {
 
@@ -18,7 +21,7 @@ export default function MyProducts({ product, onUpdate }) {
             setIsDeleting(true);
 
             // firebase에 상품 삭제 요청 보냄
-            await removeMyProducts(product.id);
+            await removeProductAndCartData(uid, product.id);
 
             // 삭제 완료 후 상태를 false로 설정해 삭제 완료 나타냄
             setIsDeleting(false);

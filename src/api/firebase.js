@@ -219,6 +219,23 @@ export async function removeMyProducts(productId) {
 }
 
 
+// 내가 등록한 상품과 동일한 장바구니 상품 삭제
+export async function removeProductAndCartData(userId, productId) {
+
+    try {
+
+        // 상품 삭제
+        await removeMyProducts(productId);
+
+        // 장바구니에서 상품 삭제
+        await removeFromCart(userId, productId);
+         
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+
 
 
 // 제품 검색
