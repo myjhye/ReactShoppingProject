@@ -200,15 +200,21 @@ export default function Products() {
                         <p>{error.message}</p>
                     ) : (
                         <div>
-                            <div>상품 {filteredProducts.length}개</div>
-                            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                                {filteredProducts.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                    />
-                                ))}
-                            </ul>
+                            {filteredProducts.length === 0 ? (
+                                <p>해당 상품이 없습니다</p>
+                            ) : (
+                                <>
+                                    <div>상품 {filteredProducts.length}개</div>
+                                    <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                                        {filteredProducts.map((product) => (
+                                            <ProductCard
+                                                key={product.id}
+                                                product={product}
+                                            />
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
