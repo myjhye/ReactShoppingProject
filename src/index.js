@@ -5,13 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import NotFound from './pages/NotFound';
-import Home from './pages/Home';
 import AllProduct from './pages/AllProducts';
 import NewProduct from './pages/NewProduct';
 import ProductDetail from './pages/ProductDetail';
 import MyCart from './pages/MyCart';
 import ProtectedRoute from './pages/ProtectedRoute';
-import ProtectedRouteNotLoggedIn from './pages/ProtectedRouteNotLoggedIn'
+import ProtectedRouteLoggedIn from './pages/ProtectedRouteLoggedIn'
 import MyProduct from './pages/MyProduct';
 import EditMyProduct from './pages/EditMyProduct';
 import ProductSearch from './pages/ProductSearch';
@@ -37,17 +36,17 @@ const router = createBrowserRouter([
       {
         path: '/signup',
         element: (
-          <ProtectedRouteNotLoggedIn>
+          <ProtectedRouteLoggedIn>
             <Signup />
-          </ProtectedRouteNotLoggedIn>
+          </ProtectedRouteLoggedIn>
         )
       },
       {
         path: '/login',
         element: (
-          <ProtectedRouteNotLoggedIn>
+          <ProtectedRouteLoggedIn>
             <Login />
-          </ProtectedRouteNotLoggedIn>
+          </ProtectedRouteLoggedIn>
         )
       },
       {
