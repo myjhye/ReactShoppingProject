@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { signUpWithEmailandPassword } from '../api/firebase';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
     const [nickName, setNickName] = useState('');
@@ -131,9 +131,16 @@ export default function Signup() {
                             </span>
                         </label>
                     </div>
+                    이미 아이디가 있으신가요?
+                    <Link
+                        to='/login'
+                        className="text-blue-500 cursor-pointer"
+                    >
+                        로그인
+                    </Link>
                     <button
                         type="submit"
-                        className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110"
+                        className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110 mt-4"
                     >
                         회원가입
                     </button>

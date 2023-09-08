@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children, requireAdmin }) {
     if(!user || (requireAdmin && !user.isAdmin)) {
 
         // home으로 리다이렉트 하며 브라우저 기록을 대체
-        return <Navigate to="/" replace />
+        return <Navigate to="/login" replace />
     }
 
     // 사용자가 로그인 했거나

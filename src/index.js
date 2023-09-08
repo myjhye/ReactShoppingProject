@@ -11,6 +11,7 @@ import NewProduct from './pages/NewProduct';
 import ProductDetail from './pages/ProductDetail';
 import MyCart from './pages/MyCart';
 import ProtectedRoute from './pages/ProtectedRoute';
+import ProtectedRouteNotLoggedIn from './pages/ProtectedRouteNotLoggedIn'
 import MyProduct from './pages/MyProduct';
 import EditMyProduct from './pages/EditMyProduct';
 import ProductSearch from './pages/ProductSearch';
@@ -27,17 +28,43 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <AllProduct />
+        element: (
+          <ProtectedRoute>
+            <AllProduct />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/signup',
+        element: (
+          <ProtectedRouteNotLoggedIn>
+            <Signup />
+          </ProtectedRouteNotLoggedIn>
+        )
+      },
+      {
+        path: '/login',
+        element: (
+          <ProtectedRouteNotLoggedIn>
+            <Login />
+          </ProtectedRouteNotLoggedIn>
+        )
       },
       {
         path: '/products/new',
         element: (
+          <ProtectedRoute>
             <NewProduct />
+          </ProtectedRoute>
         )
       },
       {
         path: '/products/:id',
-        element: <ProductDetail />
+        element: (
+          <ProtectedRoute>
+            <ProductDetail />
+          </ProtectedRoute>
+        )
       },
       {
         path: '/carts',
@@ -50,37 +77,33 @@ const router = createBrowserRouter([
       {
         path: '/uploaded',
         element: (
+          <ProtectedRoute>
             <MyProduct />
+          </ProtectedRoute>
         )
       },
       {
         path: '/edit/:id',
         element: (
+          <ProtectedRoute>
             <EditMyProduct />
+          </ProtectedRoute>
         )
       },
       {
         path: '/search',
         element: (
+          <ProtectedRoute>
             <ProductSearch />
+          </ProtectedRoute>
         )
       },
       {
         path: '/bookmark',
         element: (
+          <ProtectedRoute>
             <Bookmark />
-        )
-      },
-      {
-        path: '/signup',
-        element: (
-            <Signup />
-        )
-      },
-      {
-        path: '/login',
-        element: (
-            <Login />
+          </ProtectedRoute>
         )
       },
       {

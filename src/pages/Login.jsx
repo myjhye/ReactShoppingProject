@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { loginWithEmailandPassword } from "../api/firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc';
 import { useAuthContext } from "../context/AuthContext";
 
@@ -74,7 +74,14 @@ export default function Login() {
                         type="submit" 
                         className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110 mb-5"
                     >로그인</button>
-                    <FcGoogle className="text-4xl cursor-pointer" onClick={login} />
+                    아이디가 없으신가요?
+                    <Link
+                        to='/signup'
+                        className="text-blue-500 cursor-pointer"
+                    >
+                        회원가입
+                    </Link>
+                    <FcGoogle className="text-4xl cursor-pointer mt-4" onClick={login} />
                 </form>
             </div>
         </div>
