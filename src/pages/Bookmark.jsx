@@ -8,17 +8,11 @@ export default function Bookmark() {
 
     const { uid } = useAuthContext();
 
-    const { data: bookmarks, isLoading, isError } = useQuery(['bookmarks'], () => getBookmarks());
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div>Error fetching bookmarked products.</div>;
-    }
+    const { bookmarks } = useAuthContext(); 
 
     const hasProducts = bookmarks.length > 0;
+
+    console.log('bookmarks:', bookmarks);
 
     return (
         <section className="p-8 flex flex-col">

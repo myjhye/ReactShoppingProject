@@ -17,7 +17,7 @@ export default function Navbar() {
         logout, 
         searchTerm, 
         setSearchTerm, 
-        setSearchResults 
+        setSearchResults,
     } = useAuthContext();
 
 
