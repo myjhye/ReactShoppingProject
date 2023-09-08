@@ -10,6 +10,14 @@ export default function Banner() {
     '/images/5.webp',
   ];
 
+  const links = [
+    'https://kream.co.kr/exhibitions/1872',
+    'https://kream.co.kr/exhibitions/1983',
+    'https://kream.co.kr/exhibitions/1989',
+    'https://kream.co.kr/exhibitions/2016',
+    'https://kream.co.kr/exhibitions/1954',
+  ]
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const goToPreviousImage = () => {
@@ -24,15 +32,29 @@ export default function Banner() {
     );
   };
 
+  const handleImageClick = () => {
+    window.location.href = links[currentImageIndex];
+  };
+
   return (
     <div className="banner-container">
-      <img src={images[currentImageIndex]} alt={`Image ${currentImageIndex + 1}`} />
-
+      <img 
+        src={images[currentImageIndex]} 
+        alt={`Image ${currentImageIndex + 1}`} 
+        onClick={handleImageClick}
+        style={{ cursor: 'pointer' }} 
+      />
       <div className="arrow-container">
-        <button className="left-arrow" onClick={goToPreviousImage}>
+        <button 
+            className="left-arrow" 
+            onClick={goToPreviousImage}
+        >
           &lt;
         </button>
-        <button className="right-arrow" onClick={goToNextImage}>
+        <button 
+            className="right-arrow" 
+            onClick={goToNextImage}
+        >
           &gt;
         </button>
       </div>
