@@ -219,6 +219,8 @@ export default function Products() {
                     )}
                 </div>
             </div>
+            {/* 필터된 상품 없을 때 margin 차이 예방 */}
+            <div style={{ height: '500px' }}></div>
         </div>
     );
 }

@@ -10,7 +10,7 @@ module.exports = {
       },
       backgroundImage: {
         banner: `url('../public/images/banner.jpg')`
-      },
+      }
     },
   },
   plugins: [],
