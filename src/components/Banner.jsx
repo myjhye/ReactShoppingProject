@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../index.css'
 
 export default function Banner() {
@@ -35,6 +35,18 @@ export default function Banner() {
   const handleImageClick = () => {
     window.location.href = links[currentImageIndex];
   };
+
+
+  // 5초마다 이미지 넘김
+  useEffect(() => {
+
+    const timer = setTimeout(goToNextImage, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+
+  }, [currentImageIndex]);
 
   return (
     <div className="banner-container">
