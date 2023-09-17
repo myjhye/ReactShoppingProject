@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "./api/firebase";
 import ProductCard from "./components/ProductCard";
 import Button from "./components/ui/Button";
+import GenderFilter from "./components/GenderFilter";
+import CategoryFilter from "./components/CategoryFilter";
 
 export default function Products() {
 
@@ -97,99 +99,18 @@ export default function Products() {
             </div>
 
             <div className="mb-4 flex items-start space-x-6">
-                {/* Category radio buttons on the left */}
-
                 {/* 상품/성별 카테고리 2개 묶기 */}
                 <div>
-                    <div className="flex flex-col">
-                        <p className="text-lg font-semibold mb-2">상품</p>
-                        {mainCategories.map(category => (
-                            <label
-                                key={category}
-                                className="inline-flex items-center cursor-pointer space-x-2"
-                            >
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value={category}
-                                    checked={selectedCategory === category || (selectedCategory === null && category === '전체')}
-                                    onChange={() => handleCategorySelect(category)}
-                                    className="hidden"
-                                />
-                                <div
-                                    className={`w-8 h-8 flex items-center justify-center border rounded-full ${
-                                        selectedCategory === category
-                                            ? 'bg-blue-500 text-white border-blue-500'
-                                            : 'border-gray-300 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    {selectedCategory === category && (
-                                        <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M5 13l4 4L19 7"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                                <span className="text-gray-700">{category}</span>
-                            </label>
-                        ))}
-                    </div>
-
-                    {/* Gender category radio buttons on the left */}
-                    <div className="flex flex-col">
-                        <p className="text-lg font-semibold mb-2">성별</p>
-                        {genderCategories.map(genderCategory => (
-                            <label
-                                key={genderCategory}
-                                className="inline-flex items-center cursor-pointer space-x-2"
-                            >
-                                <input
-                                    type="radio"
-                                    name="genderCategory"
-                                    value={genderCategory}
-                                    checked={
-                                        selectedGenderCategory === genderCategory ||
-                                        (selectedGenderCategory === null && genderCategory === '전체')
-                                    }
-                                    onChange={() => handleGenderCategorySelect(genderCategory)}
-                                    className="hidden"
-                                />
-                                <div
-                                    className={`w-8 h-8 flex items-center justify-center border rounded-full ${
-                                        selectedGenderCategory === genderCategory
-                                            ? 'bg-blue-500 text-white border-blue-500'
-                                            : 'border-gray-300 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    {selectedGenderCategory === genderCategory && (
-                                        <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M5 13l4 4L19 7"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                                <span className="text-gray-700">{genderCategory}</span>
-                            </label>
-                        ))}
-                    </div>
+                    <CategoryFilter 
+                        mainCategories={mainCategories}
+                        selectedCategory={selectedCategory}
+                        handleCategorySelect={handleCategorySelect}
+                    />
+                    <GenderFilter 
+                        genderCategories={genderCategories}
+                        selectedGenderCategory={selectedGenderCategory}
+                        handleGenderCategorySelect={handleGenderCategorySelect}
+                    />
                 </div>
 
                 {/* Rest of the content */}
