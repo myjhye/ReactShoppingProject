@@ -88,28 +88,36 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
     return (
-        <div className="w-1/2 flex flex-col items-center p-2 rounded-lg">
-            <div className="w-1/2 flex items-center p-2 rounded-lg"> 
-                <input 
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onKeyPress={handleKeyPress} // 엔터 키 이벤트 처리
-                    className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
-                    ref={inputRef}
-                    onClick={handleInputClick} 
-                />
-                <Button text={ '검색' } onClick={handleSearch} />
-            </div>
-            {isSearchHistoryOpen && (
-            <div className="w-full h-px bg-indigo-600 mt-2">
-                <ul>
-                    {searchHistory.map((item, index) => (
-                        <li key={index}>{item}</li>
-                    ))}
-                </ul>
+        <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
+          <div className="w-1/2 flex items-center p-2 rounded-lg"> 
+            <input 
+              type="text"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onKeyPress={handleKeyPress}
+              className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
+              ref={inputRef}
+              onClick={handleInputClick} 
+            />
+            <Button text={'검색'} onClick={handleSearch} />
+          </div>
+          {isSearchHistoryOpen && (
+            <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
+              <ul className="list-none p-0">
+                {searchHistory.map((item, index) => (
+                  <li className="py-2 px-4 border-b border-gray-200 relative" key={index}>
+                    {item}
+                    <button 
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                      onClick={() => {}}
+                    >
+                      삭제
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
-    )
+      );
 }
