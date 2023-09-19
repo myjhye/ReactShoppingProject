@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { FaBookmark } from 'react-icons/fa';
@@ -10,6 +10,7 @@ import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
 import { FcGoogle } from 'react-icons/fc';
 import Search from "./Search";
+import { setCookie, useSearchHistory } from "./util/cookie";
 
 export default function Navbar() {
     const {
@@ -21,21 +22,8 @@ export default function Navbar() {
         setSearchResults,
     } = useAuthContext();
 
-
-    
-
     const navigate = useNavigate();
 
-    // 검색 실행 핸들러
-    const handleSearch = async () => {
-        const results = await searchProductByName(searchTerm);
-        setSearchResults(results);
-        console.log("result: " + results);
-
-        navigate('/search');
-    }
-
-    
 
     return (
         <header className="flex justify-between border-b border-gray-300 p-2">
@@ -51,7 +39,8 @@ export default function Navbar() {
             <Search 
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                handleSearch={handleSearch}
+                setSearchResults={setSearchResults}
+                navigate={navigate}
             />
 
             <nav className="flex items-center gap-4 font-semibold">

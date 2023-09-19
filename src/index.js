@@ -90,7 +90,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/search',
+        path: '/search/:searchTerm',
         element: (
           <ProtectedRoute>
             <ProductSearch />
