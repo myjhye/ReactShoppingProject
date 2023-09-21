@@ -3,6 +3,7 @@ import Button from "./ui/Button";
 import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
 import { searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
+import { BsArrowClockwise } from 'react-icons/bs';
 
 export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
@@ -126,6 +127,14 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     }, []);
 
 
+    // 검색 기록 항목 클릭 시 해당 검색어로 검색 실행
+    const handleHistoryClick = (item) => {
+        
+        setSearchTerm(item);
+        navigate(`/search/${item}`);
+    };
+
+
 
 
     return (
@@ -146,8 +155,19 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
             <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
                 <ul className="list-none p-0">
                     {searchHistory.map((item, index) => (
-                        <li className="py-2 px-4 border-b border-gray-200 relative" key={index}>
-                            {item}
+                        
+                        <li className="py-3 px-4 border-b border-gray-200 relative flex items-center" key={index}>
+                            <BsArrowClockwise 
+                                style={{ cursor: "pointer" }}   
+                                onClick={() => handleHistoryClick(item)} 
+                            />
+                                <span 
+                                    className="flex-grow pointer" 
+                                    onClick={() => handleHistoryClick(item)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    {item}
+                                </span>
                             <button
                                 className="absolute right-2 top-1/2 transform -translate-y-1/2"
                                 onClick={(e) => handleDeleteSearchHistory(item, e)} 
