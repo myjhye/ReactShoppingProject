@@ -21,12 +21,14 @@ export function getCookie(name) {
 }
 
 
+
+
 // 검색 기록 관리를 위한 커스텀 훅
 export function useSearchHistory() {
     const [searchHistory, setSearchHistory] = useState([]);
 
     useEffect(() => {
-        const storedHistory = getCookie('searchHistory');
+        const storedHistory = getCookie('searchItem');
         if (storedHistory) {
             setSearchHistory(storedHistory.split(','));
         }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "./ui/Button";
-import { setCookie, useSearchHistory } from "./util/cookie";
+import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
 import { searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 
@@ -48,28 +48,68 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         }
     }
 
+    // 쿠키에서 검색 기록 로드 => 검색 기록 쿠키 가져와서 배열에 추가 => 이 함수 없으면 searchItem 쿠키 데이터가 다른 쿠키 데이터로 바뀜
+    const loadSearchHistory = () => {
+    
+        // searchHistory 이름의 쿠키 가져옴 
+        const storedHistory = getCookie("searchItem");
+
+        if (storedHistory) {
+            // 가져온 쿠키('검색어1, 검색어2, 검색어3')를 ,로 분리해서 검색 기록에 추가
+            setSearchHistory(storedHistory.split(","));
+        }
+
+    };
+
+
+    useEffect(() => {
+        loadSearchHistory();
+    }, []);
+
 
 
     // 검색 실행
     const handleSearch = async () => {
         if (searchTerm) {
-            if (!searchHistory.includes(searchTerm)) {
-
-                // 검색 기록 업데이트
-                const updatedHistory = [searchTerm, ...searchHistory];
-                setCookie("searchHistory", updatedHistory.join(","), 30);
+            // 기존 검색어와 동일한 검색어가 있는지 확인
+            const index = searchHistory.indexOf(searchTerm);
+            if (index !== -1) {
+                // 해당 검색어를 검색 기록에서 제거
+                const updatedHistory = [...searchHistory];
+                updatedHistory.splice(index, 1);
                 setSearchHistory(updatedHistory);
             }
-
+    
+            // 검색 기록 업데이트
+            const updatedHistory = [searchTerm, ...searchHistory.filter(item => item !== searchTerm)]; // 신규 검색어를 맨 앞에 추가하고 중복 제거
+            setCookie("searchItem", updatedHistory.join(','), 30);
+            setSearchHistory(updatedHistory);
+    
             // 검색 결과를 가져오고 상태에 저장
             const results = await searchProductByName(searchTerm);
             setSearchResults(results);
         }
-
+    
         navigate(`/search/${searchTerm}`);
-
+    
         // 검색 기록 창 닫기
         setIsSearchHistoryOpen(false);
+    }
+
+
+
+    // 검색 기록 삭제
+    const handleDeleteSearchHistory = (term, e) => {
+        
+        // 삭제 버튼 클릭 시에도 기록 창이 닫히지 않음
+        e.stopPropagation();
+    
+        // 선택한 검색어를 검색 기록에서 제거
+        const updatedHistory = searchHistory.filter((item) => item !== term);
+        setSearchHistory(updatedHistory);
+    
+        // 업데이트 된 검색 기록 쿠키에 저장
+        setCookie("searchItem", updatedHistory.join(","), 30); 
     }
 
 
@@ -84,6 +124,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
             document.removeEventListener('click', handleOutsideClick);
         }
     }, []);
+
 
 
 
@@ -103,21 +144,21 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
           </div>
           {isSearchHistoryOpen && (
             <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
-              <ul className="list-none p-0">
-                {searchHistory.map((item, index) => (
-                  <li className="py-2 px-4 border-b border-gray-200 relative" key={index}>
-                    {item}
-                    <button 
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                      onClick={() => {}}
-                    >
-                      삭제
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                <ul className="list-none p-0">
+                    {searchHistory.map((item, index) => (
+                        <li className="py-2 px-4 border-b border-gray-200 relative" key={index}>
+                            {item}
+                            <button
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                                onClick={(e) => handleDeleteSearchHistory(item, e)} 
+                            >
+                                삭제
+                            </button>
+                        </li>
+                    ))}
+                </ul>
             </div>
-          )}
+        )}
         </div>
       );
 }
