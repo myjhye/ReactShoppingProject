@@ -8,7 +8,7 @@ const firebaseConfig = {
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
     databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  };
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
@@ -435,6 +435,10 @@ export async function dislikeComment(commentId, userId) {
 
 
 
+
+
+
+
 ////////////////// 북마크
 
 
@@ -463,3 +467,45 @@ export async function removeBookmark(productId, userId) {
     return remove(ref(database, `bookmarks/${ productId }/${ userId }`));
 }
 
+
+
+
+
+
+
+
+///////////////////// 문의 사항
+
+
+
+// 문의 사항 추가
+export default function addHelpInquiry(title, content, imageUrl, userId) {
+
+    const id = uuid();
+    const currentDate = new Date();
+    // 날짜를 yyyy/mm/dd 형식으로 변환
+    const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+    // 시간을 hh:mm 형식으로 변환
+    const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+
+    set(ref(database, `help/${ id }`), {
+        title: title,
+        content: content,
+        imageUrl: imageUrl,
+        userId: userId,
+        date: `${formattedDate} ${formattedTime}`,
+    });
+}
+
+
+
+
+// 문의 사항 읽어오기
+export async function getHelpInquiry() {
+    
+    return get(ref(database, `help`))
+        .then((snapshot) => {
+            const items = snapshot.val() || {};
+            return Object.values(items);
+        })
+}

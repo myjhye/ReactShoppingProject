@@ -19,13 +19,13 @@ export default function NewProduct() {
         options: []
     });
 
-    // 업로드할 이미지 파일 관리할 상태변수
+    // 업로드할 이미지
     const [file, setFile] = useState();
 
-    // 이미지 업로드 중 여부를 관리할 상태 변수
+    // 이미지 업로드 중 여부
     const [isUploading, setIsUploading] = useState(false);
 
-    // 제품 등록 성공 여부 관리할 상태 변수
+    // 제품 등록 성공 여부
     const [success, setSuccess] = useState();
     
     // 사용자 인증 정보 훅에서 사용자 uid 가져옴

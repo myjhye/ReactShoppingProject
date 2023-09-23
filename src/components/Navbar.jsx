@@ -1,16 +1,16 @@
 import React, { useRef, useState } from "react";
 import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
+import { BiHelpCircle } from 'react-icons/bi';
 import { FaBookmark } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
-import { searchProductByName } from "../api/firebase";
 import User from "../User/User";
 import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
 import CartStatus from "./CartStatus";
 import { FcGoogle } from 'react-icons/fc';
+import { RiHandCoinLine } from 'react-icons/ri';
 import Search from "./Search";
-import { setCookie, useSearchHistory } from "./util/cookie";
 
 export default function Navbar() {
     const {
@@ -31,8 +31,8 @@ export default function Navbar() {
                 to='/'
                 className="flex items-center text-4xl text-brand"
             >
-                <FiShoppingBag />
-                <h1>Shoppy</h1>
+                <RiHandCoinLine />
+                <h1>HAND2HAND</h1>
             </Link>
             
             {/* 상품 검색 컴포넌트 */}
@@ -63,6 +63,14 @@ export default function Navbar() {
                         className="text-2xl"
                     >
                         <BsFillPencilFill />
+                    </Link>
+                )}
+                { user && (
+                    <Link 
+                        to='/help'
+                        className="text-3xl"
+                    >
+                        <BiHelpCircle />
                     </Link>
                 )}
                 { user && (

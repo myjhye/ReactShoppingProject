@@ -18,6 +18,8 @@ import Bookmark from './pages/Bookmark';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Welcome from './pages/Welcome';
+import ProductHelp from './pages/ProductHelp';
+import ProductHelpWrite from './pages/ProductHelpWrite';
 
 const router = createBrowserRouter([
   {
@@ -109,6 +111,18 @@ const router = createBrowserRouter([
         path: '/welcome',
         element: (
             <Welcome />
+        )
+      },
+      {
+        path: '/help',
+        element: (
+            <ProductHelp />
+        )
+      },
+      {
+        path: '/help/new',
+        element: (
+            <ProductHelpWrite />
         )
       },
     ]
