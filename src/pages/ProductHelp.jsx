@@ -12,10 +12,10 @@ export default function ProductHelp() {
         navigate('/help/new');
     }
 
-    return (
+    return ( 
         <div className="bg-gray-200 p-4">
             <Button
-                text={'문의 작성'}
+                text={'문의 작성'} 
                 className="hover:underline hover:text-blue-500 text-black"
                 onClick={handleButtonClick}
                 

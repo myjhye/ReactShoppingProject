@@ -57,7 +57,7 @@ export default function ProductHelpWrite() {
         }
     };
     
-    return (
+    return ( 
         <div className="bg-gray-200 p-4">
         <Button text={ '뒤로' } onClick={handleGoback} />
 
