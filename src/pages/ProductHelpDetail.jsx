@@ -84,11 +84,10 @@ export default function ProductHelpDetail() {
         <p className="text-black">{helps.content}</p>
 
         {helps.imageUrl && (
-          <img className="max-w-xl mx-auto px-4" src={helps.imageUrl} alt={helps.title} />
-        )}
+                    <img className="max-w-xl mx-auto mt-10 md:ml-0" src={helps.imageUrl} alt={helps.title} />
+                )}
+      
       </div>
-
-      <hr />
 
       {/* 댓글 입력 창 */}
       <div className="comment-input-container ml-0 mt-4 w-full">
