@@ -15,6 +15,25 @@ export default function ProductHelpDetail() {
   const [helpCommentList, setHelpCommentList] = useState([]);
   const [editingHelpCommentId, setEditingCommentId] = useState(null);
 
+   // 댓글 있는 지 여부
+   const [hasComments, setHasComments] = useState(false);
+
+
+   const checkComments = async (helpId) => {
+
+    try {
+          const comments = await getHelpCommentsByHelpId(helpId);
+          setHasComments(comments.length > 0);
+    } catch (error) {
+        console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+      checkComments(helps.id);
+  }, [helps]);
+
 
 
   // 댓글 수정 버튼 클릭
@@ -79,8 +98,14 @@ export default function ProductHelpDetail() {
 
   return (
     <div className="container mx-auto mt-8">
+      
       <div className="bg-white p-4 rounded-lg shadow-md w-full">
-        <h1 className="text-3xl font-semibold mb-4">{helps.title}</h1>
+        
+        {/* 답변 등록 여부 */}
+        {!hasComments && <p className="text-red-600">답변 미등록</p>}
+        {hasComments && <p className="text-green-600">답변 등록됨</p>}
+
+        <h1 className="text-3xl font-semibold mt-4">{helps.title}</h1>
         <p className="text-gray-600">{helps.date}</p>
         <hr className="my-4" />
         <p className="text-black">{helps.content}</p>
