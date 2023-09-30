@@ -20,6 +20,7 @@ import Login from './pages/Login';
 import Welcome from './pages/Welcome';
 import ProductHelp from './pages/ProductHelp';
 import ProductHelpWrite from './pages/ProductHelpWrite';
+import ProductHelpDetail from './pages/ProductHelpDetail';
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,12 @@ const router = createBrowserRouter([
         path: '/help/new',
         element: (
             <ProductHelpWrite />
+        )
+      },
+      {
+        path: '/help/:helpId',
+        element: (
+            <ProductHelpDetail />
         )
       },
     ]

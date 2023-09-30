@@ -26,12 +26,15 @@ export default function ProductHelp() {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">고객 게시판</h2>
           </div>
+
           <br /> {/* 약간의 공백 */}
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {isLoading && <p>Loading...</p>}
                 {!isLoading && (help && help.length > 0) ? (
                     help.map((helps) => (
                         <div
+                            onClick={() => { navigate(`/help/${helps.id}`, { state: { helps } })                        }}
                             key={helps.id}
                             className="bg-white p-4 rounded-lg shadow-md"
                         >
