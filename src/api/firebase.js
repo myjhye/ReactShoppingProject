@@ -509,3 +509,38 @@ export async function getHelpInquiry() {
             return Object.values(items);
         })
 }
+
+
+
+
+
+// 문의 사항 댓글 작성
+export async function addHelpComment(helpInquiryId, helpCommentText, userId, userPhotoUrl, userName) {
+
+    const helpCommentRef = ref(database, 'helpComments');
+
+    const newHelpCommentRef = push(helpCommentRef);
+    const helpCommentId = newHelpCommentRef.key;
+
+    const currentDate = new Date();
+    // 날짜를 yyyy/mm/dd 형식으로 변환
+    const formattedDate = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+    // 시간을 hh:mm 형식으로 변환
+    const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+
+
+    const newHelpCommentData = {
+        helpCommentId: helpCommentId,
+        helpInquiryId: helpInquiryId,  
+        text: helpCommentText,
+        userId: userId,
+        date: `${formattedDate} ${formattedTime}`,
+        userPhotoUrl: userPhotoUrl,
+        userName: userName,
+    };
+
+    await set(helpCommentRef, newHelpCommentData);
+
+
+}
+
