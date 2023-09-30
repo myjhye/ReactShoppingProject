@@ -254,13 +254,20 @@ export async function searchProductByName(name) {
 
         // 쿼리 실행하여 결과 가져오기
         const querySnapshot = await get(queryRef);
-
         const results = [];
 
+
         // 쿼리 결과를 반복하며 제품을 검색하여 results 배열에 추가
-        querySnapshot.forEach((doc) => { // doc: product의 전체 데이터
-            const productTitle = doc.child('title').val();
-            if (productTitle.includes(name)) {
+
+        // doc: product의 전체 데이터
+        querySnapshot.forEach((doc) => { 
+
+            // 제품 이름 소문자로 변환
+            const productTitle = doc.child('title').val().toLowerCase(); 
+
+            
+            // 검색어도 소문자로 변환 -> 대소문자 구분 없이 비교
+            if (productTitle.includes(name.toLowerCase())) { 
                 results.push(doc.val());
             }
         });
@@ -275,6 +282,7 @@ export async function searchProductByName(name) {
         return [];
     }
 }
+
 
 
 

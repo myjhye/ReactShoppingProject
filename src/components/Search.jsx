@@ -81,8 +81,13 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
                 setSearchHistory(updatedHistory);
             }
     
+
+
+
             // 검색 기록 업데이트
-            const updatedHistory = [searchTerm, ...searchHistory.filter(item => item !== searchTerm)]; // 신규 검색어를 맨 앞에 추가하고 중복 제거
+
+            // 신규 검색어를 맨 앞에 추가하고 중복 제거
+            const updatedHistory = [searchTerm, ...searchHistory.filter(item => item !== searchTerm)].slice(0, 5); 
             setCookie("searchItem", updatedHistory.join(','), 30);
             setSearchHistory(updatedHistory);
     
