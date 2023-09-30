@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { addHelpComment, deleteHelpComment, getHelpCommentsByHelpId } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 import HelpCommentEdit from "../components/HelpCommentEdit";
+import HelpCommentInputBox from "../components/HelpCommentInputBox";
 
 export default function ProductHelpDetail() {
   const { state: { helps } } = useLocation();
@@ -79,7 +80,7 @@ export default function ProductHelpDetail() {
     <div className="container mx-auto mt-8">
       <div className="bg-white p-4 rounded-lg shadow-md w-full">
         <h1 className="text-3xl font-semibold mb-4">{helps.title}</h1>
-        <p className="text-gray-600">작성일: {helps.date}</p>
+        <p className="text-gray-600">{helps.date}</p>
         <hr className="my-4" />
         <p className="text-black">{helps.content}</p>
 
@@ -89,22 +90,13 @@ export default function ProductHelpDetail() {
       
       </div>
 
-      {/* 댓글 입력 창 */}
-      <div className="comment-input-container ml-0 mt-4 w-full">
-        <input
-          className="comment-input border rounded p-2 w-full"
-          type="text"
-          value={helpCommentText}
-          onChange={(e) => { setHelpCommentText(e.target.value) }}
-          placeholder={isCommentAllowed() ? "댓글을 입력하세요..." : "운영자만 작성할 수 있습니다"}
-          disabled={!isCommentAllowed()}
-        />
-        <Button
-          text={'등록'}
-          className="comment-submit-button bg-blue-500 text-white px-4 py-2 ml-2 rounded cursor-pointer"
-          onClick={handleHelpCommentSubmit}
-        />
-      </div>
+      {/* 댓글 입력 박스 */}
+      <HelpCommentInputBox
+        helpCommentText={helpCommentText}
+        setHelpCommentText={setHelpCommentText}
+        isCommentAllowed={isCommentAllowed}
+        handleHelpCommentSubmit={handleHelpCommentSubmit}
+      />
 
       {/* 댓글 목록 */}
       <div className="mt-5 space-y-4 w-full">
