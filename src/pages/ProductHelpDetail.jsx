@@ -3,6 +3,7 @@ import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
 import { addHelpComment, deleteHelpComment, getHelpCommentsByHelpId } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
+import HelpCommentEdit from "../components/HelpCommentEdit";
 
 export default function ProductHelpDetail() {
   const { state: { helps } } = useLocation();
@@ -12,9 +13,29 @@ export default function ProductHelpDetail() {
   const [helpCommentList, setHelpCommentList] = useState([]);
   const [editingHelpCommentId, setEditingCommentId] = useState(null);
 
-  const handleEditButtonClick = (commentId) => {
-    setEditingCommentId(commentId);
+
+
+  // 댓글 수정 버튼 클릭
+  const handleEditButtonClick = (helpCommentId) => {
+    setEditingCommentId(helpCommentId);
   }
+
+  // 댓글 삭제 핸들러
+  const handleDeleteHelpComment = async (helpCommentId) => {
+      if (window.confirm('삭제하시겠습니까?')) {
+          try {
+              await deleteHelpComment(helpCommentId);
+
+              // 댓글 목록 업데이트
+              const updatedHelpComments = await getHelpCommentsByHelpId(helps.id);
+              setHelpCommentList(updatedHelpComments.reverse());
+
+          } catch (error) {
+              console.error(error);
+          }
+      }
+
+  };
 
   const handleHelpCommentSubmit = async () => {
     
@@ -39,22 +60,6 @@ export default function ProductHelpDetail() {
     return user.isAdmin;
   }
 
-  // 댓글 삭제 핸들러
-  const handleDeleteHelpComment = async (helpCommentId) => {
-    if (window.confirm('삭제하시겠습니까?')) {
-        try {
-            await deleteHelpComment(helpCommentId);
-
-            // 댓글 목록 업데이트
-            const updatedHelpComments = await getHelpCommentsByHelpId(helps.id);
-            setHelpCommentList(updatedHelpComments.reverse());
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-};
 
   useEffect(() => {
     const fetchHelpComments = async () => {
@@ -113,13 +118,22 @@ export default function ProductHelpDetail() {
 
               {helpComment.userId === uid && (
                 <div className="ml-auto flex space-x-2">
-                  <button onClick={() => {}} className="text-blue-500">수정</button>
+                  <button onClick={() => handleEditButtonClick(helpComment.helpCommentId)} className="text-blue-500">수정</button>
                   <button onClick={() => handleDeleteHelpComment(helpComment.helpCommentId)} className="text-red-500">삭제</button>
                 </div>
               )}
             </div>
             <div className="ml-12">
               <p>{helpComment.text}</p>
+
+              {editingHelpCommentId === helpComment.helpCommentId && (
+                <HelpCommentEdit
+                  helpComment={helpComment}
+                  helpCommentList={helpCommentList}
+                  setHelpCommentList={setHelpCommentList}
+                  setEditingCommentId={setEditingCommentId}
+                />
+              )}
             </div>
           </div>
         ))}

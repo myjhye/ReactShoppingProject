@@ -543,6 +543,7 @@ export async function addHelpComment(helpInquiryId, helpCommentText, userId, use
 
 
 
+
 // 문의사항 댓글 읽어오기
 export async function getHelpCommentsByHelpId(helpId) {
 
@@ -570,6 +571,22 @@ export async function getHelpCommentsByHelpId(helpId) {
         console.error(error);
     }
 }
+
+
+
+// 문의사항 댓글 수정
+export async function updateHelpComment(helpCommentId, updatedText) {
+
+    const helpCommentRef = ref(database, `helpComments/${helpCommentId}`);
+
+    try {
+        await update(helpCommentRef, { text: updatedText });
+    } catch (error) {
+        console.log (error);
+    }
+
+}
+
 
 
 
