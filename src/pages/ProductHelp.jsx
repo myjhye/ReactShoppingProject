@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getHelpInquiry } from "../api/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import HelpCard from "../components/HelpCard";
 
 export default function ProductHelp() {
 
@@ -33,18 +34,10 @@ export default function ProductHelp() {
                 {isLoading && <p>Loading...</p>}
                 {!isLoading && (help && help.length > 0) ? (
                     help.map((helps) => (
-                        <div
-                            onClick={() => { navigate(`/help/${helps.id}`, { state: { helps } })                        }}
-                            key={helps.id}
-                            className="bg-white p-4 rounded-lg shadow-md"
-                        >
-                            <h3 className="text-xl font-semibold truncate">
-                                {helps.title}
-                            </h3>
-                            <p className="text-gray-600">{helps.date}</p>
-                            <br />
-                            <p className="text-black truncate">{helps.content}</p>
-                        </div>
+                        <HelpCard 
+                            helps={helps}
+                            isLoading={isLoading} 
+                        />
                     ))
                 ) : (
                 <p>작성된 문의 사항이 없습니다</p>
