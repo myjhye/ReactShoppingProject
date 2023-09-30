@@ -16,21 +16,19 @@ export default function GenderFilter({
                         type="radio"
                         name="genderCategory"
                         value={genderCategory}
-                        checked={
-                            selectedGenderCategory === genderCategory ||
-                            (selectedGenderCategory === null && genderCategory === '전체')
-                        }
+                        checked={selectedGenderCategory === genderCategory
+}
                         onChange={() => handleGenderCategorySelect(genderCategory)}
                         className="hidden"
                     />
                     <div
                         className={`w-8 h-8 flex items-center justify-center border rounded-full ${
-                            selectedGenderCategory === genderCategory
+                            selectedGenderCategory === genderCategory || (selectedGenderCategory === null && genderCategory === '전체')
                                 ? 'bg-blue-500 text-white border-blue-500'
                                 : 'border-gray-300 hover:bg-gray-100'
                         }`}
                     >
-                        {selectedGenderCategory === genderCategory && (
+                        {(selectedGenderCategory === genderCategory || selectedGenderCategory === null && genderCategory === '전체') && (
                             <svg
                                 className="w-4 h-4"
                                 fill="none"

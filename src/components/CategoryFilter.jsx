@@ -22,12 +22,12 @@ export default function CategoryFilter({
                     />
                     <div
                         className={`w-8 h-8 flex items-center justify-center border rounded-full ${
-                            selectedCategory === category
+                            selectedCategory === category || (selectedCategory === null && category === '전체')
                                 ? 'bg-blue-500 text-white border-blue-500'
                                 : 'border-gray-300 hover:bg-gray-100'
                         }`}
                     >
-                        {selectedCategory === category && (
+                        {(selectedCategory === category || selectedCategory === null && category === '전체') && (
                             <svg
                                 className="w-4 h-4"
                                 fill="none"
