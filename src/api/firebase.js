@@ -317,7 +317,6 @@ export async function removeFromCart( userId, productId ) {
 
 ////////////////// 댓글
 
-
 // 댓글 작성
 export async function addNewComment(commentText, userId, productId, userPhotoUrl, userName) {
 
@@ -346,7 +345,7 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
 }
 
 
-// 댓글 데이터 읽어오기
+// 댓글 읽어오기
 export async function getCommentsByProductId(productId) {
 
     const commentRef = ref(database, 'comments');
@@ -369,18 +368,15 @@ export async function getCommentsByProductId(productId) {
             });
         }
         
-        console.log(commentData.length);
         return commentData;
     
     } catch(error) {
-
         console.error(error);
-        throw error;
     }
 }
 
 
-// 댓글 데이터 삭제
+// 댓글 삭제
 export async function deleteComment(commentId) {
 
     const commentRef = ref(database, `comments/${commentId}`);
@@ -394,7 +390,7 @@ export async function deleteComment(commentId) {
 }
 
 
-// 댓글 데이터 수정
+// 댓글 수정
 export async function updateComment(commentId, updatedText) {
 
     const commentRef = ref(database, `comments/${commentId}`);
@@ -478,7 +474,7 @@ export async function removeBookmark(productId, userId) {
 
 
 
-// 문의 사항 추가
+// 문의 사항 작성
 export default function addHelpInquiry(title, content, imageUrl, userId) {
 
     const id = uuid();
@@ -489,6 +485,7 @@ export default function addHelpInquiry(title, content, imageUrl, userId) {
     const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
 
     set(ref(database, `help/${ id }`), {
+        id: id,
         title: title,
         content: content,
         imageUrl: imageUrl,
@@ -512,19 +509,19 @@ export async function getHelpInquiry() {
 
 
 
-
-
 // 문의 사항 댓글 작성
 export async function addHelpComment(helpInquiryId, helpCommentText, userId, userPhotoUrl, userName) {
 
-    const helpCommentRef = ref(database, 'helpComments');
-
-    const newHelpCommentRef = push(helpCommentRef);
-    const helpCommentId = newHelpCommentRef.key;
+    const helpCommentId = uuid();
+    const helpCommentRef = ref(database, `helpComments/${helpCommentId}`);
 
     const currentDate = new Date();
+
     // 날짜를 yyyy/mm/dd 형식으로 변환
-    const formattedDate = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+    const formattedMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const formattedDay = (currentDate.getDate()).toString().padStart(2, '0');
+    const formattedDate = `${currentDate.getFullYear()}-${formattedMonth}-${formattedDay}`;
+    
     // 시간을 hh:mm 형식으로 변환
     const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
 
@@ -542,5 +539,36 @@ export async function addHelpComment(helpInquiryId, helpCommentText, userId, use
     await set(helpCommentRef, newHelpCommentData);
 
 
+}
+
+
+
+// 문의사항 댓글 읽어오기
+export async function getHelpCommentsByHelpId(helpId) {
+
+    const helpCommentRef = ref(database, 'helpComments');
+
+    try {
+        const snapshot = await get(helpCommentRef);
+        const helpCommentData = [];
+
+        if(snapshot.exists()) 
+        {
+            snapshot.forEach((helpCommentSnapshot) => {
+
+                const helpComment = helpCommentSnapshot.val();
+
+                if(helpComment.helpInquiryId === helpId) 
+                {
+                    helpCommentData.push(helpComment);
+                }
+            });
+        }
+
+        return helpCommentData;
+
+    } catch (error) {
+        console.error(error);
+    }
 }
 
