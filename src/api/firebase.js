@@ -558,8 +558,7 @@ export async function getHelpCommentsByHelpId(helpId) {
 
                 const helpComment = helpCommentSnapshot.val();
 
-                if(helpComment.helpInquiryId === helpId) 
-                {
+                if(helpComment.helpInquiryId === helpId) {
                     helpCommentData.push(helpComment);
                 }
             });
@@ -572,3 +571,16 @@ export async function getHelpCommentsByHelpId(helpId) {
     }
 }
 
+
+
+// 문의사항 댓글 삭제
+export async function deleteHelpComment(helpCommentId) {
+
+    const helpCommentRef = ref(database, `helpComments/${helpCommentId}`);
+
+    try {
+        await remove(helpCommentRef);
+    } catch (error) {
+        console.error(error);
+    }
+}

@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
-import { addHelpComment, getHelpCommentsByHelpId } from "../api/firebase";
+import { addHelpComment, deleteHelpComment, getHelpCommentsByHelpId } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 
 export default function ProductHelpDetail() {
@@ -38,6 +38,23 @@ export default function ProductHelpDetail() {
   const isCommentAllowed = () => {
     return user.isAdmin;
   }
+
+  // 댓글 삭제 핸들러
+  const handleDeleteHelpComment = async (helpCommentId) => {
+    if (window.confirm('삭제하시겠습니까?')) {
+        try {
+            await deleteHelpComment(helpCommentId);
+
+            // 댓글 목록 업데이트
+            const updatedHelpComments = await getHelpCommentsByHelpId(helps.id);
+            setHelpCommentList(updatedHelpComments.reverse());
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+};
 
   useEffect(() => {
     const fetchHelpComments = async () => {
@@ -97,7 +114,7 @@ export default function ProductHelpDetail() {
               {helpComment.userId === uid && (
                 <div className="ml-auto flex space-x-2">
                   <button onClick={() => {}} className="text-blue-500">수정</button>
-                  <button onClick={() => {}} className="text-red-500">삭제</button>
+                  <button onClick={() => handleDeleteHelpComment(helpComment.helpCommentId)} className="text-red-500">삭제</button>
                 </div>
               )}
             </div>
