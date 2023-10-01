@@ -21,6 +21,7 @@ import Welcome from './pages/Welcome';
 import ProductHelp from './pages/ProductHelp';
 import ProductHelpWrite from './pages/ProductHelpWrite';
 import ProductHelpDetail from './pages/ProductHelpDetail';
+import MyComment from './pages/MyComment';
 
 const router = createBrowserRouter([
   {
@@ -77,10 +78,18 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/uploaded',
+        path: '/myProduct',
         element: (
           <ProtectedRoute>
             <MyProduct />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/myComment',
+        element: (
+          <ProtectedRoute>
+            <MyComment />
           </ProtectedRoute>
         )
       },

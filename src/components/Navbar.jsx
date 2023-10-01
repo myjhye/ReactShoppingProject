@@ -74,7 +74,7 @@ export default function Navbar() {
                     </Link>
                 )}
                 { user && (
-                    <Link to='/uploaded'>
+                    <Link to='/myProduct'>
                         <User user={ user } />
                     </Link>
                 )}

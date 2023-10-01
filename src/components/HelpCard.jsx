@@ -7,7 +7,7 @@ export default function HelpCard({helps}) {
 
     return (
         <div
-            onClick={() => { navigate(`/help/${helps.id}`, { state: { helps } })                        }}
+            onClick={() => { navigate(`/help/${helps.id}`, { state: { helps } }) }}
             key={helps.id}
             className="bg-white p-4 rounded-lg shadow-md"
         >
