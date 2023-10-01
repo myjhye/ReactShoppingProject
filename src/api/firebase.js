@@ -170,19 +170,6 @@ export async function addNewProduct(product, imageUrl, userId) {
 }
 
 
-// 등록한 제품 정보 수정
-export async function updateProduct(productId, updatedProduct) {
-
-    const productRef = ref(database, `products/${ productId }`);
-    const currentDate = new Date();
-
-    await update(productRef, {
-        ...updatedProduct,
-        price: parseInt(updatedProduct.price),
-        options: String(updatedProduct.options).split(','),
-        date: currentDate.toISOString(),
-    });
-}
 
 
 
@@ -197,43 +184,6 @@ export async function getProducts() {
 }
 
 
-// 내가 등록한 제품 읽어오기
-export async function getMyProducts(userId) {
-    const productsRef = ref(database, `products`);
-    const userProductsQuery = query(productsRef, orderByChild('uid'), equalTo(userId));
-
-    const snapshot = await get(userProductsQuery);
-    const items = snapshot.val() || {};
-
-    // Convert the object to an array of values
-    const productList = Object.values(items);
-
-    return productList;
-}
-
-
-// 내가 등록한 제품 삭제
-export async function removeMyProducts(productId) {
-
-    return remove(ref(database, `products/${productId}`));
-}
-
-
-// 내가 등록한 상품과 동일한 장바구니 상품 삭제
-export async function removeProductAndCartData(userId, productId) {
-
-    try {
-
-        // 상품 삭제
-        await removeMyProducts(productId);
-
-        // 장바구니에서 상품 삭제
-        await removeFromCart(userId, productId);
-         
-    } catch(error) {
-        console.error(error);
-    }
-}
 
 
 
@@ -608,4 +558,121 @@ export async function deleteHelpComment(helpCommentId) {
     } catch (error) {
         console.error(error);
     }
+}
+
+
+
+
+
+
+////////////////// 내가 등록한 제품
+
+
+
+// 내가 등록한 제품 읽어오기
+export async function getMyProducts(userId) {
+    const productsRef = ref(database, `products`);
+    const userProductsQuery = query(productsRef, orderByChild('uid'), equalTo(userId));
+
+    const snapshot = await get(userProductsQuery);
+    const items = snapshot.val() || {};
+
+    // Convert the object to an array of values
+    const productList = Object.values(items);
+
+    return productList;
+}
+
+
+
+// 내가 등록한 제품 정보 수정
+export async function updateProduct(productId, updatedProduct) {
+
+    const productRef = ref(database, `products/${ productId }`);
+    const currentDate = new Date();
+
+    await update(productRef, {
+        ...updatedProduct,
+        price: parseInt(updatedProduct.price),
+        options: String(updatedProduct.options).split(','),
+        date: currentDate.toISOString(),
+    });
+}
+
+
+
+
+// 내가 등록한 제품 삭제
+export async function removeMyProducts(productId) {
+
+    return remove(ref(database, `products/${productId}`));
+}
+
+
+
+
+// 내가 등록한 상품과 동일한 장바구니 상품 삭제
+export async function removeProductAndCartData(userId, productId) {
+
+    try {
+
+        // 상품 삭제
+        await removeMyProducts(productId);
+
+        // 장바구니에서 상품 삭제
+        await removeFromCart(userId, productId);
+         
+    } catch(error) {
+        console.error(error);
+    }
+}
+
+
+
+
+
+
+
+/////////////////////// 내가 등록한 댓글
+
+export async function getMyComments(userId) {
+
+    const commentsRef = ref(database, `comments`);
+    const userCommentsQuery = query(commentsRef, orderByChild('userId'), equalTo(userId));
+
+    const snapshot = await get(userCommentsQuery);
+    const items = snapshot.val() || {};
+
+    // Convert the object to an array of values
+    const commentList = Object.values(items);
+
+    return commentList;
+}
+
+
+
+
+export async function getProductData(productId) {
+    const productRef = ref(database, `products/${productId}`);
+    const snapshot = await get(productRef);
+    return snapshot.val();
+}
+
+
+
+export async function getMyCommentsWithProductData(userId) {
+    const comments = await getMyComments(userId); // 사용자의 댓글 목록을 가져옵니다.
+
+    // 각 댓글에 대한 상품 제목을 가져옵니다.
+    const commentsWithProductData = await Promise.all(
+        comments.map(async (comment) => {
+            const productData = await getProductData(comment.productId);
+            return {
+                ...comment,
+                productData,
+            };
+        })
+    );
+
+    return commentsWithProductData;
 }
