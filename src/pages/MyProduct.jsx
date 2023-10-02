@@ -31,9 +31,9 @@ export default function MyProduct() {
         <section className="p-8 flex flex-col">
             <p className="text-2xl text-center font-bold pb-4 border-b border-gray-300">내가 등록한 상품</p>
             
-            <div className="flex">
-                <button onClick={() => navigate('/myProduct')}>내가 등록한 상품</button>
-                <button onClick={() => navigate('/myComment')}>내가 등록한 댓글</button>
+            <div className="flex border-b border-gray-300">
+                <button onClick={() => navigate('/myProduct')} className="mr-3 mb-2 mt-2 hover:text-blue-500">내가 등록한 상품</button>
+                <button onClick={() => navigate('/myComment')} className="mb-2 mt-2 hover:text-blue-500">내가 등록한 댓글</button>
             </div>
             
             {!hasProducts && <p>등록한 상품이 없습니다!</p>}
