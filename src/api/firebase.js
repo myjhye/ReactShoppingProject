@@ -635,6 +635,9 @@ export async function removeProductAndCartData(userId, productId) {
 
 /////////////////////// 내가 등록한 댓글
 
+
+
+// 내가 등록한 댓글 조회
 export async function getMyComments(userId) {
 
     const commentsRef = ref(database, `comments`);
@@ -648,7 +651,6 @@ export async function getMyComments(userId) {
 
     return commentList;
 }
-
 
 
 
@@ -675,4 +677,21 @@ export async function getMyCommentsWithProductData(userId) {
     );
 
     return commentsWithProductData;
+}
+
+
+
+
+// 내가 작성한 댓글 삭제
+export async function deleteMyComments(commentId) {
+
+    const commentRef = ref(database, `comments/${commentId}`);
+
+    try {
+        await remove(commentRef);
+        return true;
+    } catch (error)  {
+        console.log (error);
+        return false;
+    }
 }
