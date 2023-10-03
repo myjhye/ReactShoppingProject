@@ -238,6 +238,47 @@ export async function searchProductByName(name) {
 
 
 
+// 비슷한 상품 읽어오기
+export async function getSimilarProducts(selectedCategory, selectedGenderCategory) {
+    try {
+        // 'products' 경로에 대한 참조 생성
+        const productsRef = ref(database, 'products');
+
+        // 선택한 상품의 카테고리와 성별을 기준으로 제품을 필터링하는 쿼리 생성
+        const queryRef = query(
+            productsRef,
+            orderByChild('category'), // 상품 카테고리를 기준으로 정렬
+            equalTo(selectedCategory) // 선택한 상품 카테고리와 일치하는 제품만 필터링
+        );
+
+        // 쿼리 실행하여 결과 가져오기
+        const querySnapshot = await get(queryRef);
+        const results = [];
+
+        // 쿼리 결과를 반복하며 성별도 일치하는 제품을 results 배열에 추가
+        querySnapshot.forEach((doc) => {
+            const product = doc.val();
+
+            if (product.gender === selectedGenderCategory) {
+                results.push(product);
+            }
+        });
+
+        // 검색 결과 반환
+        return results;
+    } catch (error) {
+        console.error('Error getting similar products:', error);
+        // 오류 발생 시 빈 배열 반환
+        return [];
+    }
+}
+
+
+
+
+
+
+
 
 
 
