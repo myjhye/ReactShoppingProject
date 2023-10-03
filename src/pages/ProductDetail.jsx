@@ -149,18 +149,21 @@ export default function ProductDetail() {
 
 
 
-    // "댓글"과 "비슷한 상품" 탭을 선택하기 위한 상태 변수
-  const [selectedTab, setSelectedTab] = useState("댓글");
+    // '댓글', '비슷한 상품' 탭 선택
+    const [selectedTab, setSelectedTab] = useState('댓글');
 
-  // "댓글" 탭 클릭 핸들러
-  const handleCommentTabClick = () => {
-    setSelectedTab("댓글");
-  };
 
-  // "비슷한 상품" 탭 클릭 핸들러
-  const handleSimilarProductsTabClick = () => {
-    setSelectedTab("비슷한 상품");
-  };
+
+    // '댓글' 탭 클릭 핸들러
+    const handleCommentTabClick = () => {
+        setSelectedTab('댓글');
+    };
+
+    
+    // '비슷한 상품' 탭 클릭 핸들러
+    const handleSimilarProductsTabClick = () => {
+        setSelectedTab('비슷한 상품');
+    };
 
     
 
