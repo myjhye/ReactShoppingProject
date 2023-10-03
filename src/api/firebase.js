@@ -156,11 +156,24 @@ function adminUser(user) {
 // 새 제품 등록
 export async function addNewProduct(product, imageUrl, userId) {
 
+    // 고유 상품 id
     const id = uuid();
+    
+    // 현재 시간
     const currentDate = new Date();
 
+
+    // 상품을 데이터베이스에 추가
     set(ref(database, `products/${ id }`), {
+        
+
+        // 기존 상품 정보 가져옴 -> 기존 상품 정보를 유지하면서 새 정보를 추가하려고
         ...product,
+
+        
+        // 추가하려는 정보
+
+				// 고유상품id, 사용자id, 가격(문자열 -> 정수), 이미지url, 등록날짜 
         id: id,
         uid: userId,
         price: parseInt(product.price),
@@ -176,9 +189,18 @@ export async function addNewProduct(product, imageUrl, userId) {
 // 모든 제품 읽어오기
 export async function getProducts() {
 
+    // ref -> products 경로 가져옴
+    // get -> 경로 데이터 읽어옴
+
     return get(ref(database, `products`))
+        
         .then((snapshot) => {
+            
+            // 스냅샷에서 데이터 추출 -> 없으면 빈 객체 사용
             const items = snapshot.val() || {};
+
+            
+            // 객체 값(제품 정보)들을 배열로 변환해서 반환 -> 제품 목록 같은 다수 항목 표현
             return Object.values(items);
         })
 }
