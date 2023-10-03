@@ -22,7 +22,6 @@ export default function NewProduct() {
     category: "",
     description: "",
     gender: "",
-    uid: uid,
     options: [],
     date: currentDate.toISOString(),
   });
@@ -119,7 +118,7 @@ export default function NewProduct() {
       .then((url) => {
 
         // 상품 추가
-        addNewProduct(product, url).then(() => {
+        addNewProduct(product, url, uid).then(() => {
           navigate("/");
           alert("성공적으로 제품이 추가되었습니다!");
         });
