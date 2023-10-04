@@ -24,37 +24,50 @@ const database = getDatabase(app);
 // 회원가입
 export async function signUpWithEmailandPassword(email, password, displayName, photoURL) {
 
-    // 회원가입 처리
+    
     try {
-        
+        // 회원가입 처리
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // 사용자 프로필 업데이트 => 닉네임, photoURL 데이터 넘기기
-        await updateProfile(userCredential.user, { displayName, photoURL});
 
+        // 사용자 프로필(userCredential.user) 업데이트 -> 유저 '닉네임, 프로필 사진' 데이터 넘기기
+        await updateProfile(userCredential.user, { displayName, photoURL });
+
+
+        // 회원가입 성공하면 success: true 반환
         return { 
             success: true,
         }
 
     
-    // 유효성 검사
+       
+        
+    
     } catch (error) {
         
         let message = '';
 
+
+        // 유효성 검사 -> 이미 사용 중인 이메일
         if (error.code === 'auth/email-already-in-use') {
             
             message = '이미 사용 중인 이메일입니다.'
+
             return {
                 success: false,
                 message: message
             };
 
         } else {
-            throw error; // 다른 오류는 다시 throw하여 처리하도록 수정
+            // 그 외 오류 처리
+            console.error (error);
         }
     }
 }
+
+
+
+
 
 // 이메일, 패스워드로 로그인
 export async function loginWithEmailandPassword(email, password) {
@@ -173,7 +186,7 @@ export async function addNewProduct(product, imageUrl, userId) {
         
         // 추가하려는 정보
 
-				// 고유상품id, 사용자id, 가격(문자열 -> 정수), 이미지url, 등록날짜 
+		// 고유상품id, 사용자id, 가격(문자열 -> 정수), 이미지url, 등록날짜 
         id: id,
         uid: userId,
         price: parseInt(product.price),

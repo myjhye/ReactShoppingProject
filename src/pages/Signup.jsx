@@ -14,45 +14,74 @@ export default function Signup() {
     const [showPrivacyPopup, setShowPrivacyPopup] = useState(false); // State for '개인정보 수집' pop-up
 
     const navigate = useNavigate();
-    const photoUrl = 'https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg'; // 일반 로그인 시 사용하는 기본 프로필
+    
+    
+    // 기본 프로필 사진 url -> 일반 로그인 시 사용
+    const photoUrl = 'https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg'; 
 
+
+
+    // 비밀번호 유효성 검사
     const isPasswordValid = (password) => {
 
         // 8글자 이상, 소문자, 숫자 포함 조건
         const passwordRegex = /^(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\-]{8,}$/;
+        
         return passwordRegex.test(password);
     }
 
+
+
+
+
+    // 회원가입 핸들러
     const handleSignUp = async (e) => {
         e.preventDefault();
 
+
+
+        // 비밀번호 유효하지 않음
         if (!isPasswordValid(password)) {
             setPasswordError('8-16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요.');
             return;
         }
 
+
+
+        // 입력한 비밀번호와 확인 비밀번호 일치하지 않음
         if (password !== confirmPassword) {
             setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
             return;
         }
 
+
+
+
+
         try {
-            
+            // 회원가입 함수 호출
             const result = await signUpWithEmailandPassword(email, password, nickName, photoUrl);
             
-            // 회원가입 성공
+
+            // 회원가입 성공 -> welcome 페이지로 이동
             if (result.success) {
                 navigate('/welcome');
             
-            // 회원가입 실패
-            } else {
+            }
+            
+            // 회원가입 실패 -> 오류 메세지 표시
+            else {
                 setMessage(result.message);
             }
+
 
         } catch (error) {
             console.error(error);
         }
     }
+
+
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -82,8 +111,8 @@ export default function Signup() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
+                        {message && <p className="text-red-500 text-sm mt-1">{message}</p>}
                     </div>
-                    {message && <p className="text-red-500 text-sm mt-1">{message}</p>}
                     <div className="mb-4">
                         <label htmlFor="password" className="block font-medium mb-1">비밀번호</label>
                         <input
@@ -134,7 +163,7 @@ export default function Signup() {
                     이미 아이디가 있으신가요?
                     <Link
                         to='/login'
-                        className="text-blue-500 cursor-pointer"
+                        className="text-blue-500 cursor-pointer ml-2"
                     >
                         로그인
                     </Link>
@@ -151,13 +180,13 @@ export default function Signup() {
              {showTermsPopup && (
                 <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-4 rounded-md w-96">
-                        <h2 className="text-xl font-semibold mb-4">Shoppy 이용약관</h2>
+                        <h2 className="text-xl font-semibold mb-4">Hand2Hand 이용약관</h2>
                         <p className="mb-4">
-                            Shoppy 서비스 및 제품(이하 ‘서비스’)을 이용해 주셔서 감사합니다. 본 약관은 다양한 Shoppy 서비스의 이용과 관련하여 Shoppy 서비스를 제공하는 Shoppy 주식회사(이하 ‘Shoppy’)와 이를 이용하는 Shoppy 서비스 회원(이하 ‘회원’) 또는 비회원과의 관계를 설명하며, 아울러 여러분의 Shoppy 서비스 이용에 도움이 될 수 있는 유익한 정보를 포함하고 있습니다.
+                            Hand2Hand 서비스 및 제품(이하 ‘서비스’)을 이용해 주셔서 감사합니다. 본 약관은 다양한 Hand2Hand 서비스의 이용과 관련하여 Hand2Hand 서비스를 제공하는 Hand2Hand 주식회사(이하 ‘Hand2Hand’)와 이를 이용하는 Hand2Hand 서비스 회원(이하 ‘회원’) 또는 비회원과의 관계를 설명하며, 아울러 여러분의 Hand2Hand 서비스 이용에 도움이 될 수 있는 유익한 정보를 포함하고 있습니다.
                             <br /><br />
-                            Shoppy 서비스를 이용하시거나 Shoppy 서비스 회원으로 가입하실 경우 여러분은 본 약관 및 관련 운영 정책을 확인하거나 동의하게 되므로, 잠시 시간을 내시어 주의 깊게 살펴봐 주시기 바랍니다.
+                            Hand2Hand 서비스를 이용하시거나 Hand2Hand 서비스 회원으로 가입하실 경우 여러분은 본 약관 및 관련 운영 정책을 확인하거나 동의하게 되므로, 잠시 시간을 내시어 주의 깊게 살펴봐 주시기 바랍니다.
                             <br /><br />
-                            다양한 Shoppy 서비스를 즐겨보세요.
+                            다양한 Hand2Hand 서비스를 즐겨보세요.
                         </p>
                         <button
                             onClick={() => setShowTermsPopup(false)}
@@ -172,12 +201,12 @@ export default function Signup() {
             {showPrivacyPopup && (
                 <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-4 rounded-md w-96">
-                        <h2 className="text-xl font-semibold mb-4">Shoppy 이용약관</h2>
+                        <h2 className="text-xl font-semibold mb-4">Hand2Hand 이용약관</h2>
                         <p className="mb-4">
-                            개인정보보호법에 따라 Shoppy에 회원가입 신청하시는 분께 수집하는 개인정보의 항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및 이용기간, 동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내 드리오니 자세히 읽은 후 동의하여 주시기 바랍니다.
+                            개인정보보호법에 따라 Hand2Hand에 회원가입 신청하시는 분께 수집하는 개인정보의 항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및 이용기간, 동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내 드리오니 자세히 읽은 후 동의하여 주시기 바랍니다.
                             <br /><br />
                             <h2 className="text-xl font-semibold mb-4">수집하는 개인정보</h2>
-                            이용자는 회원가입을 하지 않아도 정보 검색, 뉴스 보기 등 대부분의 Shoppy 서비스를 회원과 동일하게 이용할 수 있습니다. 이용자가 메일, 캘린더, 카페, 블로그 등과 같이 개인화 혹은 회원제 서비스를 이용하기 위해 회원가입을 할 경우, Shoppy는 서비스 이용을 위해 필요한 최소한의 개인정보를 수집합니다.
+                            이용자는 회원가입을 하지 않아도 정보 검색, 뉴스 보기 등 대부분의 Hand2Hand 서비스를 회원과 동일하게 이용할 수 있습니다. 이용자가 메일, 캘린더, 카페, 블로그 등과 같이 개인화 혹은 회원제 서비스를 이용하기 위해 회원가입을 할 경우, Hand2Hand는 서비스 이용을 위해 필요한 최소한의 개인정보를 수집합니다.
                         </p>
                         <button
                             onClick={() => setShowPrivacyPopup(false)}
@@ -186,7 +215,6 @@ export default function Signup() {
                     </div>
                 </div>
             )}
-
         </div>
     );
 }
