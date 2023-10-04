@@ -8,12 +8,22 @@ export default function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    // 오류 메세지
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
+
+
+
+    // 상태관리 컨텍스트에서 로그인 함수 가져오기 -> google 로그인 
+    // -> 아직은 로그인 페이지에서만 해당 기능을 사용하지만 추후 확장 구조를 유지하기 위해 컨텍스트 사용 
     const { login } = useAuthContext();
 
 
+
+
+    // 로그인 핸들러 -> 일반 로그인
     const handleLogin = async (e) => {
 
         e.preventDefault();
@@ -21,17 +31,22 @@ export default function Login() {
 
         try {
             
+            // 이메일과 비밀번호로 로그인
             const result = await loginWithEmailandPassword(email, password);
             
-            // 로그인 성공
+
+
+            // 로그인 성공 -> 홈으로 이동
             if(result.success) {
                 navigate('/');
 
-            // 로그인 실패    
+
+            // 로그인 실패 -> 오류 메세지 설정    
             } else {
                 setMessage(result.message);
             }
 
+            
         } catch(error) {
             console.error(error);
         }

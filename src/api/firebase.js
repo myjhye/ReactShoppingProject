@@ -69,19 +69,30 @@ export async function signUpWithEmailandPassword(email, password, displayName, p
 
 
 
-// 이메일, 패스워드로 로그인
+// 이메일, 패스워드로 로그인 -> 일반 로그인
 export async function loginWithEmailandPassword(email, password) {
 
     try {
+
+        // 로그인 처리
         await signInWithEmailAndPassword(auth, email, password)
 
+
+
+        // 로그인 성공 여부 -> 성공
         return {
             success: true,
         }
 
+
+
+    // 로그인 실패    
     } catch(error) {
+        
         let message = '';
         
+
+        // 로그인 실패 원인 메세지 설정
         if(error.code === 'auth/wrong-password') {
             message = '비밀번호가 틀립니다.'
         }
@@ -89,6 +100,8 @@ export async function loginWithEmailandPassword(email, password) {
             message = '존재하지 않는 이메일입니다.'
         }
         
+
+        // 로그인 성공 여부 -> 실패 & 로그인 실패 원인 메세지        
         return {
             success: false,
             message
@@ -97,15 +110,26 @@ export async function loginWithEmailandPassword(email, password) {
 }
 
 
-// 로그인
+
+
+
+// 로그인 -> google 로그인
 export function login() {
 
+
     // google 팝업으로 로그인 시작
+
+    // auth -> 인증 (로그인 시 항상 필요)
+    // provider -> google
     return signInWithPopup(auth, provider)
 
         // 오류 발생 시 오류 콘솔 출력
         .catch(console.error);
 }
+
+
+
+
 
 
 // 로그아웃
@@ -114,6 +138,10 @@ export async function logout() {
     return signOut(auth)
         .catch(console.error);
 }
+
+
+
+
 
 
 
