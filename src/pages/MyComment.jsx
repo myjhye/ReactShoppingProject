@@ -47,6 +47,11 @@ export default function MyComment() {
     // 댓글 삭제
     const deleteSelectedComments = async () => {
     
+        if (selectedComments.length === 0) {
+            alert('삭제할 댓글을 선택해주세요');
+            return;
+        }
+
         if(window.confirm('삭제하시겠습니까?')) {
             try {
                 for (const commentId of selectedComments) {
