@@ -175,7 +175,7 @@ export default function ProductDetail() {
                 <img className="max-w-xl mx-auto px-4" src={product.image} alt={product.title} />
                 <div className="w-full basis-5/12 flex flex-col p-4">
                     <h2 className="text-3xl font-bold py-2">{ product.title }</h2>
-                    <p className="text-2xl font-bold py-2 border-b border-gray-400">₩{ product.price }</p>
+                    <p className="text-2xl font-bold py-2 border-b border-gray-400">{`${product.price.toLocaleString()}원`}</p>
                     <p className="py-4 text-lg">{ product.description }</p>
                     <div className="flex items-center">
                         <label htmlFor="select">옵션: </label>
