@@ -137,12 +137,21 @@ export default function Products() {
 
 
     
+
+    
+    // 최근에 본 상품 전체 삭제
     const clearRencentlyViewed = () => {
 
+
+        // 최근에 본 상품 목록 빈 배열로 초기화
         const updatedRecentlyViewed = [];
 
+
+        // 로컬 스토리지에 초기화된 목록 저장
         setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
 
+
+        // 상태 변수에 초기화된 목록 저장
         setRecentlyViewed(updatedRecentlyViewed);
     }
     
