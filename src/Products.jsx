@@ -6,6 +6,7 @@ import Button from "./components/ui/Button";
 import GenderFilter from "./components/GenderFilter";
 import CategoryFilter from "./components/CategoryFilter";
 import { useNavigate } from "react-router-dom";
+import { BiSolidArrowToTop } from 'react-icons/bi';
 
 // 로컬 스토리지에서 최근에 본 상품 목록을 가져오는 함수
 const getRecentlyViewedFromLocalStorage = () => {
@@ -34,6 +35,8 @@ export default function Products() {
     // 최근 본 상품 목록
     const [recentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedFromLocalStorage());
 
+    const [scrollVisible, setScrollVisible] = useState(false);
+
     const navigate = useNavigate();
     
     
@@ -43,6 +46,36 @@ export default function Products() {
         // 로컬 스토리지에 최근에 본 상품 목록 저장
         setRecentlyViewedToLocalStorage(recentlyViewed);
     }, [recentlyViewed]);
+
+
+
+
+    // 최상단으로 화면 스크롤
+    const scrollToTop = () => {
+
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    // Function to handle scrolling and update the visibility of the scroll button
+    const handleScroll = () => {
+        if (window.scrollY > 200) {
+        // Adjust the value (200 in this example) to your desired scroll threshold
+        setScrollVisible(true);
+        } else {
+        setScrollVisible(false);
+        }
+    };
+
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+
+
 
     // 가격에 따른 상품 정렬 처리
     const handleSortByPrice = (order) => {
@@ -240,6 +273,31 @@ export default function Products() {
                     )}
                 </div>
             </div>
+
+
+            {/* 최상단 스크롤 버튼 */}
+            {scrollVisible && (
+                <div
+                    onClick={scrollToTop}
+                    className="fixed bottom-4 right-4 cursor-pointer"
+                    style={{
+                    width: "56px", 
+                    height: "56px", 
+                    backgroundColor: "#F96162", 
+                    borderRadius: "50%", 
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    }}
+                >
+                    <BiSolidArrowToTop size={32} color="white" /> 
+                </div>
+            )}
+
+
+
+
+
             {/* 필터된 상품 없을 때 margin 차이 예방 */}
             <div style={{ height: '500px' }}></div>
         </div>
