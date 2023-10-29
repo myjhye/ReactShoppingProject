@@ -5,6 +5,7 @@ import ProductCard from "./components/ProductCard";
 import Button from "./components/ui/Button";
 import GenderFilter from "./components/GenderFilter";
 import CategoryFilter from "./components/CategoryFilter";
+import { useNavigate } from "react-router-dom";
 
 // 로컬 스토리지에서 최근에 본 상품 목록을 가져오는 함수
 const getRecentlyViewedFromLocalStorage = () => {
@@ -32,6 +33,11 @@ export default function Products() {
 
     // 최근 본 상품 목록
     const [recentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedFromLocalStorage());
+
+    const navigate = useNavigate();
+    
+    
+
 
     useEffect(() => {
         // 로컬 스토리지에 최근에 본 상품 목록 저장
@@ -128,6 +134,17 @@ export default function Products() {
             setRecentlyViewed(updatedRecentlyViewed);
         }
     };
+
+
+    
+    const clearRencentlyViewed = () => {
+
+        const updatedRecentlyViewed = [];
+
+        setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
+
+        setRecentlyViewed(updatedRecentlyViewed);
+    }
     
 
 
@@ -185,9 +202,20 @@ export default function Products() {
                         </div>
                     )}
                 </div>
+                
+                
+                {/* 최근에 본 상품 목록 */}
                 <div className="mt-4">
-                    {/* 최근에 본 상품 목록 */}
                     <h2 className="mb-2">최근에 본 상품</h2>
+                    <button 
+                        className="text-sm text-blue-500"
+                        onClick={clearRencentlyViewed}
+                    >
+                        전체 삭제
+                    </button>
+                    {recentlyViewed.length === 0 ? (
+                        <p className="text-sm text-500 mt-10">최근에 본 상품이<br />없습니다</p> 
+                    ) : (
                     <ul>
                         {recentlyViewed.map((product) => (
                             <li key={product.id}>
@@ -195,10 +223,12 @@ export default function Products() {
                                     src={product.image} 
                                     alt={product.title}
                                     className="w-24 h-24 object-cover rounded-lg" 
+                                    onClick={() => { navigate(`/products/${product.id}`, { state: { product } }); }}
                                 />
                             </li>
                         ))}
                     </ul>
+                    )}
                 </div>
             </div>
             {/* 필터된 상품 없을 때 margin 차이 예방 */}
