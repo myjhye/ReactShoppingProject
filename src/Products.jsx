@@ -121,25 +121,61 @@ export default function Products() {
     // 상품 클릭 시 로컬 스토리지에 저장 핸들러
     const handleProductClick = (product) => {
         
-        
-        // 이미 최근에 본 상품이 목록에 있는지 확인
-        const isAlreadyViewed = recentlyViewed.some((p) => p.id === product.id);
 
+
+        // 최근 본 상품이 목록에 있는 지 확인
+        const isAlreadyViewedIndex = recentlyViewed.findIndex((item) => item.id === product.id);
+    
         
-        
-        // 이미 본 상품이 아니라면 목록에 추가
-        if (!isAlreadyViewed) {
+        // 이미 본 상품이면 
+        if (isAlreadyViewedIndex !== -1) {
             
-            // 최근에 본 상품 목록 최대 5개로 설정
-            const updatedRecentlyViewed = [product, ...recentlyViewed.slice(0, 4)];
             
-            // 로컬 스토리지에 업데이트된 목록 저장
+            // 목록에서 제거
+            const updatedRecentlyViewed = [...recentlyViewed];
+            updatedRecentlyViewed.splice(isAlreadyViewedIndex, 1);
+    
+
+
+            // **목록 맨 앞에 다시 추가
+            updatedRecentlyViewed.unshift(product);
+    
+
+
+            // 로컬 스토리지에 업데이트 된 목록 업데이트
             setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
             
-            // 상태 업데이트
+            // 최근 본 상품 목록 업데이트
+            setRecentlyViewed(updatedRecentlyViewed);
+        
+        
+
+
+        // 이미 본 상품 아니면    
+        } else {
+
+
+            // 목록에 추가
+            const updatedRecentlyViewed = [product, ...recentlyViewed.slice(0, 4)];
+    
+
+
+            // 로컬 스토리지에 업데이트 된 목록 업데이트
+            setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
+
+            // 최근 본 상품 목록 업데이트
             setRecentlyViewed(updatedRecentlyViewed);
         }
     };
+    
+
+    
+    
+    
+    
+
+
+
 
 
 
@@ -357,6 +393,7 @@ export default function Products() {
                     >
                         전체 삭제
                     </button>
+                    
                     {recentlyViewed.length === 0 ? (
                         <p className="text-sm text-500 mt-10">최근에 본 상품이<br />없습니다</p> 
                     ) : (
