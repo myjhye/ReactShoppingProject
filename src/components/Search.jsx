@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "./ui/Button";
 import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
-import { searchProductByName } from "../api/firebase";
+import { getProducts, searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 import { BsArrowClockwise } from 'react-icons/bs';
 
@@ -19,6 +19,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     
     // 검색 결과 상태
     const { setSearchResults } = useAuthContext();
+
+
+    // 자동 완성 결과
+    const [autoCompleteResults, setAutoCompleteResults] = useState([]);
 
 
 
@@ -215,49 +219,120 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-    return (
-        <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
-          <div className="w-1/2 flex items-center p-2 rounded-lg"> 
-            <input 
-              type="text"
-              value={searchTerm}
-              onChange={ (e) => setSearchTerm(e.target.value) }
-              onKeyPress={handleKeyPress}
-              className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
-              ref={inputRef}
-              onClick={handleInputClick} 
-            />
-            <Button text={'검색'} onClick={handleSearch} />
-          </div>
-          {isSearchHistoryOpen && (
-            <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
-                <ul className="list-none p-0">
-                    
-                    {searchHistory.map((item, index) => (
-                        <li className="py-3 px-4 border-b border-gray-200 relative flex items-center" key={index}>
-                            <BsArrowClockwise 
-                                style={{ cursor: "pointer" }}   
-                                onClick={() => handleHistoryClick(item)} 
-                            />
-                                <span 
-                                    className="flex-grow pointer" 
-                                    onClick={() => handleHistoryClick(item)}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    {item}
-                                </span>
-                            <button
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                                onClick={(e) => handleDeleteSearchHistory(item, e)} 
-                            >
-                                삭제
-                            </button>
-                        </li>
-                    ))}
 
-                </ul>
-            </div>
-        )}
-        </div>
+  // State to store autocomplete suggestions
+  const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
+  const [showAutoComplete, setShowAutoComplete] = useState(false);
+
+
+
+  const handleInputChange = async (e) => {
+    const inputText = e.target.value;
+    setSearchTerm(inputText);
+  
+    // Check if the inputText length is less than or equal to 1 (single letter or empty)
+    if (inputText.trim().length <= 1) {
+      setIsSearchHistoryOpen(false);
+    }
+  
+    if (inputText.trim() !== "") {
+      // Fetch products from the API
+      const products = await getProducts();
+  
+      // Extract product titles
+      const productTitles = products.map((product) => product.title);
+  
+      // Filter product titles based on input
+      const filteredResults = productTitles.filter((title) =>
+        title.toLowerCase().includes(inputText.toLowerCase())
       );
+  
+      setAutoCompleteSuggestions(filteredResults);
+      setShowAutoComplete(true);
+    } else {
+      // If input is empty, clear autocomplete results
+      setAutoCompleteSuggestions([]);
+      setShowAutoComplete(false);
+    }
+  };
+
+  
+
+  const handleAutoCompleteClick = (suggestion) => {
+    setSearchTerm(suggestion);
+    handleSearch();
+    setShowAutoComplete(false);
+  };
+
+
+
+
+
+  return (
+    <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
+      <div className="w-1/2 flex items-center p-2 rounded-lg">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
+          ref={inputRef}
+          onClick={handleInputClick}
+        />
+        <Button text={"검색"} onClick={handleSearch} />
+      </div>
+
+
+      {/* 검색어 제안 */}
+      {showAutoComplete && autoCompleteSuggestions.length > 0 && (
+        <div className="absolute top-full left-0 w-1/2 bg-white z-10 mt-2">
+          <ul className="list-none p-0">
+            {autoCompleteSuggestions.map((suggestion, index) => (
+              <li
+                className="py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer"
+                key={index}
+                onClick={() => handleAutoCompleteClick(suggestion)}
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+
+      {/* 검색어 기록 */}
+      {isSearchHistoryOpen && (
+        <div className="absolute top-full left-0 w-1/2 bg-white z-10 mt-2">
+          <ul className="list-none p-0">
+            {searchHistory.map((item, index) => (
+              <li
+                className="py-3 px-4 border-b border-gray-200 relative flex items-center"
+                key={index}
+              >
+                <BsArrowClockwise
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleHistoryClick(item)}
+                />
+                <span
+                  className="flex-grow pointer"
+                  onClick={() => handleHistoryClick(item)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {item}
+                </span>
+                <button
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                  onClick={(e) => handleDeleteSearchHistory(item, e)}
+                >
+                  삭제
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
