@@ -21,6 +21,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     
     // 검색어 변경 핸들러
     const handleSearchChange = (e) => {
+
         setSearchTerm(e.target.value);
     }
 
@@ -37,6 +38,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
     // 검색 창 내부 클릭 => 검색 기록 창 열기
     const handleInputClick = () => {
+
         setIsSearchHistoryOpen(true);
     }
 
@@ -44,7 +46,9 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
     // 검색 창 외부 클릭 => 검색 기록 창 닫기
     const handleOutsideClick = (e) => {
+
         if (!inputRef.current || !inputRef.current.contains(e.target)) {
+            
             setIsSearchHistoryOpen(false);
         }
     }
@@ -56,6 +60,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         const storedHistory = getCookie("searchItem");
 
         if (storedHistory) {
+
             // 가져온 쿠키('검색어1, 검색어2, 검색어3')를 ,로 분리해서 검색 기록에 추가
             setSearchHistory(storedHistory.split(","));
         }
@@ -64,6 +69,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
     useEffect(() => {
+
         loadSearchHistory();
     }, []);
 
@@ -71,12 +77,17 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
     // 검색 실행
     const handleSearch = async () => {
+        
         if (searchTerm) {
+            
             // 기존 검색어와 동일한 검색어가 있는지 확인
             const index = searchHistory.indexOf(searchTerm);
+            
             if (index !== -1) {
+                
                 // 해당 검색어를 검색 기록에서 제거
                 const updatedHistory = [...searchHistory];
+                
                 updatedHistory.splice(index, 1);
                 setSearchHistory(updatedHistory);
             }
@@ -87,12 +98,21 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
             // 검색 기록 업데이트
 
             // 신규 검색어를 맨 앞에 추가하고 중복 제거
-            const updatedHistory = [searchTerm, ...searchHistory.filter(item => item !== searchTerm)].slice(0, 5); 
+            const updatedHistory = [
+                
+                searchTerm, 
+                ...searchHistory.filter(item => item !== searchTerm)
+            
+            ].slice(0, 5); 
+            
             setCookie("searchItem", updatedHistory.join(','), 30);
             setSearchHistory(updatedHistory);
     
+            
+            
             // 검색 결과를 가져오고 상태에 저장
             const results = await searchProductByName(searchTerm);
+            
             setSearchResults(results);
         }
     
@@ -126,17 +146,30 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         // 입력 창 외부 클릭 이벤트 리스너 등록
         document.addEventListener('click', handleOutsideClick);
         return () => {
+            
             // 컴포넌트 언마운트 시 이벤트 리스너 제거
             document.removeEventListener('click', handleOutsideClick);
         }
     }, []);
 
 
+
+
     // 검색 기록 항목 클릭 시 해당 검색어로 검색 실행
     const handleHistoryClick = async (item) => {
-        
+            
         setSearchTerm(item);
+        
+        const results = await searchProductByName(item);
+
+        // 검색 결과를 상태에 저장
+        setSearchResults(results);
+
+
+        // 검색 결과 페이지로 이동
         navigate(`/search/${item}`);
+
+        
     };
 
 
