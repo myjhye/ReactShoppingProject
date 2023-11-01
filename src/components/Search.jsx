@@ -10,25 +10,35 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     // 검색 기록
     const { searchHistory, setSearchHistory } = useSearchHistory();
     
+    
     // 검색 기록 창 열고 닫기
     const [isSearchHistoryOpen, setIsSearchHistoryOpen] = useState(false);
+
     
     // 검색어 입력 필드
     const inputRef = useRef(null);
 
     
-    // 검색 결과 상태
+    // 검색 결과
     const { setSearchResults } = useAuthContext();
 
 
     // 자동 완성 결과
     const [autoCompleteResults, setAutoCompleteResults] = useState([]);
 
+    
+    // 검색어 자동 완성
+    const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
+    
+
+    // 검색어 자동 완성 창 열고 닫기 
+    const [showAutoComplete, setShowAutoComplete] = useState(false);
+
 
 
     
 
-    // 엔터 키 눌렀을 때 검색 실행
+    // 엔터 키 누름 -> 검색 실행
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
@@ -48,8 +58,12 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     // 검색 창 외부 클릭 -> 검색 기록 창 닫기
     const handleOutsideClick = (e) => {
 
+
+        // 클릭한 곳이 검색 창(inputRef) 외부라면
         if (!inputRef.current || !inputRef.current.contains(e.target)) {
             
+            
+            // 검색 기록 창 닫기
             setIsSearchHistoryOpen(false);
         }
     }
@@ -57,7 +71,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-    // 저장된 검색 기록을 쿠키에서 가져와서 상태에 반영
+    // 저장된 검색 기록을 쿠키에서 가져옴 -> 상태에 반영
     const loadSearchHistory = () => {
     
         
@@ -67,7 +81,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
         if (storedHistory) {
 
-            // 가져온 쿠키('검색어1, 검색어2, 검색어3')를 쉼표(,)로 분리해서 검색 기록 상태에 저장
+            // 가져온 쿠키('검색어1, 검색어2, 검색어3')를 쉼표(,)로 분리 -> 검색 기록 상태에 저장
             setSearchHistory(storedHistory.split(","));
         }
 
@@ -85,6 +99,8 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
+
+    
 
 
 
@@ -133,13 +149,13 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-            // 검색 기록 상태에 업데이트된 검색 기록 저장
+            // 업데이트된 검색 기록 -> 상태에 저장
             setSearchHistory(updatedHistory);
     
 
             
             
-            // 검색 결과를 가져오고 상태에 저장
+            // 검색 결과를 가져옴 -> 상태에 저장
             const results = await searchProductByName(searchTerm);
             
             setSearchResults(results);
@@ -154,6 +170,11 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         // 검색 기록 창 닫기
         setIsSearchHistoryOpen(false);
     }
+
+
+
+
+
 
 
 
@@ -198,6 +219,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
+
+
+
+
     // 검색 기록 항목 클릭 -> 해당 검색어로 검색 실행
     const handleHistoryClick = async (term) => {
         
@@ -220,47 +245,86 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-  // State to store autocomplete suggestions
-  const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
-  const [showAutoComplete, setShowAutoComplete] = useState(false);
+  
 
 
 
   const handleInputChange = async (e) => {
+    
+    
+    // 입력된 검색어 가져오기
     const inputText = e.target.value;
+    
+    // 검색어 상태 업데이트
     setSearchTerm(inputText);
   
-    // Check if the inputText length is less than or equal to 1 (single letter or empty)
+
+
+    // 입력 단어가 없을 시
     if (inputText.trim().length <= 1) {
+
+      // 검색 기록 창 닫기  
       setIsSearchHistoryOpen(false);
     }
-  
+
+
+
+
+    // 입력 단어가 있을 시
     if (inputText.trim() !== "") {
-      // Fetch products from the API
+
+
+      // api에서 상품 목록 가져오기
       const products = await getProducts();
   
-      // Extract product titles
+
+      // 상품 제목만 추출
       const productTitles = products.map((product) => product.title);
   
-      // Filter product titles based on input
+
+
+      // 입력된 검색어를 포함하는 상품 제목을 필터링
       const filteredResults = productTitles.filter((title) =>
+        
         title.toLowerCase().includes(inputText.toLowerCase())
       );
   
+
+      // 검색어 자동 완성 결과 값 적용
       setAutoCompleteSuggestions(filteredResults);
+      
+
+      // 검색어 자동 완성 창 열기
       setShowAutoComplete(true);
+    
+    
+
+
+    // 입력 단어가 비어 있을 경우
     } else {
-      // If input is empty, clear autocomplete results
+
+
+      // 검색어 자동 완성 결과 값 초기화  
       setAutoCompleteSuggestions([]);
+
+
+      // 검색어 자동 완성 창 닫기
       setShowAutoComplete(false);
     }
   };
 
   
 
+
   const handleAutoCompleteClick = (suggestion) => {
+    
+    // 클릭한 자동 완성 검색어를 검색어로 설정
     setSearchTerm(suggestion);
+
+    // 검색 실행
     handleSearch();
+
+    // 자동 완성 창 닫기
     setShowAutoComplete(false);
   };
 
