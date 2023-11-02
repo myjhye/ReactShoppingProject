@@ -50,7 +50,16 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     // 검색 창 내부 클릭 -> 검색 기록 창 열기
     const handleInputClick = () => {
 
-        setIsSearchHistoryOpen(true);
+
+        if (searchTerm) {
+
+          setIsSearchHistoryOpen(false);
+
+        } else {
+
+          setIsSearchHistoryOpen(true);
+        }
+         
     }
 
 
@@ -59,12 +68,28 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     const handleOutsideClick = (e) => {
 
 
+         // 클릭한 곳이 검색 창(inputRef) 외부라면
+         if (!inputRef.current || !inputRef.current.contains(e.target)) {
+            
+            
+             // 검색 기록 창 닫기
+             setIsSearchHistoryOpen(false);
+         }
+     }
+
+
+
+
+    // 검색 창 외부 클릭 -> 검색 기록 창 닫기
+    const handleSuggestionOutsideClick = (e) => {
+
+
         // 클릭한 곳이 검색 창(inputRef) 외부라면
         if (!inputRef.current || !inputRef.current.contains(e.target)) {
             
             
             // 검색 기록 창 닫기
-            setIsSearchHistoryOpen(false);
+            setShowAutoComplete(false);
         }
     }
 
@@ -207,6 +232,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
         // 입력 창 외부 클릭 이벤트 리스너 등록
         document.addEventListener('click', handleOutsideClick);
+        document.addEventListener('click', handleSuggestionOutsideClick);
         
         return () => {
             
