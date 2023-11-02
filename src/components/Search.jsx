@@ -80,7 +80,9 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-    // 검색 창 외부 클릭 -> 검색 기록 창 닫기
+
+
+    // 검색 창 외부 클릭 -> 검색어 자동 완성 창 닫기
     const handleSuggestionOutsideClick = (e) => {
 
 
@@ -119,6 +121,24 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     useEffect(() => {
 
         loadSearchHistory();
+    }, []);
+
+
+
+
+    // 이벤트 리스너 -> 외부 클릭
+    useEffect(() => {
+
+        // 입력 창 외부 클릭 이벤트 리스너 등록
+        document.addEventListener('click', handleOutsideClick);
+        document.addEventListener('click', handleSuggestionOutsideClick);
+        
+        return () => {
+            
+            // 컴포넌트 언마운트 시 이벤트 리스너 제거
+            document.removeEventListener('click', handleOutsideClick);
+        }
+
     }, []);
 
 
@@ -228,23 +248,6 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-    useEffect(() => {
-
-        // 입력 창 외부 클릭 이벤트 리스너 등록
-        document.addEventListener('click', handleOutsideClick);
-        document.addEventListener('click', handleSuggestionOutsideClick);
-        
-        return () => {
-            
-            // 컴포넌트 언마운트 시 이벤트 리스너 제거
-            document.removeEventListener('click', handleOutsideClick);
-        }
-
-    }, []);
-
-
-
-
 
 
 
@@ -296,6 +299,9 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
+
+
+
     // 입력 단어가 있을 시
     if (inputText.trim() !== "") {
 
@@ -339,6 +345,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     }
   };
 
+
+
+
+
   
 
 
@@ -360,7 +370,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
   return (
     <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
-      <div className="w-1/2 flex items-center p-2 rounded-lg">
+      <div className="w-full flex items-center p-2 rounded-lg">
         <input
           type="text"
           value={searchTerm}
@@ -376,7 +386,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
       {/* 검색어 제안 */}
       {showAutoComplete && autoCompleteSuggestions.length > 0 && (
-        <div className="absolute top-full left-0 w-1/2 bg-white z-10 mt-2">
+        <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
           <ul className="list-none p-0">
             {autoCompleteSuggestions.map((suggestion, index) => (
               <li
@@ -394,7 +404,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
       {/* 검색어 기록 */}
       {isSearchHistoryOpen && (
-        <div className="absolute top-full left-0 w-1/2 bg-white z-10 mt-2">
+        <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
           <ul className="list-none p-0">
             {searchHistory.map((item, index) => (
               <li
