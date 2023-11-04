@@ -40,10 +40,14 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
     // 엔터 키 누름 -> 검색 실행
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
+        
+      if (e.key === 'Enter') {
             handleSearch();
         }
     }
+
+
+
 
 
 
@@ -61,6 +65,9 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         }
          
     }
+
+
+
 
 
 
@@ -121,6 +128,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     useEffect(() => {
 
         loadSearchHistory();
+
     }, []);
 
 
@@ -253,7 +261,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
     // 검색 기록 항목 클릭 -> 해당 검색어로 검색 실행
-    const handleHistoryClick = async (term) => {
+    const handleSuggestionOrHistoryClick = async (term) => {
         
         
         setSearchTerm(term);
@@ -349,21 +357,6 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-  
-
-
-  const handleAutoCompleteClick = (suggestion) => {
-    
-    // 클릭한 자동 완성 검색어를 검색어로 설정
-    setSearchTerm(suggestion);
-
-    // 검색 실행
-    handleSearch();
-
-    // 자동 완성 창 닫기
-    setShowAutoComplete(false);
-  };
-
 
 
 
@@ -392,7 +385,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
               <li
                 className="py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer"
                 key={index}
-                onClick={() => handleAutoCompleteClick(suggestion)}
+                onClick={() => handleSuggestionOrHistoryClick(suggestion)}
               >
                 {suggestion}
               </li>
@@ -413,11 +406,11 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
               >
                 <BsArrowClockwise
                   style={{ cursor: "pointer" }}
-                  onClick={() => handleHistoryClick(item)}
+                  onClick={() => handleSuggestionOrHistoryClick(item)}
                 />
                 <span
-                  className="flex-grow pointer"
-                  onClick={() => handleHistoryClick(item)}
+                  className="flex-grow"
+                  onClick={() => handleSuggestionOrHistoryClick(item)}
                   style={{ cursor: "pointer" }}
                 >
                   {item}
