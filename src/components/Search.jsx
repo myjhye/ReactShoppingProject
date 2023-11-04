@@ -410,6 +410,9 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
       // 선택된 자동 완성 검색어에 대한 검색 실행
       handleSuggestionOrHistoryClick(autoCompleteSuggestions[selectedSuggestionIndex]);
+
+      // 자동 완성 검색어 창 닫기
+      setShowAutoComplete(false);
     }
   }
 
