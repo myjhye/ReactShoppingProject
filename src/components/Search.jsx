@@ -62,6 +62,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
         if (searchTerm) {
 
           setIsSearchHistoryOpen(false);
+          setShowAutoComplete(true);
 
         } else {
 
