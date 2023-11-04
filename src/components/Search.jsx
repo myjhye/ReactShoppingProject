@@ -34,6 +34,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
     // 검색어 자동 완성 창 열고 닫기 
     const [showAutoComplete, setShowAutoComplete] = useState(false);
 
+    
+    // 현재 선택된 자동 완성 검색어 인덱스
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
 
 
     
@@ -356,6 +360,62 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
+  // 키보드 이벤트
+  const handleKeyDown = (e) => {
+
+
+    // 화살표 아래키 누름
+    if (e.key === 'ArrowDown') {
+
+      e.preventDefault();
+      
+      setSelectedSuggestionIndex((prevIndex) => 
+
+        // 현재 인덱스가 배열 끝에 도달하지 않았으면
+        prevIndex < autoCompleteSuggestions.length -1
+        
+          // 다음 항목으로 이동
+          ? prevIndex + 1
+          
+          // 그렇지 않으면 배열 처음 항목으로 이동
+          : 0
+      );
+
+
+
+
+    // 화살표 위키 누름  
+    } else if (e.key === 'ArrowUp') {
+
+      e.preventDefault();
+
+
+      setSelectedSuggestionIndex((prevIndex) => 
+        
+        // 현재 인덱스가 0 보다 크면
+        (prevIndex) > 0 
+
+          // 이전 항목으로 이동
+          ? prevIndex -1
+          
+          // 그렇지 않으면 배열 마지막 항목으로 이동
+          : autoCompleteSuggestions.length - 1
+      );
+
+
+
+    // 엔터키 누름 && 현재 선택된 자동 완성 검색어가 있음 
+    } else if (e.key === 'Enter' && selectedSuggestionIndex !== -1) {
+      
+
+      // 선택된 자동 완성 검색어에 대한 검색 실행
+      handleSuggestionOrHistoryClick(autoCompleteSuggestions[selectedSuggestionIndex]);
+    }
+  }
+
+
+
+
 
 
 
@@ -368,7 +428,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
           ref={inputRef}
           onClick={handleInputClick}
@@ -383,7 +443,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
           <ul className="list-none p-0">
             {autoCompleteSuggestions.map((suggestion, index) => (
               <li
-                className="py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer"
+                className={
+                  `py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer 
+                  ${selectedSuggestionIndex === index ? 'bg-indigo-100' : ''}`
+                }
                 key={index}
                 onClick={() => handleSuggestionOrHistoryClick(suggestion)}
               >
