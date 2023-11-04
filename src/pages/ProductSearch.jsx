@@ -9,7 +9,10 @@ import SortingButtons from "../components/SortingButtons";
 export default function ProductSearch() {
 
   // 검색 결과 가져옴
-  const { searchResults } = useAuthContext();
+  const { 
+      searchResults, 
+      handleProductClick 
+  } = useAuthContext();
 
 
   // 상품 카테고리, 성별 목록
@@ -126,6 +129,7 @@ export default function ProductSearch() {
                                     <ProductCard
                                         key={product.id}
                                         product={product}
+                                        handleProductClick={handleProductClick}
                                     />
                                 ))}
                             </ul>

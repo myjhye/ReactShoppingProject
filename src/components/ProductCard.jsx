@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatAgo } from "./util/date";
 import { AiOutlineMessage } from 'react-icons/ai';
-import { useQuery } from "@tanstack/react-query";
 
 export default function ProductCard({ product, handleProductClick }) {
 
