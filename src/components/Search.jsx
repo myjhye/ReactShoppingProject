@@ -4,6 +4,8 @@ import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
 import { getProducts, searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 import { BsArrowClockwise } from 'react-icons/bs';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
+
 
 export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
@@ -454,6 +456,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
                 key={index}
                 onClick={() => handleSuggestionOrHistoryClick(suggestion)}
               >
+              <HiMagnifyingGlass />
                 {suggestion}
               </li>
             ))}
