@@ -7,47 +7,27 @@ import GenderFilter from "./components/GenderFilter";
 import CategoryFilter from "./components/CategoryFilter";
 import { useNavigate } from "react-router-dom";
 import { BiSolidArrowToTop } from 'react-icons/bi';
-
-
-
-
-
-
-// 로컬 스토리지에 최근에 본 상품 목록 저장
-const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
-
-
-    // 로컬 스토리지에 "recentlyViewed"키로 최근에 본 상품 목록을 json 형식으로 저장
-    localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));
-};
-
-
-
-
-
-// 로컬 스토리지에서 최근에 본 상품 목록 가져오기
-const getRecentlyViewedFromLocalStorage = () => {
-
-    
-    // 로컬 스토리지에서 "recentlyViewed" 키로 저장된 데이터 가져옴 
-    const recentlyViewedJson = localStorage.getItem("recentlyViewed");
-    
-    
-    
-    // 가져온 데이터가 있으면 json으로 파싱 -> 없으면 빈 배열 반환
-    return recentlyViewedJson ? JSON.parse(recentlyViewedJson) : [];
-};
-
-
-
-
+import { useAuthContext } from "./context/AuthContext";
 
 
 
 export default function Products() {
     
     // 상품 데이터 가져오기
-    const { isLoading, error, data: products } = useQuery(['products'], () => getProducts());
+    const { 
+        isLoading, 
+        error, 
+        data: products 
+    } = useQuery(['products'], () => getProducts());
+
+
+    const { 
+        recentlyViewed,
+        setRecentlyViewed,
+        handleProductClick,
+        setRecentlyViewedToLocalStorage,
+    } = useAuthContext();
+
 
     // 가격, 날짜에 따른 상품 목록 정렬
     const [sortedProducts, setSortedProducts] = useState(null);
@@ -58,8 +38,7 @@ export default function Products() {
     // 선택된 성별
     const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
 
-    // 최근 본 상품 목록
-    const [recentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedFromLocalStorage());
+    
 
     // 스크롤 시 화면 최상단 이동하는 버튼 보이기 유무
     const [scrollVisible, setScrollVisible] = useState(false);
@@ -114,65 +93,6 @@ export default function Products() {
 
     }, []);
 
-
-
-
-
-    // 상품 클릭 시 로컬 스토리지에 저장 핸들러
-    const handleProductClick = (product) => {
-        
-
-
-        // 최근 본 상품이 목록에 있는 지 확인
-        const isAlreadyViewedIndex = recentlyViewed.findIndex((item) => item.id === product.id);
-    
-        
-        // 이미 본 상품이면 
-        if (isAlreadyViewedIndex !== -1) {
-            
-            
-            // 목록에서 제거
-            const updatedRecentlyViewed = [...recentlyViewed];
-            updatedRecentlyViewed.splice(isAlreadyViewedIndex, 1);
-    
-
-
-            // **목록 맨 앞에 다시 추가
-            updatedRecentlyViewed.unshift(product);
-    
-
-
-            // 로컬 스토리지에 업데이트 된 목록 업데이트
-            setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-            
-            // 최근 본 상품 목록 업데이트
-            setRecentlyViewed(updatedRecentlyViewed);
-        
-        
-
-
-        // 이미 본 상품 아니면    
-        } else {
-
-
-            // 목록에 추가
-            const updatedRecentlyViewed = [product, ...recentlyViewed.slice(0, 4)];
-    
-
-
-            // 로컬 스토리지에 업데이트 된 목록 업데이트
-            setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-
-            // 최근 본 상품 목록 업데이트
-            setRecentlyViewed(updatedRecentlyViewed);
-        }
-    };
-    
-
-    
-    
-    
-    
 
 
 
