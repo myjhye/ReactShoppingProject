@@ -456,7 +456,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
                 key={index}
                 onClick={() => handleSuggestionOrHistoryClick(suggestion)}
               >
-              <HiMagnifyingGlass />
+              <HiMagnifyingGlass className="w-5 h-5" />
                 {suggestion}
               </li>
             ))}
@@ -477,6 +477,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
                 <BsArrowClockwise
                   style={{ cursor: "pointer" }}
                   onClick={() => handleSuggestionOrHistoryClick(item)}
+                  className="w-5 h-5"
                 />
                 <span
                   className="flex-grow"
