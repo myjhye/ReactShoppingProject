@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getBookmarks, getProducts, onUserStateChange } from "../api/firebase";
+import { getProducts, onUserStateChange } from "../api/firebase";
 import { login, logout } from '../api/firebase';
 
 
@@ -160,8 +160,6 @@ export function AuthContextProvider({ children }) {
         // 검색 결과 업데이트
         setSearchResults: setSearchResults,
         
-        bookmarks: bookmarks, 
-
         recentlyViewed: recentlyViewed,
 
         setRecentlyViewed, setRecentlyViewed,
