@@ -5,6 +5,7 @@ import { getProducts, searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 import { BsArrowClockwise } from 'react-icons/bs';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { TbLetterX } from 'react-icons/tb';
 
 
 export default function Search({ searchTerm, setSearchTerm, navigate }) {
@@ -315,8 +316,6 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
-
-
     // 입력 단어가 있을 시
     if (inputText.trim() !== "") {
 
@@ -421,6 +420,10 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
 
+  
+
+
+
 
 
 
@@ -429,7 +432,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
   return (
     <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
-      <div className="w-full flex items-center p-2 rounded-lg">
+      <div className="w-full flex items-center p-2 rounded-lg relative">
         <input
           type="text"
           value={searchTerm}
@@ -439,9 +442,24 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
           ref={inputRef}
           onClick={handleInputClick}
         />
+
+
+       {/* 검색 바 내부 X 버튼 -> 검색 단어 입력 시 나타남 */}
+       {searchTerm && ( 
+        <div className="absolute right-20 top-1/2 transform -translate-y-1/2">
+          <div 
+            className="bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center"
+            onClick={() => { setSearchTerm("") }}
+          >
+            <TbLetterX 
+              className="w-5 h-5 text-gray-600"
+              style={{ cursor: "pointer" }}
+            />
+          </div>
+        </div>
+      )}
         <Button text={"검색"} onClick={handleSearch} />
       </div>
-
 
       {/* 검색어 제안 */}
       {showAutoComplete && autoCompleteSuggestions.length > 0 && (
