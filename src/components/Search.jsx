@@ -44,17 +44,7 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
 
     
-
-    // 엔터 키 누름 -> 검색 실행
-    const handleKeyPress = (e) => {
-        
-      if (e.key === 'Enter') {
-            handleSearch();
-        }
-    }
-
-
-
+  //==========================================================================================================
 
 
 
@@ -292,72 +282,79 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
   
 
+    // 유저가 검색어 입력 필드에 텍스트 입력 시 호출
+    const handleInputChange = async (e) => {
 
 
-  const handleInputChange = async (e) => {
-    
-    
-    // 입력된 검색어 가져오기
-    const inputText = e.target.value;
-    
-    // 검색어 상태 업데이트
-    setSearchTerm(inputText);
-  
+      // 입력 텍스트 가져오기
+      const inputText = e.target.value;
 
+      // 검색어 상태 업데이트
+      setSearchTerm(inputText);
 
-    // 입력 단어가 없을 시
-    if (inputText.trim().length <= 1) {
+      const trimmedInput = inputText.trim();
 
-      // 검색 기록 창 닫기  
-      setIsSearchHistoryOpen(false);
-    }
+      // 입력 단어가 없을 시
+      if (trimmedInput.length <= 1) {
 
-
+        // 검색 기록 창, 자동 완성 검색어 창 닫기
+        setIsSearchHistoryOpen(false);
+        setShowAutoComplete(false);
 
 
 
-    // 입력 단어가 있을 시
-    if (inputText.trim() !== "") {
+      // 입력 단어가 있을 시  
+      } else {
 
-
-      // api에서 상품 목록 가져오기
-      const products = await getProducts();
-  
-
-      // 상품 제목만 추출
-      const productTitles = products.map((product) => product.title);
-  
-
-
-      // 입력된 검색어를 포함하는 상품 제목을 필터링
-      const filteredResults = productTitles.filter((title) =>
-        
-        title.toLowerCase().includes(inputText.toLowerCase())
-      );
-  
-
-      // 검색어 자동 완성 결과 값 적용
-      setAutoCompleteSuggestions(filteredResults);
-      
-
-      // 검색어 자동 완성 창 열기
-      setShowAutoComplete(true);
-    
+        // api에서 상품 목록 -> 상품 제목 가져와서
+        const products = await getProducts();
+        const productTitles = products.map((product) => product.title);
     
 
+        // 입력된 검색어를 포함하는 상품 제목을 필터링해 자동 완성 검색어 생성
+        const filteredResults = productTitles.filter((title) =>
+          
+            title
+              .toLowerCase()
+              .includes(trimmedInput.toLowerCase())
+        );
+    
 
-    // 입력 단어가 비어 있을 경우
-    } else {
+        // 첫 번째 자동 완성 검색어 = 입력된 검색어 -> 일치하게
+        const firstSuggestionIndex = filteredResults.findIndex(
+          (result) => result.toLowerCase() === trimmedInput.toLowerCase()
+        );
+    
+
+        // 자동 완성 검색어 상태 업데이트 -> 자동 완성 창 표시
+        setAutoCompleteSuggestions((prevSuggestions) => {
+          
+          if (firstSuggestionIndex !== -1) {
+            
+            // 입력 단어와 일치 시 -> 첫 번째 위치로 이동
+            const suggestionsCopy = [...prevSuggestions];
+            suggestionsCopy.splice(firstSuggestionIndex, 1);
+            
+            return [trimmedInput, ...suggestionsCopy];
+          
+          } else {
+            
+            // 일치하지 않을 시 -> 필터링 된 결과를 제안으로 사용 
+            return [trimmedInput, ...filteredResults];
+          }
+        });
+    
+        // 자동 완성 제안 창 표시
+        setShowAutoComplete(true);
+      }
+    };
+    
 
 
-      // 검색어 자동 완성 결과 값 초기화  
-      setAutoCompleteSuggestions([]);
 
 
-      // 검색어 자동 완성 창 닫기
-      setShowAutoComplete(false);
-    }
-  };
+
+
 
 
 
@@ -415,14 +412,16 @@ export default function Search({ searchTerm, setSearchTerm, navigate }) {
 
       // 자동 완성 검색어 창 닫기
       setShowAutoComplete(false);
+    
+    
+    
+    
+    // 엔터키 누름 -> 단순 검색
+    } else if (e.key === 'Enter') {
+
+      handleSearch();
     }
   }
-
-
-
-  
-
-
 
 
 
