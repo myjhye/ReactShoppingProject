@@ -76,13 +76,13 @@ export default function ProductDetail() {
 
 
     // 특정 상품 북마크 데이터 가져옴
-    const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(product.id));
+    const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(uid, product.id));
 
     
 
     
     
-    // 현재 사용자가 해당 상품을 북마크한 상태인지 확인 => 조건을 만족하는 북마크 데이터가 하나 이상 있으면 isUserBookmarked는 true로 설정됨
+    // 현재 유저가 해당 상품을 북마크한 상태면 -> isUserBookmarked가 true로 설정
     const isUserBookmarked = bookmarksData && Object.values(bookmarksData).some(bookmark => {
         return bookmark.uid === uid;
       });
@@ -93,7 +93,7 @@ export default function ProductDetail() {
 
         if (isUserBookmarked) {
             
-            await removeBookmark(product.id, uid);
+            await removeBookmark(uid, product.id);
             
             alert('북마크가 삭제되었습니다');
 

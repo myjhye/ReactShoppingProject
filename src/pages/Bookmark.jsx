@@ -18,6 +18,7 @@ export default function Bookmark() {
             getBookmarks(user.uid)
                 .then((bookmarksData) => {
                     setBookmarks(bookmarksData);
+                    console.log(bookmarksData)
                 })
                 .catch((error) => {
                     console.error(error);

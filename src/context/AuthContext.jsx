@@ -147,6 +147,8 @@ export function AuthContextProvider({ children }) {
         login: login,
         logout: logout,
         uid: user && user.uid,
+
+        product: product,
         
         // 검색어
         searchTerm: searchTerm,

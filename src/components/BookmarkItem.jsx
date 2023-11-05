@@ -2,11 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { removeBookmark } from "../api/firebase";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function BookmarkItem({ bookmark, setBookmarks, uid }) {
 
     const queryClient = useQueryClient();
-    
+    const navigate = useNavigate();
 
     const handleDelete = useMutation(
 
@@ -32,7 +34,10 @@ export default function BookmarkItem({ bookmark, setBookmarks, uid }) {
     
 
     return (
-        <li className="flex justify-between my-2 items-center">
+        <li 
+            className="flex justify-between my-2 items-center"
+            style={{ cursor: 'pointer' }} 
+        >
             <img
                 className="w-24 md:w-48 rounded-lg"
                 src={bookmark.image}
