@@ -42,7 +42,7 @@ export function AuthContextProvider({ children }) {
     const [user, setUser] = useState();
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const [bookmarks, setBookmarks] = useState([]); 
+    
 
     // 최근 본 상품 목록
     const [recentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedFromLocalStorage());
@@ -75,6 +75,13 @@ export function AuthContextProvider({ children }) {
                 console.error(error);
             })
     });
+
+
+
+
+    
+
+
 
 
 

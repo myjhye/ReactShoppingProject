@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { getBookmarks } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
@@ -6,13 +6,26 @@ import BookmarkItem from "../components/BookmarkItem";
 
 export default function Bookmark() {
 
-    const { uid } = useAuthContext();
-
-    const { bookmarks } = useAuthContext(); 
-
+    const [bookmarks, setBookmarks] = useState([]);
+    
+    const { user, uid }  = useAuthContext();
     const hasProducts = bookmarks.length > 0;
 
-    console.log('bookmarks:', bookmarks);
+
+    // 북마크 가져오기
+    useEffect(() => {
+        if (user && user.uid) {
+            getBookmarks(user.uid)
+                .then((bookmarksData) => {
+                    setBookmarks(bookmarksData);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }, [user]);
+
+    //console.log('bookmarks:', bookmarks);
 
     return (
         <section className="p-8 flex flex-col">
@@ -21,16 +34,13 @@ export default function Bookmark() {
             {hasProducts && (
                 <ul>
                     {bookmarks.map((bookmark) => (
-                        <li key={bookmark.productId}>
+                        <li key={bookmark.id}>
                             <ul>
-                                {Object.values(bookmark.products).map((product) => (
-                                    <li key={product.id}>
-                                        <BookmarkItem 
-                                            product={product} 
-                                            uid={uid}
-                                        />
-                                    </li>
-                                ))}
+                                <BookmarkItem 
+                                    bookmark={bookmark}
+                                    setBookmarks={setBookmarks}
+                                    uid={uid} 
+                                />
                             </ul>
                         </li>
                     ))}

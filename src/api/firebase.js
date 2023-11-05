@@ -145,38 +145,55 @@ export async function logout() {
 
 
 
-// (1)사용자 로그인 상태 변화를 감지하고, (2)관리자 여부를 확인하는 함수
+// 사용자 로그인 상태 감지 -> 관리자 여부를 콜백함수에 전달
 export function onUserStateChange(callback) {
 
-    // firebase authentication에서 사용자의 로그인 상태 변화를 감지하는 함수
+
+    // 사용자의 로그인 상태 감지
     onAuthStateChanged(auth, async(user) => {
 
-        // 만약 사용자가 로그인 했으면 사용자 정보 업데이트하고 관리자 여부 확인
+
+        // 사용자가 로그인 했으면 (user) -> 관리자 여부 확인 (adminUser)
         const updatedUser = user ? await adminUser(user) : null;
 
-        // 콜백함수에 업데이트된 사용자 정보 전달
+
+        // 콜백함수에 사용자 관리자 여부 전달
         callback(updatedUser);
     });
 }
 
 
-// 주어진 사용자가 관리자인지 확인하고 관리자 여부를 추가하여 반환하는 함수
+
+
+
+
+
+
+// 접속한 유저가 관리자인지 확인 -> 관리자 여부 추가하고 반환
 function adminUser(user) {
 
-    // firebase의 realtime database에서 'admins' 경로에 저장된 관리자 정보를 조회
-    return get(ref(database, 'admins'))
-        .then((snapshot) => {
 
-            // 만약 관리자 정보가 존재하면
+    // admins 경로에 저장된 관리자 정보 조회
+    return get(ref(database, 'admins'))
+        
+    
+        .then((snapshot) => {
+            // 관리자 정보 있으면
             if(snapshot.exists()) {
                 
-                // 관리자 정보를 객체로 변환하여 가져옴
-                const admins = snapshot.val(); // .val() : 값 가져오기
+                // 관리자 정보를 객체로 변환해서 가져옴 -> .val() : 값 가져오기
+                const admins = snapshot.val(); 
                 
-                // 사용자의 고유 식별자(uid)가 관리자 목록(admins)에 포함 되어 있는지 확인
-                const isAdmin = admins.includes(user.uid); // true/false로 반환
 
-                // 사용자 정보 업데이트 해서 관리자 여부(isAdmin) 추가하고 반환
+
+                // 접속한 유저의 고유 식별자(uid)가 관리자 목록(admins)에 포함되어 있는지 확인
+                
+                // true/false로 반환
+                const isAdmin = admins.includes(user.uid); 
+
+
+
+                // 사용자 정보 업데이트 -> 관리자 여부(isAdmin) 추가하고 반환
                 return {
                     ...user, // 기존 사용자 정보
                     isAdmin // isAdmin 필드 추가
@@ -503,27 +520,30 @@ export async function dislikeComment(commentId, userId) {
 // 상품 북마크 추가
 export async function addBookmark(userId, product) {
 
-    return set(ref(database, `bookmarks/${ product.id }/${ userId }`), product);
+    return set(ref(database, `bookmarks/${ userId }/${ product.id }`), product);
 }
 
 
 // 상품 북마크 데이터 읽어오기
-export async function getBookmarks(productId) {
+export async function getBookmarks(userId) {
 
-    return get(ref(database, `bookmarks/${ productId }`))
+    return get(ref(database, `bookmarks/${ userId }`))
         .then((snapshot) => {
             const items = snapshot.val() || {};
+
             return Object.values(items);
         })
 }
 
 
 
-// 북마크 삭제
-export async function removeBookmark(productId, userId) {
 
-    return remove(ref(database, `bookmarks/${ productId }/${ userId }`));
+// 북마크 삭제
+export async function removeBookmark(userId, productId) {
+
+    return remove(ref(database, `bookmarks/${ userId }/${ productId }`));
 }
+
 
 
 
