@@ -208,18 +208,14 @@ function adminUser(user) {
 
 
 
-///////////////////// 제품
+//--------------------- 제품
 
 
 // 새 제품 등록
-export async function addNewProduct(product, imageUrl, userId) {
+export async function addNewProduct(id, product, imageUrl, userId) {
 
-    // 고유 상품 id
-    const id = uuid();
-    
     // 현재 시간
     const currentDate = new Date();
-
 
     // 상품을 데이터베이스에 추가
     set(ref(database, `products/${ id }`), {
@@ -362,7 +358,7 @@ export async function getSimilarProducts(selectedCategory, selectedGenderCategor
 
 
 
-////////////////// 장바구니
+//--------------------- 장바구니
 
 
 // cart에 product 데이터 추가
@@ -394,7 +390,7 @@ export async function removeFromCart( userId, productId ) {
 
 
 
-////////////////// 댓글
+//--------------------- 댓글
 
 // 댓글 작성
 export async function addNewComment(commentText, userId, productId, userPhotoUrl, userName) {
@@ -552,7 +548,7 @@ export async function removeBookmark(userId, productId) {
 
 
 
-///////////////////// 문의 사항
+//--------------------- 문의 사항
 
 
 
@@ -689,7 +685,7 @@ export async function deleteHelpComment(helpCommentId) {
 
 
 
-////////////////// 내가 등록한 제품
+//--------------------- 내가 등록한 제품
 
 
 
@@ -757,7 +753,7 @@ export async function removeProductAndCartData(userId, productId) {
 
 
 
-/////////////////////// 내가 등록한 댓글
+//--------------------- 내가 등록한 댓글
 
 
 
