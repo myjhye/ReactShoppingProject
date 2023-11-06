@@ -14,7 +14,7 @@ import ProductCard from "../components/ProductCard";
 export default function ProductDetail() {
 
     // context에서 사용자 uid 가져옴
-    const { uid, user } = useAuthContext();
+    const { uid, handleProductClick } = useAuthContext();
 
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
@@ -30,7 +30,7 @@ export default function ProductDetail() {
 
 
     
-    ////////////// 장바구니
+    //------------------- 장바구니
 
 
     // 사용자의 장바구니 정보 가져옴
@@ -72,7 +72,7 @@ export default function ProductDetail() {
 
 
 
-    ////////////// 북마크
+    //------------------- 북마크
 
 
     // 특정 상품 북마크 데이터 가져옴
@@ -129,7 +129,7 @@ export default function ProductDetail() {
 
 
 
-    ///////////////// 비슷한 상품
+    //------------------- 비슷한 상품
 
     const [similarProducts, setSimilarProducts] = useState([]);
 
@@ -229,7 +229,7 @@ export default function ProductDetail() {
         </button>
       </div>
 
-      {/* 선택한 탭에 따른 콘텐츠 */}
+      {/* 선택한 탭에 따른 컨텐츠 */}
       {selectedTab === "댓글" && (
         <Comment
           product={product}
@@ -246,6 +246,7 @@ export default function ProductDetail() {
                 <ProductCard
                     key={similarProduct.id}
                     product={similarProduct}
+                    handleProductClick={handleProductClick}
                 />
             ))}
         </ul>
