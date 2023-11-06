@@ -109,12 +109,14 @@ export default function NewProduct() {
     uploadImage(file)
       .then((url) => {
         // 상품 추가
-        addNewProduct(id, product, url, uid).then(() => {
-          navigate("/");
-          alert("성공적으로 제품이 추가되었습니다!");
+        addNewProduct(id, product, url, uid)
+          .then(() => {
+            navigate("/");
+            alert("성공적으로 제품이 추가되었습니다!");
         });
       })
 
+      // 이미지 업로드 중 해제
       .finally(() => setIsUploading(false));
   };
 
