@@ -7,16 +7,19 @@ import { useAuthContext } from "../context/AuthContext";
 import { v4 as uuid } from "uuid";
 
 export default function NewProduct() {
+  
+  
   const navigate = useNavigate();
-
+  
   // 현재 로그인한 유저 uid
   const { uid } = useAuthContext();
   const currentDate = new Date();
+  
+  // 상품 아이디 -> 랜덤 생성
   const id = uuid();
 
   // 새로 등록하는 상품 객체
   const [product, setProduct] = useState({
-    id: id,
     title: "",
     price: "",
     category: "",
@@ -37,45 +40,41 @@ export default function NewProduct() {
 
 
 
-  // 입력 값 변경 핸들러
+  //--- 입력 값 변경 핸들러
   const handleChange = (e) => {
 
+    // 이벤트에서 필요한 정보 추출
     const { name, value, files, checked } = e.target;
 
-
-    // 이미지 첨부 파일
+    // 이미지 파일 선택 시
     if (name === "file") {
-      // 선택한 이미지 파일 설정
+      
+      // 선택한 이미지 파일을 'file' 상태로 설정
       setFile(files && files[0]);
 
       return;
     }
 
-
-
-
-    // 사이즈 옵션 체크박스
+    // 사이즈 옵션 체크박스 처리
     if (name === "options") {
 
+      // 새로운 사이즈 옵션 배열 생성
       const updatedOptions = checked
 
-        ? // 체크박스가 체크된 상태 -> product.options 배열에 현재 옵션인 value(원피스, 상의, 남성, 공용..) 추가
-          [...product.options, value]
+        // 체크된 상태면 옵션 추가
+        ? [...product.options, value]
+        // 미체크시 해당 옵션 제거
+        : product.options.filter((option) => option !== value);
 
 
-        : // 미체크된 상태 -> product.options 배열에서 해당 value 제거
-          product.options.filter((option) => option !== value);
-
-
-
-      // 옵션을 "XS", "S", "M", "L", "XL" 순서대로 정렬
+      // 옵션을 "XS", "S", "M", "L", "XL" 순서로 정렬하고 업데이트
       const sortedOptions = ["XS", "S", "M", "L", "XL"].filter((option) =>
         updatedOptions.includes(option)
       );
 
 
 
-      // product 정보 업데이트 -> 이미지첨부파일, 사이즈옵션
+      // product 정보 업데이트 -> 사이즈옵션
       setProduct((product) => ({
         ...product,
         options: sortedOptions,
@@ -85,17 +84,10 @@ export default function NewProduct() {
     }
 
 
-
-
-    // product 정보 업데이트 -> 상품이름, 가격, 상품설명..등 직접 입력하는 것
+    // 나머지 입력 필드 처리 -> 상품명, 가격, 설명 등
     setProduct((product) => ({
       ...product,
-
-      // 해당 필드 값을 업데이트 해서 새 제품 정보 생성
-
-      // [name]: value -> 객체 속성을 동적으로 지정하는 방식
-
-      // ex) title: 입력한 값
+      // 해당 필드를 업데이트 해서 새 product 정보 생성
       [name]: value,
     }));
   };
@@ -104,7 +96,7 @@ export default function NewProduct() {
 
 
 
-  // 제품 등록 폼 제출 핸들러
+  //--- 제품 등록 폼 제출 핸들러
   const handleSubmit = (e) => {
 
     e.preventDefault();
@@ -113,12 +105,11 @@ export default function NewProduct() {
     setIsUploading(true);
 
 
-    // 이미지 업로드 후 url을 받아와서 firebase에 제품 정보 추가
+    // 이미지 업로드 후 url을 받아와서 -> firebase에 제품 정보 추가
     uploadImage(file)
       .then((url) => {
-
         // 상품 추가
-        addNewProduct(product, url, uid).then(() => {
+        addNewProduct(id, product, url, uid).then(() => {
           navigate("/");
           alert("성공적으로 제품이 추가되었습니다!");
         });
