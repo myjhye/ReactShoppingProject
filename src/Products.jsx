@@ -84,13 +84,18 @@ export default function Products() {
 
     // 화면 스크롤 버튼 보이기 핸들러 실행 -> handleScroll
     useEffect(() => {
-        
+
+        // 컴포넌트가 마운트 시 실행 -> 유저가 스크롤 시 -> handleScroll 실행
         window.addEventListener("scroll", handleScroll);
         
+
+        // 컴포넌트가 언마운트(화면 변경 같은) 시 함수 제거 -> 클린업 함수 -> return문에 작성
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
 
+
+    // 컴포넌트 마운트 시 한 번만 실행    
     }, []);
 
 
@@ -340,13 +345,13 @@ export default function Products() {
                     onClick={scrollToTop}
                     className="fixed bottom-4 right-4 cursor-pointer"
                     style={{
-                    width: "56px", 
-                    height: "56px", 
-                    backgroundColor: "#F96162", 
-                    borderRadius: "50%", 
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                        width: "56px", 
+                        height: "56px", 
+                        backgroundColor: "#F96162", 
+                        borderRadius: "50%", 
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                     }}
                 >
                     <BiSolidArrowToTop size={32} color="white" /> 
