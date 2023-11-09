@@ -29,31 +29,64 @@ export default function Products() {
     } = useAuthContext();
 
 
-    // 가격, 날짜에 따른 상품 목록 정렬
+    // 상품 목록 정렬 -> 가격, 날짜
     const [sortedProducts, setSortedProducts] = useState(null);
-
-    // 선택된 상품 카테고리
+    
+    // 선택된 상품
     const [selectedCategory, setSelectedCategory] = useState(null);
-
+    
     // 선택된 성별
     const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
-
     
-
     // 스크롤 시 화면 최상단 이동하는 버튼 보이기 유무
     const [scrollVisible, setScrollVisible] = useState(false);
 
-
+    // 상품 카테고리, 성별 카테고리 목록
+    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
+    const genderCategories = ['전체', '여성', '남성', '공용'];
 
     const navigate = useNavigate();
 
-
-
-
     
     
-//===============================================================================================
+//--------------------
 
+
+
+
+    // 상품 클릭시 로컬 스토리지에 저장 실행 -> setRecentlyViewedToLocalStorage
+    useEffect(() => {
+        
+        // 로컬 스토리지에 최근에 본 상품 목록 저장
+        setRecentlyViewedToLocalStorage(recentlyViewed);
+    
+    }, [recentlyViewed]);
+
+
+
+
+    // 최근에 본 상품 전체 삭제
+    const clearRencentlyViewed = () => {
+
+
+        // 최근에 본 상품 목록 빈 배열로 초기화
+        const updatedRecentlyViewed = [];
+
+
+        // 로컬 스토리지에 초기화된 목록 저장
+        setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
+
+
+        // 최근 본 목록 상태 변수에 초기화된 목록 저장
+        setRecentlyViewed(updatedRecentlyViewed);
+    }
+
+
+
+
+
+
+ //-------------------- 화면 최상단 이동 버튼   
 
 
 
@@ -105,16 +138,7 @@ export default function Products() {
 
 
 
-    // 상품 클릭시 로컬 스토리지에 저장 실행 -> setRecentlyViewedToLocalStorage
-    useEffect(() => {
-        
-        // 로컬 스토리지에 최근에 본 상품 목록 저장
-        setRecentlyViewedToLocalStorage(recentlyViewed);
-    
-    }, [recentlyViewed]);
-
-
-
+//-------------------- 정렬
 
 
 
@@ -123,46 +147,45 @@ export default function Products() {
         
 
         // 정렬된 상품 저장 변수
-        let sorted;
+        let sorted = [...products];
 
 
-        // 오름차순
+        // 제공된 정렬 순서 -> 오름차순 -> 1, 2, 3...
         if (order === 'asc') {
             
-            sorted = [...products].sort((a, b) => a.price - b.price);
+            sorted.sort((a, b) => a.price - b.price);
         
-        // 내림차순    
+        // 제공된 정렬 순서 -> 내림차순 -> 3, 2, 1...   
         } else if (order === 'desc') {
             
-            
-            sorted = [...products].sort((a, b) => b.price - a.price);
+            sorted.sort((a, b) => b.price - a.price);
         
-        } else {
-            
-            // 정렬 순서가 오름차순이나 내림차순 아니면 -> 상품 순서 그대로 유지
-            sorted = [...products];
-        }
+        } 
 
         // 정렬된 상품 배열로 setSortedProducts 업데이트
         setSortedProducts(sorted);
     };
 
 
+    // 비교 함수   ->   '(a, b) => a.price - b.price'   ->   a.price - b.price 결과가 양수면 a가 더 크므로 a가 뒤에 위치
 
 
 
-    // 날짜에 따른 상품 정렬 핸들러
+
+
+
+    // 상품 정렬 핸들러 -> 날짜
     const handleSortByDate = (order) => {
         
-        let sorted;
+        let sorted = [...products];
 
         if (order === 'latest') {
         
-            sorted = [...products].sort((a, b) => new Date(b.date) - new Date(a.date));
+            sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         } else if (order === 'oldest') {
         
-            sorted = [...products].sort((a, b) => new Date(a.date) - new Date(b.date));
+            sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
         
         }
 
@@ -174,7 +197,13 @@ export default function Products() {
 
 
 
-    // 상품 카테고리 선택 핸들러
+
+    
+ 
+//-------------------- 선택 : 상품, 성별   
+
+
+    // 카테고리 선택 핸들러 -> 상품
     const handleCategorySelect = (category) => {
         
         // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
@@ -184,7 +213,7 @@ export default function Products() {
 
 
 
-    // 성별 카테고리 선택 핸들러
+    // 카테고리 선택 핸들러 -> 성별
     const handleGenderCategorySelect = (genderCategory) => {
         
         // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
@@ -193,72 +222,39 @@ export default function Products() {
 
 
 
-    // 상품 카테고리, 성별 카테고리 목록
-    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
-    const genderCategories = ['전체', '여성', '남성', '공용'];
+    
 
 
 
 
-
+//-------------------- 필터
 
 
 
     // 필터된 상품 목록
-    
-    // selectedCategory나 selectedGenderCategory 버튼을 하나라도 클릭 함 -> filteredProducts에 할당(필터링을 함) -> 둘 다 클릭 안 하면 필터링 안 함
     const filteredProducts = (selectedCategory || selectedGenderCategory)
-
-
-        // selectedCategory나 selectedGenderCategory에 하나라도 값 있어서 필터링
-
+        
         // sortedProduct 없으면 products 배열로 필터링
         ? (sortedProducts || products).filter((product) => {
 
-
             // !selectedCategory -> 선택한 카테고리 없음 -> 자동으로 true 됨
-            
             // product.category === selectedCategory -> 상품 카테고리가 선택한 카테고리와 일치하는지 -> 일치하면 true
             const categoryMatch = !selectedCategory || product.category === selectedCategory;
-            
             const genderCategoryMatch = !selectedGenderCategory || product.gender === selectedGenderCategory;
-            
-            
 
-            // 둘 다 true인 경우에 결과 반환
+            // 두 카테고리가 선택한 카테고리와 일치할 경우 -> 둘 다 true 일 경우 -> 결과 목록 반환
             return categoryMatch && genderCategoryMatch;
         })
 
-
-
-        // selectedCategory나 selectedGenderCategory 버튼 둘 다 클릭 안 해서 필터링 안 함
-
-        // sortedProducts 없으면 products 배열 사용
+        // selectedCategory나 selectedGenderCategory 버튼 클릭 안 해서 -> 필터링 안 함
+        // sortedProducts 없으면 -> products 배열 사용
         : sortedProducts || products;
 
 
+    // selectedCategory나 selectedGenderCategory 버튼 클릭 -> 필터링을 함 -> filteredProducts에 할당 -> 둘 다 클릭 안 하면 필터링 안 함
 
 
 
-    
-
-    
-    // 최근에 본 상품 전체 삭제
-    const clearRencentlyViewed = () => {
-
-
-        // 최근에 본 상품 목록 빈 배열로 초기화
-        const updatedRecentlyViewed = [];
-
-
-        // 로컬 스토리지에 초기화된 목록 저장
-        setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-
-
-        // 상태 변수에 초기화된 목록 저장
-        setRecentlyViewed(updatedRecentlyViewed);
-    }
-    
 
 
 
