@@ -118,24 +118,32 @@ export default function Products() {
 
 
 
-    // 가격에 따른 상품 정렬 핸들러
+    // 상품 정렬 핸들러 -> 가격
     const handleSortByPrice = (order) => {
         
+
+        // 정렬된 상품 저장 변수
         let sorted;
 
+
+        // 오름차순
         if (order === 'asc') {
             
             sorted = [...products].sort((a, b) => a.price - b.price);
         
+        // 내림차순    
         } else if (order === 'desc') {
+            
             
             sorted = [...products].sort((a, b) => b.price - a.price);
         
         } else {
             
+            // 정렬 순서가 오름차순이나 내림차순 아니면 -> 상품 순서 그대로 유지
             sorted = [...products];
         }
 
+        // 정렬된 상품 배열로 setSortedProducts 업데이트
         setSortedProducts(sorted);
     };
 
