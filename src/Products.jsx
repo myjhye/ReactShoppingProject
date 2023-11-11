@@ -24,7 +24,6 @@ export default function Products() {
     const { 
         recentlyViewed,
         setRecentlyViewed,
-        handleProductClick,
         setRecentlyViewedToLocalStorage,
     } = useAuthContext();
 
@@ -302,7 +301,6 @@ export default function Products() {
                                             <ProductCard
                                                 key={product.id}
                                                 product={product}
-                                                handleProductClick={handleProductClick}
                                             />
                                         ))}
                                     </ul>

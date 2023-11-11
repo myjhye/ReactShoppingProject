@@ -2,10 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatAgo } from "./util/date";
 import { AiOutlineMessage } from 'react-icons/ai';
+import { useAuthContext } from "../context/AuthContext";
 
-export default function ProductCard({ product, handleProductClick }) {
+export default function ProductCard({ product }) {
 
     const navigate = useNavigate();
+    const { handleProductClick } = useAuthContext();
 
     return (
         <li
