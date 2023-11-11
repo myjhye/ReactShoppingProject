@@ -262,31 +262,19 @@ export async function getProducts() {
 
 // 제품 검색
 export async function searchProductByName(name) {
-    
+
+    const results = [];
+
     try 
     {
-        // 'products' 경로에 대한 참조 생성
-        const productsRef = ref(database, 'products');
+        // 'products' 경로 데이터 가져오는 쿼리 실행
+        const querySnapshot = await get(ref(database, 'products'));
 
-        // 이름을 기준으로 제품을 정렬하는 쿼리 생성
-        const queryRef = query(
-            productsRef,
-            orderByChild('title')
-        );
-
-        // 쿼리 실행하여 결과 가져오기
-        const querySnapshot = await get(queryRef);
-        const results = [];
-
-
-        // 쿼리 결과를 반복하며 제품을 검색하여 results 배열에 추가
-
-        // doc: product의 전체 데이터
+        // 쿼리 결과를 반복하며 제품 검색 -> results 배열에 추가
         querySnapshot.forEach((doc) => { 
 
-            // 제품 이름 소문자로 변환
+            // 제품 이름 -> 소문자로 변환 -> 비교
             const productTitle = doc.child('title').val().toLowerCase(); 
-
             
             // 검색어도 소문자로 변환 -> 대소문자 구분 없이 비교
             if (productTitle.includes(name.toLowerCase())) { 
@@ -297,9 +285,11 @@ export async function searchProductByName(name) {
         // 검색 결과 반환
         return results;
     } 
+    
     catch (error) 
     {
-        console.error('Error searching products by name:', error);
+        console.error(error);
+        
         // 오류 발생 시 빈 배열 반환
         return [];
     }
