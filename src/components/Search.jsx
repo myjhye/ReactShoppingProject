@@ -6,46 +6,44 @@ import { useAuthContext } from "../context/AuthContext";
 import { BsArrowClockwise } from 'react-icons/bs';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import { TbLetterX } from 'react-icons/tb';
+import { useNavigate } from "react-router-dom";
 
 
-export default function Search({ searchTerm, setSearchTerm, navigate }) {
+export default function Search() {
+
+    // 검색어 입력 필드
+    const inputRef = useRef(null);
+
+    // 검색어
+    const [searchTerm, setSearchTerm] = useState("");
 
     // 검색 기록
     const { searchHistory, setSearchHistory } = useSearchHistory();
-    
+
+    // 검색 결과
+    const { setSearchResults } = useAuthContext();
+
+    // 검색어 자동 완성 결과
+    const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
     
     // 검색 기록 창 열고 닫기
     const [isSearchHistoryOpen, setIsSearchHistoryOpen] = useState(false);
 
-    
-    // 검색어 입력 필드
-    const inputRef = useRef(null);
-
-    
-    // 검색 결과
-    const { setSearchResults } = useAuthContext();
-
-
-    // 자동 완성 결과
-    const [autoCompleteResults, setAutoCompleteResults] = useState([]);
-
-    
-    // 검색어 자동 완성
-    const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
-    
-
     // 검색어 자동 완성 창 열고 닫기 
     const [showAutoComplete, setShowAutoComplete] = useState(false);
-
     
     // 현재 선택된 자동 완성 검색어 인덱스
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
-
-
     
-  //==========================================================================================================
 
+
+    const navigate = useNavigate();
+    
+
+
+
+  //----------------------
 
 
     // 검색 창 내부 클릭 -> 검색 기록 창 열기

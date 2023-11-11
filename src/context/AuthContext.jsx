@@ -41,7 +41,6 @@ export function AuthContextProvider({ children }) {
 
     const [product, setProduct] = useState();
     const [user, setUser] = useState();
-    const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
 
     // 최근 본 상품 목록 -> "recentlyViewed"키로 저장된 데이터
@@ -49,6 +48,8 @@ export function AuthContextProvider({ children }) {
 
 
     
+//-------------
+
 
 
     //--- 사용자 로그인 상태 감지 -> 관리자 여부 화면에 전달
@@ -110,7 +111,7 @@ export function AuthContextProvider({ children }) {
         // 이미 본 상품 아니면    
         } else {
 
-            // 목록에 추가 -> 유저가 클릭한 상품(product) 맨 앞에 추가 -> 마지막 인덱스 아이템은 삭제됨 -> 총 5개 아이템 표시
+            // 목록에 추가 -> 유저가 클릭한 상품(product) 맨 앞에 추가(0) -> 마지막 인덱스(4) 아이템은 삭제됨 -> 총 5개 아이템 표시
             const updatedRecentlyViewed = [product, ...recentlyViewed.slice(0, 4)];
 
             // 로컬 스토리지 업데이트
@@ -135,12 +136,6 @@ export function AuthContextProvider({ children }) {
         uid: user && user.uid,
 
         product: product,
-        
-        // 검색어
-        searchTerm: searchTerm,
-        
-        // 검색어 업데이트
-        setSearchTerm: setSearchTerm,
         
         // 검색 결과
         searchResults: searchResults,
