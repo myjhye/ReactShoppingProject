@@ -155,24 +155,17 @@ export default function Search() {
 
     // 검색 실행 핸들러
     const handleSearch = async () => {
-        
-
 
         // 검색어가 있는 경우만 실행
         if (searchTerm) {
-            
 
             // 기존 검색 기록에서 현재 검색어의 순서 확인
             const index = searchHistory.indexOf(searchTerm);
-            
-
 
             // 기존 검색어와 동일한 검색어가 있다면 -> 기존 검색 기록에 검색어가 없으면 -1
             if (index !== -1) {
                 
-                
                 const updatedHistory = [...searchHistory];
-                
 
                 // 해당 검색어를 검색 기록에서 제거
                 updatedHistory.splice(index, 1);
@@ -180,8 +173,6 @@ export default function Search() {
                 setSearchHistory(updatedHistory);
             }
     
-
-
 
             // 신규 검색어를 맨 앞에 추가하고 중복 제거
             const updatedHistory = [
@@ -192,29 +183,29 @@ export default function Search() {
             ].slice(0, 5); 
             
 
-
             // 쿠키에 업데이트 된 검색 기록 저장 -> 유효기간 30일
             setCookie("searchItem", updatedHistory.join(','), 30);
-
-
 
             // 업데이트된 검색 기록 -> 상태에 저장
             setSearchHistory(updatedHistory);
     
-
-            
-            
             // 검색 결과를 가져옴 -> 상태에 저장
             const results = await searchProductByName(searchTerm);
             
             setSearchResults(results);
         }
-    
+
+
+        // 검색어가 없는 경우
+        else if (!searchTerm) {
+
+          alert('검색어를 입력하세요');
+
+          return;
+        }
 
         // 검색 결과 페이지로 이동
         navigate(`/search/${searchTerm}`);
-    
-
 
         // 검색 기록 창 닫기
         setIsSearchHistoryOpen(false);
@@ -225,25 +216,15 @@ export default function Search() {
 
 
 
-
-
-
-
     // 검색 기록 삭제 핸들러
     const handleDeleteSearchHistory = (term, e) => {
-        
-
 
         // 삭제 버튼 클릭 시에도 기록 창이 닫히지 않음
         e.stopPropagation();
-    
-
 
         // 선택한 검색어를 검색 기록에서 제거 -> searchHistory 배열(검색 기록)에서 term(삭제하는 검색어)과 일치하지 않는 요소만 남김
         const updatedHistory = searchHistory.filter((item) => item !== term);
         setSearchHistory(updatedHistory);
-    
-
 
         // 업데이트 된 검색 기록 쿠키에 저장
         setCookie("searchItem", updatedHistory.join(","), 30); 
@@ -253,28 +234,19 @@ export default function Search() {
 
 
 
-
-
-
     // 검색 기록 항목 클릭 -> 해당 검색어로 검색 실행
     const handleSuggestionOrHistoryClick = async (term) => {
         
-        
         setSearchTerm(term);
 
-        
         // 검색 결과 가져와서 상태에 저장
         const results = await searchProductByName(term);
         setSearchResults(results);
 
-
         // 검색 결과 페이지로 이동
         navigate(`/search/${term}`);
-
         
     };
-
-
 
 
 
@@ -282,7 +254,6 @@ export default function Search() {
 
     // 유저가 검색어 입력 필드에 텍스트 입력 시 호출
     const handleInputChange = async (e) => {
-
 
       // 입력 텍스트 가져오기
       const inputText = e.target.value;
@@ -353,13 +324,8 @@ export default function Search() {
 
 
 
-
-
-
-
   // 키보드 이벤트
   const handleKeyDown = (e) => {
-
 
     // 화살표 아래키 누름
     if (e.key === 'ArrowDown') {
@@ -377,7 +343,6 @@ export default function Search() {
           // 그렇지 않으면 배열 처음 항목으로 이동
           : 0
       );
-
 
 
 
@@ -412,16 +377,12 @@ export default function Search() {
       setShowAutoComplete(false);
     
     
-    
-    
     // 엔터키 누름 -> 단순 검색
     } else if (e.key === 'Enter') {
 
       handleSearch();
     }
   }
-
-
 
 
 
