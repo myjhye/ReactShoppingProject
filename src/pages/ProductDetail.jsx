@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import Button from "../components/ui/Button";
-import { addBookmark, addOrUpdateToCart, getBookmarks, getCart, getSilmilarProducts, removeBookmark } from "../api/firebase";
+import { addBookmark, addOrUpdateToCart, getBookmarks, getCart, removeBookmark } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 import Comment from "../components/Comment";
 import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
@@ -136,7 +136,10 @@ export default function ProductDetail() {
     useEffect(() => {
         getSimilarProducts(product.category, product.gender)
             .then((results) => {
-                // 현재 페이지 상품 제외
+
+                console.log('results: ', results);
+                
+                // 현재 페이지 상품 제외 -> 비슷한 상품 id !== 현재 페이지 상품 id
                 const filteredResults = results.filter((similarProducts) => similarProducts.id !== product.id);
 
                 // 최대 4개까지 조회
@@ -152,13 +155,10 @@ export default function ProductDetail() {
     // '댓글', '비슷한 상품' 탭 선택
     const [selectedTab, setSelectedTab] = useState('댓글');
 
-
-
     // '댓글' 탭 클릭 핸들러
     const handleCommentTabClick = () => {
         setSelectedTab('댓글');
     };
-
     
     // '비슷한 상품' 탭 클릭 핸들러
     const handleSimilarProductsTabClick = () => {
