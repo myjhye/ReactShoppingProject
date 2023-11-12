@@ -19,8 +19,6 @@ const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
 
 
 
-
-
 //--- 로컬 스토리지에서 최근에 본 상품 목록 가져오기
 const getRecentlyViewedFromLocalStorage = () => {
     
@@ -46,9 +44,78 @@ export function AuthContextProvider({ children }) {
     // 최근 본 상품 목록 -> "recentlyViewed"키로 저장된 데이터
     const [recentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedFromLocalStorage());
 
+    // 상품 카테고리, 성별 목록
+    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
+    const genderCategories = ['전체', '여성', '남성', '공용'];
+
+
+    // 선택된 상품, 성별 카테고리
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
+
+    // 가격, 날짜에 따른 상품 목록 정렬
+    const [sortedProducts, setSortedProducts] = useState(null);
+
+    // 선택된 상품 카테고리 변경
+    const handleCategorySelect = (category) => {
+        setSelectedCategory(category === "전체" ? null : category);
+    };
+
+    // 선택된 성별 변경 
+    const handleGenderCategorySelect = (genderCategory) => {
+        setSelectedGenderCategory(genderCategory === "전체" ? null : genderCategory);
+    };
+
 
     
 //-------------
+
+    // 가격에 따른 상품 정렬
+    const handleSortByPrice = (order) => {
+
+        let sorted;
+    
+        if (order === 'asc') {
+        sorted = (searchResults).sort((a, b) => a.price - b.price);
+        } else if (order === 'desc') {
+        sorted = (searchResults).sort((a, b) => b.price - a.price);
+        } 
+    
+        setSortedProducts(sorted);
+    };
+    
+    
+    // 날짜에 따른 상품 정렬 
+    const handleSortByDate = (order) => {
+        let sorted;
+    
+        if (order === 'latest') {
+        sorted = (searchResults).sort((a, b) => new Date(b.date) - new Date(a.date));
+        } else if (order === 'oldest') {
+        sorted = (searchResults).sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+    
+        setSortedProducts(sorted);
+    };
+
+
+    // 상품 필터링 
+    const filterProducts = (product) => {
+        
+        // 선택된 상품 카테고리, 성별로 필터링
+        const categoryMatch = !selectedCategory || product.category === selectedCategory;
+        const genderCategoryMatch = !selectedGenderCategory || product.gender === selectedGenderCategory;
+        
+        // 선택된 상품 카테고리와 성별 모두 일치하는 상품 반환
+        return categoryMatch && genderCategoryMatch;
+
+    };
+
+
+
+    // 필터된 상품 목록 => 'searchResults' 배열을 'filterProducts'로 필터링
+    const filteredResults = searchResults.filter(filterProducts);
+
 
 
 
@@ -134,18 +201,17 @@ export function AuthContextProvider({ children }) {
         login: login,
         logout: logout,
         uid: user && user.uid,
-
         product: product,
-        
+
         // 검색 결과
         searchResults: searchResults,
-        
+
         // 검색 결과 업데이트
         setSearchResults: setSearchResults,
         
         recentlyViewed: recentlyViewed,
 
-        setRecentlyViewed, setRecentlyViewed,
+        setRecentlyViewed: setRecentlyViewed,
 
         handleProductClick: handleProductClick,
 
@@ -153,13 +219,28 @@ export function AuthContextProvider({ children }) {
 
         getRecentlyViewedFromLocalStorage: getRecentlyViewedFromLocalStorage,
 
+        mainCategories: mainCategories,
 
-    
+        genderCategories: genderCategories,
+
+        selectedCategory: selectedCategory,
+        
+        selectedGenderCategory: selectedGenderCategory,
+
+        handleCategorySelect: handleCategorySelect,
+
+        handleGenderCategorySelect: handleGenderCategorySelect,
+
+        handleSortByPrice: handleSortByPrice,
+
+        handleSortByDate: handleSortByDate,
+
+        filteredResults: filteredResults,
+
+        sortedProducts: sortedProducts,
+
     };
 
-
-
-    
     return (
         <authContext.Provider value={authContextValue}>
             {children}

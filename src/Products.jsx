@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "./api/firebase";
 import ProductCard from "./components/ProductCard";
 import Button from "./components/ui/Button";
 import GenderFilter from "./components/GenderFilter";
@@ -13,43 +11,28 @@ import { useAuthContext } from "./context/AuthContext";
 
 export default function Products() {
     
-    // 상품 데이터 가져오기
-    const { 
-        isLoading, 
-        error, 
-        data: products 
-    } = useQuery(['products'], () => getProducts());
-
-
     const { 
         recentlyViewed,
         setRecentlyViewed,
         setRecentlyViewedToLocalStorage,
+        selectedCategory,  
+        selectedGenderCategory,
+        handleCategorySelect,
+        handleGenderCategorySelect,
+        handleSortByPrice,
+        handleSortByDate,
+        filteredResults,
+        mainCategories,
+        genderCategories,
     } = useAuthContext();
 
 
-    // 상품 목록 정렬 -> 가격, 날짜
-    const [sortedProducts, setSortedProducts] = useState(null);
-    
-    // 선택된 상품
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    
-    // 선택된 성별
-    const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
     
     // 스크롤 시 화면 최상단 이동하는 버튼 보이기 유무
     const [scrollVisible, setScrollVisible] = useState(false);
-
-    // 상품 카테고리, 성별 카테고리 목록
-    const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
-    const genderCategories = ['전체', '여성', '남성', '공용'];
-
     const navigate = useNavigate();
-
     
     
-//--------------------
-
 
 
 
@@ -132,132 +115,6 @@ export default function Products() {
 
 
 
-
-
-
-
-
-//-------------------- 정렬
-
-
-
-    // 상품 정렬 핸들러 -> 가격
-    const handleSortByPrice = (order) => {
-        
-
-        // 정렬된 상품 저장 변수
-        let sorted = [...products];
-
-
-        // 제공된 정렬 순서 -> 오름차순 -> 1, 2, 3...
-        if (order === 'asc') {
-            
-            sorted.sort((a, b) => a.price - b.price);
-        
-        // 제공된 정렬 순서 -> 내림차순 -> 3, 2, 1...   
-        } else if (order === 'desc') {
-            
-            sorted.sort((a, b) => b.price - a.price);
-        
-        } 
-
-        // 정렬된 상품 배열로 setSortedProducts 업데이트
-        setSortedProducts(sorted);
-    };
-
-
-    // 비교 함수   ->   '(a, b) => a.price - b.price'   ->   a.price - b.price 결과가 양수면 a가 더 크므로 a가 뒤에 위치
-
-
-
-
-
-
-    // 상품 정렬 핸들러 -> 날짜
-    const handleSortByDate = (order) => {
-        
-        let sorted = [...products];
-
-        if (order === 'latest') {
-        
-            sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        } else if (order === 'oldest') {
-        
-            sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
-        }
-
-        setSortedProducts(sorted);
-    };
-
-
-
-
-
-
-
-    
- 
-//-------------------- 선택 : 상품, 성별   
-
-
-    // 카테고리 선택 핸들러 -> 상품
-    const handleCategorySelect = (category) => {
-        
-        // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
-        setSelectedCategory(category === "전체" ? null : category);
-    };
-
-
-
-
-    // 카테고리 선택 핸들러 -> 성별
-    const handleGenderCategorySelect = (genderCategory) => {
-        
-        // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
-        setSelectedGenderCategory(genderCategory === "전체" ? null : genderCategory);
-    };
-
-
-
-    
-
-
-
-
-//-------------------- 필터
-
-
-
-    // 필터된 상품 목록
-    const filteredProducts = (selectedCategory || selectedGenderCategory)
-        
-        // sortedProduct 없으면 products 배열로 필터링
-        ? (sortedProducts || products).filter((product) => {
-
-            // !selectedCategory -> 선택한 카테고리 없음 -> 자동으로 true 됨
-            // product.category === selectedCategory -> 상품 카테고리가 선택한 카테고리와 일치하는지 -> 일치하면 true
-            const categoryMatch = !selectedCategory || product.category === selectedCategory;
-            const genderCategoryMatch = !selectedGenderCategory || product.gender === selectedGenderCategory;
-
-            // 두 카테고리가 선택한 카테고리와 일치할 경우 -> 둘 다 true 일 경우 -> 결과 목록 반환
-            return categoryMatch && genderCategoryMatch;
-        })
-
-        // selectedCategory나 selectedGenderCategory 버튼 클릭 안 해서 -> 필터링 안 함
-        // sortedProducts 없으면 -> products 배열 사용
-        : sortedProducts || products;
-
-
-    // selectedCategory나 selectedGenderCategory 버튼 클릭 -> 필터링을 함 -> filteredProducts에 할당 -> 둘 다 클릭 안 하면 필터링 안 함
-
-
-
-
-
-
-
     return (
         <div className="mt-4">
             <div className="mb-4 space-x-2">
@@ -285,29 +142,23 @@ export default function Products() {
 
                 {/* Rest of the content */}
                 <div className="flex-grow w-0">
-                    {isLoading ? (
-                        <p>Loading...</p>
-                    ) : error ? (
-                        <p>{error.message}</p>
-                    ) : (
-                        <div>
-                            {filteredProducts.length === 0 ? (
-                                <p>해당 상품이 없습니다</p>
-                            ) : (
-                                <>
-                                    <div>상품 {filteredProducts.length}개</div>
-                                    <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-                                        {filteredProducts.map((product) => (
-                                            <ProductCard
-                                                key={product.id}
-                                                product={product}
-                                            />
-                                        ))}
-                                    </ul>
-                                </>
-                            )}
-                        </div>
-                    )}
+                    <div>
+                        {filteredResults.length === 0 ? (
+                            <p>해당 상품이 없습니다</p>
+                        ) : (
+                            <>
+                                <div>상품 {filteredResults.length}개</div>
+                                <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+                                    {filteredResults.map((product) => (
+                                        <ProductCard
+                                            key={product.id}
+                                            product={product}
+                                        />
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                    </div>
                 </div>
                 
                 

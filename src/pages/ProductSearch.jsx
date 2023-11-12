@@ -8,86 +8,17 @@ import SortingButtons from "../components/SortingButtons";
 
 export default function ProductSearch() {
 
-  // 검색 결과 가져옴
-  const { searchResults } = useAuthContext();
-
-
-  // 상품 카테고리, 성별 목록
-  const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
-  const genderCategories = ['전체', '여성', '남성', '공용'];
-
-
-  // 선택된 상품, 성별 카테고리
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
-
-  // 가격, 날짜에 따른 상품 목록 정렬
-  const [sortedProducts, setSortedProducts] = useState(null);
-
-
-
-  // 가격에 따른 상품 정렬
-  const handleSortByPrice = (order) => {
-
-    let sorted;
-  
-    if (order === 'asc') {
-      sorted = (searchResults).sort((a, b) => a.price - b.price);
-    } else if (order === 'desc') {
-      sorted = (searchResults).sort((a, b) => b.price - a.price);
-    } 
-  
-    setSortedProducts(sorted);
-  };
-  
-  
-  // 날짜에 따른 상품 정렬 
-  const handleSortByDate = (order) => {
-    let sorted;
-  
-    if (order === 'latest') {
-      sorted = (searchResults).sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (order === 'oldest') {
-      sorted = (searchResults).sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-  
-    setSortedProducts(sorted);
-  };
-  
-
-
-
-
-  // 선택된 상품 카테고리 변경
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category === "전체" ? null : category);
-  };
-
-  // 선택된 성별 변경 
-  const handleGenderCategorySelect = (genderCategory) => {
-    setSelectedGenderCategory(genderCategory === "전체" ? null : genderCategory);
-  };
-
-
-
-
-  // 상품 필터링 
-  const filterProducts = (product) => {
-    
-    // 선택된 상품 카테고리, 성별로 필터링
-    const categoryMatch = !selectedCategory || product.category === selectedCategory;
-    const genderCategoryMatch = !selectedGenderCategory || product.gender === selectedGenderCategory;
-    
-    // 선택된 상품 카테고리와 성별 모두 일치하는 상품 반환
-    return categoryMatch && genderCategoryMatch;
-
-  };
-
-
-
-  // 필터된 상품 목록 => 'searchResults' 배열을 'filterProducts'로 필터링
-  const filteredResults = searchResults.filter(filterProducts);
-
+  const { 
+        selectedCategory,  
+        selectedGenderCategory,
+        handleCategorySelect,
+        handleGenderCategorySelect,
+        handleSortByPrice,
+        handleSortByDate,
+        filteredResults,
+        mainCategories,
+        genderCategories
+    } = useAuthContext();
 
 
 
