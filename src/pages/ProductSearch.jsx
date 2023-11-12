@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuthContext } from "../context/AuthContext";
-import Button from "../components/ui/Button";
 import ProductCard from "../components/ProductCard";
 import CategoryFilter from "../components/CategoryFilter";
 import GenderFilter from "../components/GenderFilter";

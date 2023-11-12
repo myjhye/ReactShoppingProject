@@ -48,7 +48,6 @@ export function AuthContextProvider({ children }) {
     const mainCategories = ['전체', '원피스', '상의', '하의', '모자', '신발', '기타'];
     const genderCategories = ['전체', '여성', '남성', '공용'];
 
-
     // 선택된 상품, 성별 카테고리
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
@@ -68,7 +67,8 @@ export function AuthContextProvider({ children }) {
 
 
     
-//-------------
+//----- 상품 정렬
+
 
     // 가격에 따른 상품 정렬
     const handleSortByPrice = (order) => {
@@ -115,6 +115,8 @@ export function AuthContextProvider({ children }) {
 
     // 필터된 상품 목록 => 'searchResults' 배열을 'filterProducts'로 필터링
     const filteredResults = searchResults.filter(filterProducts);
+
+
 
 
 

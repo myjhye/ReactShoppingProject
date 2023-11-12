@@ -273,10 +273,10 @@ export async function searchProductByName(name) {
         // 쿼리 결과를 반복하며 제품 검색 -> results 배열에 추가
         querySnapshot.forEach((doc) => { 
 
-            // 제품 이름 -> 소문자로 변환 -> 비교
+            // 제품 데이터에서 이름 추출 -> 소문자로 변환 
             const productTitle = doc.child('title').val().toLowerCase(); 
             
-            // 검색어도 소문자로 변환 -> 대소문자 구분 없이 비교
+            // 검색어도 소문자로 변환 -> 제품 이름 데이터 중 검색어와 일치하는 제품 찾기 -> results 배열에 추가
             if (productTitle.includes(name.toLowerCase())) { 
                 results.push(doc.val());
             }

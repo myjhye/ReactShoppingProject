@@ -13,18 +13,16 @@ import { RiHandCoinLine } from 'react-icons/ri';
 import Search from "./Search";
 
 export default function Navbar() {
+
     const {
         login, 
         user, 
         logout, 
-        searchTerm, 
-        setSearchTerm, 
-        setSearchResults,
     } = useAuthContext();
 
-    const navigate = useNavigate();
 
 
+    
     return (
         <header className="flex justify-between border-b border-gray-300 p-2">
             <Link 
@@ -36,12 +34,7 @@ export default function Navbar() {
             </Link>
             
             {/* 상품 검색 컴포넌트 */}
-            <Search 
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                setSearchResults={setSearchResults}
-                navigate={navigate}
-            />
+            <Search />
 
             <nav className="flex items-center gap-4 font-semibold">
                 { user && (
