@@ -367,7 +367,11 @@ export async function getCart(userId) {
 
     return get(ref(database, `carts/${ userId }`))
         .then((snapshot) => {
+
+            // cart 값 추출 -> val -> 없으면 빈 객체({})로 초기화  
             const items = snapshot.val() || {};
+
+            // cart 값(item)을 배열로 반환 -> Object.values() -> 값이 여러개라서
             return Object.values(items);
         })
 }
