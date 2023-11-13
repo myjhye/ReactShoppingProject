@@ -377,7 +377,7 @@ export async function getCart(userId) {
 }
 
 // cart 데이터 삭제
-export async function removeFromCart( userId, productId ) {
+export async function removeFromCart(userId, productId) {
 
     return remove(ref(database, `carts/${ userId }/${ productId }`));
 }
