@@ -426,29 +426,37 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
 // 댓글 읽어오기
 export async function getCommentsByProductId(productId) {
 
-    const commentRef = ref(database, 'comments');
+    // 댓글 배열
+    const commentData = [];
 
-    try {
-
-        const snapshot = await get(commentRef);
-        const commentData = [];
+    try 
+    {
+        // snapshot -> 댓글 경로(ref)에서 값 가져오기(get)
+        const snapshot = await get(ref(database, 'comments'));
 
         if(snapshot.exists())
         {
             snapshot.forEach((commentSnapshot) => {
                 
+                // comment 값 추출 -> val()
                 const comment = commentSnapshot.val();
                 
+                // 댓글 경로의 productId -> 현재 페이지 productId -> 일치
                 if(comment.productId === productId)
                 {
+                    // productId가 일치하는 댓글 -> commentData 배열에 추가 
                     commentData.push(comment);
                 }
             });
         }
         
+        // commentData -> 댓글 데이터 배열 -> 반환
         return commentData;
     
-    } catch(error) {
+    } 
+    
+    catch(error) 
+    {
         console.error(error);
     }
 }
