@@ -13,20 +13,16 @@ import ProductCard from "../components/ProductCard";
 
 export default function ProductDetail() {
 
-    // context에서 사용자 uid 가져옴
-    const { uid, handleProductClick } = useAuthContext();
-
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
+
+    const { uid, handleProductClick } = useAuthContext();
     
     // 선택된 옵션
     const [ selected, setSelected ] = useState(product.options[0]);
+
     
-    // 옵션 선택 핸들러
-    const handleSelect = (e) => setSelected(e.target.value);
-
-
-
+    
 
 
     
@@ -36,7 +32,7 @@ export default function ProductDetail() {
     // 사용자의 장바구니 정보 가져옴
     const { data: cartData } = useQuery(['carts'], () => getCart(uid));
     
-    // 선택된 제품과 옵션이 장바구니에 이미 있는지 확인
+    // 선택된 제품과 옵션이 장바구니에 이미 있는지 확인 -> some 사용 -> findIndex도 가능(isProductInCart !== -1)
     const isProductInCart = cartData && cartData.some((item) =>
         item.id === product.id && item.option === selected
     );
@@ -182,7 +178,7 @@ export default function ProductDetail() {
                         <select
                             id='select'
                             className="p-2 m-4 flex-1 border-2 border-dashed border-brand outline-none"
-                            onChange={ handleSelect }
+                            onChange={ (e) => setSelected(e.target.value) }
                             value={ selected }
                         >
                             { product.options.map((option, index) => (
