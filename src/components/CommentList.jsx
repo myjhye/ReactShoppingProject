@@ -10,23 +10,28 @@ export default function CommentList({ comments }) {
 
     const { uid } = useAuthContext();
 
-    // 댓글 목록
+    // 댓글 목록 -> comments 참조 -> 같은 배열 객체 가진다 -> commentList, comments
     const [commentList, setCommentList] = useState(comments);
-    
     // 수정 중인 댓글 id
     const [editingCommentId, setEditingCommentId] = useState(null);
 
     // 댓글 삭제 핸들러
     const handleDeleteComment = async (commentId, productId) => {
+        
         if (window.confirm('삭제하시겠습니까?')) {
-            try {
+            
+            try 
+            {
+                // deleteComment -> 댓글 삭제 처리
                 await deleteComment(commentId);
 
-                // 댓글 목록 업데이트
+                // 댓글 삭제 후 -> 댓글 목록 업데이트 -> 화면 실시간 반영
                 const updatedComments = await getCommentsByProductId(productId);
+                // reverse -> 최신 댓글 최상단에 조회
                 setCommentList(updatedComments.reverse());
-
-            } catch (error) {
+            } 
+            catch (error) 
+            {
                 console.error(error);
             }
         }
@@ -36,8 +41,9 @@ export default function CommentList({ comments }) {
 
     // 댓글 수정 핸들러
     const handleEditButtonClick = (commentId) => {
-        setEditingCommentId(commentId); 
         
+        // setEditingCommentId에 매개변수 commentId를 주입 -> 댓글 수정 클릭 -> 해당 댓글의 commentId와 일치 -> 댓글 수정 창 오픈
+        setEditingCommentId(commentId); 
     };
 
 
@@ -111,7 +117,11 @@ export default function CommentList({ comments }) {
 
                     </div>
                     <div className="ml-8">
-                        <p>{comment.text}</p> {/* 기존 댓글 텍스트 */}
+                        {/* 기존 댓글 텍스트 */}
+                        <p>{comment.text}</p> 
+                        
+                        {/* 댓글 수정 박스 */}
+                        {/* 댓글 수정 클릭 -> setEditingCommentId의 commentId와 해당 댓글의 commentId가 일치 -> 댓글 수정 박스 오픈 */}
                         {editingCommentId === comment.id && (
                             <CommentEdit 
                                 comment={comment}
