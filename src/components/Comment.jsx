@@ -6,26 +6,18 @@ import CommentList from './CommentList';
 
 export default function Comment({ product }) {
 
-    // 사용자 입력 댓글
+    // 댓글 내용
     const [commentText, setCommentText] = useState('');
-    
     // 댓글 목록
     const [comments, setComments] = useState([]);
-
-    // 사용자가 댓글 입력창에 텍스트를 입력할 때 핸들러
-    const handleCommentChange = (event) => {
-        setCommentText(event.target.value);
-    };
-
-    // 사용자 uid, 사용자 정보 가져오기
+    // 사용자 uid, 사용자 정보 가져오기 -> useAuthContext
     const { uid, user } = useAuthContext();
 
     // 댓글 등록 버튼 클릭 핸들러
     const handleCommentSubmit = async () => {
-
-        // 빈 댓글이 아닌 경우만 처리
+        
+        // 빈 댓글이 아닌 경우일 시 -> 댓글 작성 처리
         if (commentText.trim() !== '') {
-            
             try 
             {
                 // 새 댓글 데이터 데이터베이스에 추가
@@ -41,6 +33,12 @@ export default function Comment({ product }) {
             } catch (error) {
                 console.error(error);
             }
+        }
+        
+        // 빈 댓글일 시 -> 에러 문구 표시
+        else {
+            alert('댓글 내용을 입력하세요')
+            return;
         }
     };
 
@@ -78,7 +76,7 @@ export default function Comment({ product }) {
                     type="text"
                     placeholder="댓글을 입력하세요..."
                     value={commentText}
-                    onChange={handleCommentChange}
+                    onChange={ (e) => setCommentText(e.target.value) }
                 />
                 {/* 댓글 등록 버튼 */}
                 <Button text={ '등록' } className="comment-submit-button" onClick={handleCommentSubmit} />
