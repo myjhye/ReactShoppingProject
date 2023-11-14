@@ -8,7 +8,7 @@ import { login, logout } from '../api/firebase';
 const authContext = createContext();
 
 
-//--- 로컬 스토리지에 최근에 본 상품 목록 저장
+// 로컬 스토리지에 최근에 본 상품 목록 저장
 const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
 
     // 로컬 스토리지에 최근에 본 상품 목록을 -> "recentlyViewed"키로 -> json 형식으로 저장
@@ -21,7 +21,7 @@ const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
 
 
 
-//--- 로컬 스토리지에서 최근에 본 상품 목록 가져오기
+// 로컬 스토리지에서 최근에 본 상품 목록 가져오기
 const getRecentlyViewedFromLocalStorage = () => {
     
     // 로컬 스토리지에서 "recentlyViewed" 키로 저장된 데이터 가져옴 
@@ -52,7 +52,7 @@ export function AuthContextProvider({ children }) {
 
 
 
-    //--- 사용자 로그인 상태 감지 -> 관리자 여부 화면에 전달
+    // 사용자 로그인 상태 감지 -> 관리자 여부 화면에 전달
     useEffect(() => {
         
         onUserStateChange((user) => {
@@ -64,7 +64,7 @@ export function AuthContextProvider({ children }) {
 
 
 
-    //--- 상품 데이터 가져오기
+    // 상품 데이터 가져오기
     useEffect(() => {
         
         getProducts()
@@ -79,7 +79,7 @@ export function AuthContextProvider({ children }) {
 
 
 
-    //--- 상품 클릭 시 로컬 스토리지에 저장 핸들러
+    // 상품 클릭 시 로컬 스토리지에 저장 핸들러
     const handleProductClick = (product) => {
         
         // product -> 유저가 클릭한 상품
