@@ -393,17 +393,20 @@ export async function removeFromCart(userId, productId) {
 // 댓글 작성
 export async function addNewComment(commentText, userId, productId, userPhotoUrl, userName) {
 
-    const commentRef = ref(database, 'comments');
-
-    const newCommentRef = push(commentRef);
-    const commentId = newCommentRef.key;
 
     const currentDate = new Date();
-    // 날짜를 yyyy/mm/dd 형식으로 변환
+    // 날짜 -> yyyy/mm/dd 형식으로 변환 -> 2023/11/15
     const formattedDate = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
-    // 시간을 hh:mm 형식으로 변환
+    // 시간 -> hh:mm 형식으로 변환 -> 01:30
     const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
 
+
+    // newCommentRef -> 데이터베이스 댓글 저장 위치
+    const newCommentRef = push(ref(database, 'comments'));
+    // commentId -> 댓글 고유 키 ->  firebase의 push함수 -> 새 데이터를 추가할 때마다 고유 키 생성 -> newCommentRef 레퍼런스에 대한 고유 키
+    const commentId = newCommentRef.key;
+
+    // newCommentData -> 새 댓글 정보 객체
     const newCommentData = {
         id: commentId,
         text: commentText,
@@ -414,6 +417,8 @@ export async function addNewComment(commentText, userId, productId, userPhotoUrl
         userName: userName,
     };
 
+
+    // newCommentRef(댓글 저장 위치)에 -> newCommentData(새 댓글 정보 객체) 저장
     await set(newCommentRef, newCommentData);
 }
 
