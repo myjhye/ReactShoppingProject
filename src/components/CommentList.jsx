@@ -13,11 +13,15 @@ export default function CommentList({ comments }) {
     // 댓글 목록 -> comments 참조 -> 같은 배열 객체 가진다 -> commentList, comments
     const [commentList, setCommentList] = useState(comments);
     // 수정 중인 댓글 id
-    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editingCommentId, setEditingCommentId] = useState('');
 
     // 댓글 삭제 핸들러
     const handleDeleteComment = async (commentId, productId) => {
         
+        // commentId -> 댓글 삭제용 , productId -> 댓글 조회용
+
+        // async 비동기 작업 -> 댓글 삭제 후 댓글 조회 -> 이 두 작업을 순서대로 처리하기 위해 async 사용
+
         if (window.confirm('삭제하시겠습니까?')) {
             
             try 
