@@ -494,11 +494,9 @@ export async function updateComment(commentId, updatedText) {
 // 댓글 좋아요
 export async function likeComment(commentId, userId) {
 
-    const likesRef = ref(database, `likes/${commentId}/${userId}`);
-    await set(likesRef, true);
+    await set(ref(database, `likes/${commentId}/${userId}`), true);
 
-    const commentRef = ref(database, `comments/${commentId}`);
-    await update(commentRef, { likes: increment(1) }); 
+    await update(ref(database, `comments/${commentId}`), { likes: increment(1) }); 
     
 }
 

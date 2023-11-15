@@ -51,35 +51,39 @@ export default function CommentList({ comments }) {
     };
 
 
-    // 댓글 좋아요 핸들러
+
+
+    // 댓글 좋아요 클릭 핸들러
     const handleLikeButtonClick = async (commentId, productId) => {
 
-        // 좋아요 증가 함수 호출
+        // likeComment -> 좋아요 증가 처리
         await likeComment(commentId, uid);
 
-        // 좋아요 수가 업데이트된 댓글 목록 가져오기
+        // 좋아요 증가 후 -> 댓글 목록 업데이트
         const updatedComments = await getCommentsByProductId(productId);
+        // reverse -> 최신 댓글 최상단에 조회
         setCommentList(updatedComments.reverse());
 
     }
 
 
 
-    //댓글 싫어요 핸들러
+    //댓글 싫어요 클릭 핸들러
     const handlDislikeButtonClick = async (commentId, productId) => {
 
-        // 싫어요 증가 함수 호출
+        // dislikeComment -> 싫어요 증가 처리 
         await dislikeComment(commentId, uid);
 
-        // 싫어요 수가 업데이트된 댓글 목록 가져오기
+        // 싫어요 수 증가 후 -> 댓글 목록 업데이트
         const updatedComments = await getCommentsByProductId(productId);
+        // reverse -> 최신 댓글 최상단에 조회
         setCommentList(updatedComments.reverse());
 
     }
 
 
 
-    // 댓글 목록이 변경 될 때마다(새 댓글이 입력 될 때마다) 댓글 목록 업데이트
+    // comments 배열이 변경 될 때마다 -> 새 댓글이 입력 될 때마다 -> 댓글 목록 업데이트 -> commentList를 comments 배열과 동일하게 설정
     useEffect(() => {
         setCommentList(comments);
     }, [comments]);
