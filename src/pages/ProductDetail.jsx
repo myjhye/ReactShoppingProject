@@ -16,9 +16,12 @@ export default function ProductDetail() {
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
 
-    const { uid, handleProductClick } = useAuthContext();
+    const { 
+        uid, 
+        handleProductClick 
+    } = useAuthContext();
     
-    // 선택된 옵션
+    // 선택된 옵션 -> 사이즈
     const [ selected, setSelected ] = useState(product.options[0]);
 
     
@@ -33,9 +36,9 @@ export default function ProductDetail() {
     const { data: cartData } = useQuery(['carts'], () => getCart(uid));
     
     // 선택된 제품과 옵션이 장바구니에 이미 있는지 확인 -> some 사용 -> findIndex도 가능(isProductInCart !== -1)
-    const isProductInCart = cartData && cartData.some((item) =>
-        item.id === product.id && item.option === selected
-    );
+    const isProductInCart = cartData
+        ? cartData.some(item => item.id === product.id && item.option === selected)
+        : false;
 
 
     // '장바구니에 추가' 버튼 클릭 핸들러
@@ -74,19 +77,16 @@ export default function ProductDetail() {
     // 특정 상품 북마크 데이터 가져옴
     const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(uid, product.id));
 
-    
-
-    
-    
     // 현재 유저가 해당 상품을 북마크한 상태면 -> isUserBookmarked가 true로 설정
     const isUserBookmarked = bookmarksData && Object.values(bookmarksData).some(bookmark => {
         return bookmark.uid === uid;
-      });
+    });
       
     
     // 상품 북마크 클릭 핸들러
     const handleBookmarkClick = async () => {
 
+        // 북마크가 이미 클릭된 상태면 해당 북마크 삭제
         if (isUserBookmarked) {
             
             await removeBookmark(uid, product.id);
@@ -123,45 +123,6 @@ export default function ProductDetail() {
     
 
 
-
-
-    //------------------- 비슷한 상품
-
-    const [similarProducts, setSimilarProducts] = useState([]);
-
-    useEffect(() => {
-        getSimilarProducts(product.category, product.gender)
-            .then((results) => {
-
-                console.log('results: ', results);
-                
-                // 현재 페이지 상품 제외 -> 비슷한 상품 id !== 현재 페이지 상품 id
-                const filteredResults = results.filter((similarProducts) => similarProducts.id !== product.id);
-
-                // 최대 4개까지 조회
-                const limitedResults = filteredResults.slice(0, 4);
-                setSimilarProducts(limitedResults);
-
-                console.log(similarProducts);
-            });
-    }, [product]);
-
-
-
-    // '댓글', '비슷한 상품' 탭 선택
-    const [selectedTab, setSelectedTab] = useState('댓글');
-
-    // '댓글' 탭 클릭 핸들러
-    const handleCommentTabClick = () => {
-        setSelectedTab('댓글');
-    };
-    
-    // '비슷한 상품' 탭 클릭 핸들러
-    const handleSimilarProductsTabClick = () => {
-        setSelectedTab('비슷한 상품');
-    };
-
-    
 
 
     return (
@@ -203,52 +164,12 @@ export default function ProductDetail() {
             </section>
 
 
-      <hr className="mt-20" />
+    <hr className="mt-20" />
 
-      {/* 탭 선택 버튼 */}
-      <div className="flex space-x-4 mt-20">
-        <button
-          onClick={handleCommentTabClick}
-          className={`${
-            selectedTab === "댓글" ? "bg-blue-500" : "bg-gray-300"
-          } px-4 py-2 rounded-lg text-white`}
-        >
-          댓글
-        </button>
-        <button
-          onClick={handleSimilarProductsTabClick}
-          className={`${
-            selectedTab === "비슷한 상품" ? "bg-blue-500" : "bg-gray-300"
-          } px-4 py-2 rounded-lg text-white`}
-        >
-          비슷한 상품
-        </button>
-      </div>
-
-      {/* 선택한 탭에 따른 컨텐츠 */}
-      {selectedTab === "댓글" && (
-        <Comment
-          product={product}
-        />
-      )}
-
-      {selectedTab === "비슷한 상품" && (
-        <div className="mt-4">
-        {similarProducts.length === 0 ? (
-            <p className="text-gray-500">비슷한 상품이 없습니다.</p>
-        ) : (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-            {similarProducts.map((similarProduct) => (
-                <ProductCard
-                    key={similarProduct.id}
-                    product={similarProduct}
-                    handleProductClick={handleProductClick}
-                />
-            ))}
-        </ul>
-        )}
-        </div>
-      )}
+    {/* 댓글 */}
+    <Comment
+        product={product}
+    />
 
     <div style={{ height: '400px' }}></div>
     </>
