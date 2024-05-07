@@ -1,9 +1,7 @@
-import React, { useRef, useState } from "react";
-import { FiShoppingBag } from 'react-icons/fi';
+import React from "react";
 import { BsFillPencilFill } from 'react-icons/bs';
 import { BiHelpCircle } from 'react-icons/bi';
-import { FaBookmark } from 'react-icons/fa';
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import User from "../User/User";
 import Button from "./ui/Button";
 import { useAuthContext } from "../context/AuthContext";
@@ -40,14 +38,6 @@ export default function Navbar() {
                 { user && (
                     <Link to='/carts'>
                         <CartStatus />
-                    </Link>
-                )}
-                { user && (
-                    <Link
-                        to='/bookmark' 
-                        className="text-2xl"
-                    >
-                        <FaBookmark />
                     </Link>
                 )}
                 { user && (

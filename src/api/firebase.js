@@ -467,44 +467,6 @@ export async function dislikeComment(commentId, userId) {
 
 
 
-////////////////// 북마크
-
-
-// 상품 북마크 추가
-export async function addBookmark(userId, product) {
-
-    return set(ref(database, `bookmarks/${ userId }/${ product.id }`), product);
-}
-
-
-// 상품 북마크 데이터 읽어오기
-export async function getBookmarks(userId) {
-
-    return get(ref(database, `bookmarks/${ userId }`))
-        .then((snapshot) => {
-            const items = snapshot.val() || {};
-
-            return Object.values(items);
-        })
-}
-
-
-
-
-// 북마크 삭제
-export async function removeBookmark(userId, productId) {
-
-    return remove(ref(database, `bookmarks/${ userId }/${ productId }`));
-}
-
-
-
-
-
-
-
-
-
 //--------------------- 문의 사항
 
 

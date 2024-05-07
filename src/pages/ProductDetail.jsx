@@ -1,32 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
 import Button from "../components/ui/Button";
-import { addBookmark, addOrUpdateToCart, getBookmarks, getCart, removeBookmark } from "../api/firebase";
+import { addOrUpdateToCart, getCart } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 import Comment from "../components/Comment";
-import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
-import DefaultButton from "../components/ui/DefaultButton";
 import { formatAgo } from "../components/util/date";
-import { getSimilarProducts } from "../api/firebase";
-import ProductCard from "../components/ProductCard";
 
 export default function ProductDetail() {
 
     // 현재 페이지 컴포넌트에서 사용할 product 정보를 가져옴
     const { state: { product } } = useLocation();
 
-    const { 
-        uid, 
-        handleProductClick 
-    } = useAuthContext();
+    const { uid } = useAuthContext();
     
     // 선택된 옵션 -> 사이즈
     const [ selected, setSelected ] = useState(product.options[0]);
 
     
     
-
 
     
     //------------------- 장바구니
@@ -68,70 +60,13 @@ export default function ProductDetail() {
     }
 
 
-
-
-
-    //------------------- 북마크
-
-
-    // 특정 상품 북마크 데이터 가져옴
-    const { data: bookmarksData } = useQuery(['bookmarks'], () => getBookmarks(uid, product.id));
-
-    // 현재 유저가 해당 상품을 북마크한 상태면 -> isUserBookmarked가 true로 설정
-    const isUserBookmarked = bookmarksData && Object.values(bookmarksData).some(bookmark => {
-        return bookmark.uid === uid;
-    });
-      
-    
-    // 상품 북마크 클릭 핸들러
-    const handleBookmarkClick = async () => {
-
-        // 북마크가 이미 클릭된 상태면 해당 북마크 삭제
-        if (isUserBookmarked) {
-            
-            await removeBookmark(uid, product.id);
-            
-            alert('북마크가 삭제되었습니다');
-
-        } else {
-            const products = {
-                id: product.id,
-                image: product.image,
-                title: product.title,
-                price: product.price,
-                option: selected,
-                uid: uid
-            };
-
-            // 북마크에 제품 추가
-            addBookmark(uid, products);
-
-            alert('북마크가 추가되었습니다');
-        }
-    }
-
-
-    // 북마크가 클릭된 상태면 <FaBookmark /> 사용, 아니면 <FaRegBookmark /> 사용
-    const bookmarkIcon = isUserBookmarked ? <FaBookmark /> : <FaRegBookmark />;
-    const buttonText = (
-        <span className="flex items-center justify-center">
-            {bookmarkIcon}
-            <span className="ml-2">{bookmarksData ? bookmarksData.length : 0}</span>
-            <span className="ml-2">관심상품</span>
-        </span>
-    );
-    
-
-
-
-
     return (
         <>
             <p className="mx-12 mt-4 text-gray-700">{ product.category } / { product.gender } - {formatAgo(product.date, 'ko')} 등록</p>
             <section className="flex flex-col md:flex-row p-4 mt-10">
                 <img className="max-w-xl mx-auto px-4" src={product.image} alt={product.title} />
                 <div className="w-full basis-5/12 flex flex-col p-4">
-                    <h2 className="text-3xl font-bold py-2">{ product.title }</h2>
+                    <h2 className="text-3xl font-bold py-2">{product.title}</h2>
                     <p className="text-2xl font-bold py-2 border-b border-gray-400">{`${product.price.toLocaleString()}원`}</p>
                     <p className="py-4 text-lg">{ product.description }</p>
                     <div className="flex items-center">
@@ -142,24 +77,17 @@ export default function ProductDetail() {
                             onChange={ (e) => setSelected(e.target.value) }
                             value={ selected }
                         >
-                            { product.options.map((option, index) => (
-                                <option key={ index }>
-                                    { option }
+                            {product.options.map((option, index) => (
+                                <option key={index}>
+                                    {option}
                                 </option>
                             ))}
                         </select>
                     </div>
                     <Button 
                         text='장바구니에 추가'
-                        onClick={ handleClick }
+                        onClick={handleClick}
                     />
-
-                    <div>
-                        <DefaultButton 
-                            text={buttonText}
-                            onClick={handleBookmarkClick}
-                        />
-                    </div>
                 </div>
             </section>
 
