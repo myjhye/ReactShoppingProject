@@ -17,23 +17,23 @@ export default function Search() {
     // 검색어
     const [searchTerm, setSearchTerm] = useState("");
 
-    // 검색 기록
-    const { searchHistory, setSearchHistory } = useSearchHistory();
-
-    // 검색 결과
-    const { setSearchResults } = useAuthContext();
-
     // 검색어 자동 완성 결과
     const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
     
     // 검색 기록 창 열고 닫기
-    const [isSearchHistoryOpen, setIsSearchHistoryOpen] = useState(false);
+    const [showSearchHistory, setShowSearchHistory] = useState(false);
 
     // 검색어 자동 완성 창 열고 닫기 
     const [showAutoComplete, setShowAutoComplete] = useState(false);
     
     // 현재 선택된 자동 완성 검색어 인덱스
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+    // 검색 기록
+    const { searchHistory, setSearchHistory } = useSearchHistory();
+
+    // 검색 결과
+    const { setSearchResults } = useAuthContext();
 
     
 
@@ -46,18 +46,19 @@ export default function Search() {
   //----------------------
 
 
-    // 검색 창 내부 클릭 -> 검색 기록 창 열기
+    // 검색 창 내부 클릭 -> 자동 완성 창 & 검색 기록 창 열기
     const handleInputClick = () => {
 
-
+        // 검색어 입력 중일 때 자동 완성 창 열기 
         if (searchTerm) {
 
-          setIsSearchHistoryOpen(false);
+          setShowSearchHistory(false);
           setShowAutoComplete(true);
 
+        // 검색어 없으면 검색 기록 창 열기
         } else {
 
-          setIsSearchHistoryOpen(true);
+          setShowSearchHistory(true);
         }
          
     }
@@ -74,9 +75,8 @@ export default function Search() {
          // 클릭한 곳이 검색 창(inputRef) 외부라면
          if (!inputRef.current || !inputRef.current.contains(e.target)) {
             
-            
              // 검색 기록 창 닫기
-             setIsSearchHistoryOpen(false);
+             setShowSearchHistory(false);
          }
      }
 
@@ -155,61 +155,52 @@ export default function Search() {
 
     // 검색 실행 핸들러
     const handleSearch = async () => {
-
+        
+        const trimmedSearchTerm = searchTerm.trim();
+        
         // 검색어가 있는 경우만 실행
-        if (searchTerm) {
-
+        if (trimmedSearchTerm !== '') {
+            
             // 기존 검색 기록에서 현재 검색어의 순서 확인
-            const index = searchHistory.indexOf(searchTerm);
-
+            const index = searchHistory.indexOf(trimmedSearchTerm);
+    
             // 기존 검색어와 동일한 검색어가 있다면 -> 기존 검색 기록에 검색어가 없으면 -1
             if (index !== -1) {
-                
                 const updatedHistory = [...searchHistory];
-
                 // 해당 검색어를 검색 기록에서 제거
                 updatedHistory.splice(index, 1);
-
                 setSearchHistory(updatedHistory);
             }
     
-
             // 신규 검색어를 맨 앞에 추가하고 중복 제거
             const updatedHistory = [
-                
-                searchTerm, 
-                ...searchHistory.filter((item) => item !== searchTerm)
-            
-            ].slice(0, 5); 
-            
-
+                trimmedSearchTerm,
+                ...searchHistory.filter((item) => item !== trimmedSearchTerm)
+            ].slice(0, 5);
+    
             // 쿠키에 업데이트 된 검색 기록 저장 -> 유효기간 30일
             setCookie("searchItem", updatedHistory.join(','), 30);
-
+    
             // 업데이트된 검색 기록 -> 상태에 저장
             setSearchHistory(updatedHistory);
     
             // 검색 결과를 가져옴 -> 상태에 저장
-            const results = await searchProductByName(searchTerm);
-            
+            const results = await searchProductByName(trimmedSearchTerm);
             setSearchResults(results);
+            
+        } else {
+            // 검색어가 없는 경우 또는 공백만 입력된 경우
+            alert('검색어를 입력하세요');
+            return;
         }
-
-
-        // 검색어가 없는 경우
-        else if (!searchTerm) {
-
-          alert('검색어를 입력하세요');
-
-          return;
-        }
-
+    
         // 검색 결과 페이지로 이동
-        navigate(`/search/${searchTerm}`);
-
+        navigate(`/search/${trimmedSearchTerm}`);
+    
         // 검색 기록 창 닫기
-        setIsSearchHistoryOpen(false);
-    }
+        setShowSearchHistory(false);
+    };
+  
 
 
 
@@ -267,7 +258,7 @@ export default function Search() {
       if (trimmedInput.length <= 1) {
 
         // 검색 기록 창, 자동 완성 검색어 창 닫기
-        setIsSearchHistoryOpen(false);
+        setShowSearchHistory(false);
         setShowAutoComplete(false);
 
 
@@ -442,7 +433,7 @@ export default function Search() {
 
 
       {/* 검색어 기록 */}
-      {isSearchHistoryOpen && (
+      {showSearchHistory && (
         <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
           <ul className="list-none p-0">
             {searchHistory.map((item, index) => (

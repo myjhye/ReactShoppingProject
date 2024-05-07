@@ -31,10 +31,10 @@ export default function Products() {
     // 상품 목록 정렬 -> 가격, 날짜
     const [sortedProducts, setSortedProducts] = useState(null);
     
-    // 선택된 상품
+    // 선택된 상품 -> sorting
     const [selectedCategory, setSelectedCategory] = useState(null);
     
-    // 선택된 성별
+    // 선택된 성별 -> sorting
     const [selectedGenderCategory, setSelectedGenderCategory] = useState(null);
     
     // 스크롤 시 화면 최상단 이동하는 버튼 보이기 유무
@@ -48,9 +48,7 @@ export default function Products() {
 
     
     
-//--------------------
-
-
+//-------------------- 최근 본 상품
 
 
     // 상품 클릭시 로컬 스토리지에 저장 실행 -> setRecentlyViewedToLocalStorage
@@ -65,16 +63,13 @@ export default function Products() {
 
 
     // 최근에 본 상품 전체 삭제
-    const clearRencentlyViewed = () => {
-
+    const clearRecentlyViewed = () => {
 
         // 최근에 본 상품 목록 빈 배열로 초기화
         const updatedRecentlyViewed = [];
 
-
         // 로컬 스토리지에 초기화된 목록 저장
         setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-
 
         // 최근 본 목록 상태 변수에 초기화된 목록 저장
         setRecentlyViewed(updatedRecentlyViewed);
@@ -316,7 +311,7 @@ export default function Products() {
                     <h2 className="mb-2">최근에 본 상품</h2>
                     <button 
                         className="text-sm text-blue-500"
-                        onClick={clearRencentlyViewed}
+                        onClick={clearRecentlyViewed}
                     >
                         전체 삭제
                     </button>
@@ -330,7 +325,7 @@ export default function Products() {
                                 <img 
                                     src={product.image} 
                                     alt={product.title}
-                                    className="w-24 h-24 object-cover rounded-lg" 
+                                    className="w-24 h-24 object-cover rounded-lg cursor-pointer" 
                                     onClick={() => { navigate(`/products/${product.id}`, { state: { product } }); }}
                                 />
                             </li>

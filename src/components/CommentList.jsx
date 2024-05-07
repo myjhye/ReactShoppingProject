@@ -3,14 +3,13 @@ import { useAuthContext } from '../context/AuthContext';
 import { deleteComment, dislikeComment, getCommentsByProductId, likeComment } from '../api/firebase';
 import CommentEdit from './CommentEdit';
 import { LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
-import { MdThumbUp, MdThumbDown } from 'react-icons/md';
 
 // 댓글 목록
 export default function CommentList({ comments }) {
 
     const { uid } = useAuthContext();
 
-    // 댓글 목록 -> comments 참조 -> 같은 배열 객체 가진다 -> commentList, comments
+    // 댓글 목록 -> comments 참조 -> commentList = comments
     const [commentList, setCommentList] = useState(comments);
     // 수정 중인 댓글 id
     const [editingCommentId, setEditingCommentId] = useState('');
@@ -26,7 +25,7 @@ export default function CommentList({ comments }) {
             
             try 
             {
-                // deleteComment -> 댓글 삭제 처리
+                //** 댓글 삭제 처리
                 await deleteComment(commentId);
 
                 // 댓글 삭제 후 -> 댓글 목록 업데이트 -> 화면 실시간 반영
@@ -56,7 +55,7 @@ export default function CommentList({ comments }) {
     // 댓글 좋아요 클릭 핸들러
     const handleLikeButtonClick = async (commentId, productId) => {
 
-        // likeComment -> 좋아요 증가 처리
+        //** 좋아요 증가 처리
         await likeComment(commentId, uid);
 
         // 좋아요 증가 후 -> 댓글 목록 업데이트
@@ -71,7 +70,7 @@ export default function CommentList({ comments }) {
     //댓글 싫어요 클릭 핸들러
     const handlDislikeButtonClick = async (commentId, productId) => {
 
-        // dislikeComment -> 싫어요 증가 처리 
+        //** 싫어요 증가 처리 
         await dislikeComment(commentId, uid);
 
         // 싫어요 수 증가 후 -> 댓글 목록 업데이트
@@ -83,14 +82,10 @@ export default function CommentList({ comments }) {
 
 
 
-    // comments 배열이 변경 될 때마다 -> 새 댓글이 입력 될 때마다 -> 댓글 목록 업데이트 -> commentList를 comments 배열과 동일하게 설정
+    // comments 배열이 변경 될 때마다(새 댓글이 입력 될 때마다) -> 댓글 목록 업데이트 -> commentList를 comments 배열과 동일하게 설정
     useEffect(() => {
         setCommentList(comments);
     }, [comments]);
-
-
-
-
 
 
     return (

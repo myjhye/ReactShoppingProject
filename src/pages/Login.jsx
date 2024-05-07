@@ -88,8 +88,12 @@ export default function Login() {
                     <button 
                         type="submit" 
                         className="w-full bg-red-500 text-white py-2 rounded-md hover:brightness-110 mb-5"
-                    >로그인</button>
-                    아이디가 없으신가요?
+                    >
+                        로그인
+                    </button>
+                    <span>
+                        아이디가 없으신가요?
+                    </span>
                     <Link
                         to='/signup'
                         className="text-blue-500 cursor-pointer"

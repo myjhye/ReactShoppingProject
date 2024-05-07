@@ -29,7 +29,7 @@ export default function CartItem({ product, uid }) {
             // 장바구니의 상품 정보(수량) 업데이트 -> addOrUpdateToCart 함수로 서버에 변경된 상품 정보를 저장
             await addOrUpdateToCart(uid, updatedProduct);
     
-            // 해당 상품 정보(수량) 업데이트 (**단일 상품) -> 화면 반영 
+            // 해당 상품 정보(수량) 업데이트 -> 화면 반영(**단일 상품) 
             setProductState(updatedProduct);
         },
         {

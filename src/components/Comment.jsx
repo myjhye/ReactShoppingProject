@@ -4,13 +4,14 @@ import { addNewComment, getCommentsByProductId } from '../api/firebase';
 import { useAuthContext  } from '../context/AuthContext';
 import CommentList from './CommentList';
 
+// 댓글 전체 아이템 -> 댓글 박스, 입력 버튼, 댓글 개수 텍스트....
 export default function Comment({ product }) {
 
     // 댓글 내용
     const [commentText, setCommentText] = useState('');
-    // 댓글 목록
+    // 댓글 목록 -> 전체
     const [comments, setComments] = useState([]);
-    // 사용자 정보 가져오기 -> useAuthContext
+    // 유저 정보
     const { user } = useAuthContext();
 
     // 댓글 등록 버튼 클릭 핸들러
@@ -21,8 +22,14 @@ export default function Comment({ product }) {
             
             try 
             {
-                // addNewComment -> 새 댓글 작성 처리
-                await addNewComment(commentText, user.uid, product.id, user.photoURL, user.displayName);
+                //**새 댓글 작성 처리
+                await addNewComment(
+                    commentText, 
+                    user.uid, 
+                    product.id, 
+                    user.photoURL, 
+                    user.displayName
+                );
                 
                 // 댓글 등록 후 -> 댓글 목록 업데이트 -> 화면 실시간 반영
                 const updatedComments = await getCommentsByProductId(product.id);
@@ -50,10 +57,11 @@ export default function Comment({ product }) {
     // 컴포넌트 마운트 시 -> 컴포넌트가 화면에 나타날 때 -> 댓글 가져오기
     useEffect(() => {
         
+        //** 댓글 읽어오기
         const fetchComments = async () => {
-
             try 
             {
+                // 댓글 읽어오기
                 const commentData = await getCommentsByProductId(product.id);
                 // 최신 댓글이 최상단에 보이게
                 setComments(commentData.reverse()); 
@@ -87,7 +95,11 @@ export default function Comment({ product }) {
                     onChange={ (e) => setCommentText(e.target.value) }
                 />
                 {/* 댓글 등록 버튼 */}
-                <Button text={ '등록' } className="comment-submit-button" onClick={ handleCommentSubmit } />
+                <Button 
+                    text={ '등록' } 
+                    className="comment-submit-button" 
+                    onClick={ handleCommentSubmit } 
+                />
             </div>
 
             
