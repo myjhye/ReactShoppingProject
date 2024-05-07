@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; // Import the necessary hooks
-import { addOrUpdateToCart, getCart, getProducts, removeFromCart } from "../api/firebase";
-import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query"; // Import the necessary hooks
+import { addOrUpdateToCart, removeFromCart } from "../api/firebase";
 
 export default function CartItem({ product, uid }) {
 
-    // 현재 상품 상태 상태관리    
+    // 상품의 현재 상태
     const [productState, setProductState] = useState(product);
 
     // query client 인스턴스
     const queryClient = useQueryClient();
 
-    // 수량 감소하는 useMutation 훅 사용
+    // 상품 수량 감소 처리하는 mutation
     const handleMinus = useMutation(
         async () => {
             // 수량이 1 이하일 때 감소 중단
@@ -27,21 +26,22 @@ export default function CartItem({ product, uid }) {
                 quantity: productState.quantity - 1,
             };
     
-            // firebase api로 장바구니의 상품 업데이트
+            // 장바구니의 상품 정보(수량) 업데이트 -> addOrUpdateToCart 함수로 서버에 변경된 상품 정보를 저장
             await addOrUpdateToCart(uid, updatedProduct);
     
-            // 상품 상태 업데이트
+            // 해당 상품 정보(수량) 업데이트 (**단일 상품) -> 화면 반영 
             setProductState(updatedProduct);
         },
         {
-            // 성공 시 실행되는 콜백
+            // 서버에서 데이터 변경 작업 완료 후 실행 -> 비낙관적 업데이트(응답 후에 화면 반영) -> 장바구니 전체 상품(**)
             onSuccess: () => {
-                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 => 변경 데이터를 실시간으로 화면에 반영
+                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
                 queryClient.invalidateQueries("cart");
             },
         }
     );
     
+    // 상품 수량 증가 처리하는 mutation
     const handlePlus = useMutation(
         async () => {
             const updatedProduct = {
@@ -56,19 +56,20 @@ export default function CartItem({ product, uid }) {
         {
             // 성공 시 실행되는 콜백
             onSuccess: () => {
-                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영
+                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
                 queryClient.invalidateQueries("cart");
             },
         }
     );
     
-    const handleDelete = useMutation(
 
-        // (productid): 장바구니 제품을 삭제하는 데 필요한 productId 매개변수로 전달
-        (productId) => removeFromCart(uid, productId), 
+    
+    // 상품 삭제 처리하는 mutation
+    // (productid): 장바구니 제품을 삭제하는 데 필요한 productId 매개변수로 전달
+    const handleDelete = useMutation((productId) => removeFromCart(uid, productId), 
         {
             onSuccess: () => {
-                // 카트 데이터 쿼리 무효화하고 다시 불러와서 실시간 변경을 반영
+                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
                 queryClient.invalidateQueries("cart");
             },
         }
