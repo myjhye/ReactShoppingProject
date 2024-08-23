@@ -218,14 +218,14 @@ export async function addNewProduct(id, product, imageUrl, userId) {
     const currentDate = new Date();
 
     // 상품을 데이터베이스에 추가
+    // ref: 경로 참조해서 가져오기
+    // set: 해당 경로에 데이터 추가
     set(ref(database, `products/${ id }`), {
-        
 
-        // 기존 상품 정보 가져옴 -> 기존 상품 정보를 유지하면서 새 정보를 추가하려고
+        // 기존 상품 가져오기(스프레드 연산자 사용: 기존 데이터에 신규 데이터 추가)
         ...product,
 
-        
-        // 추가하려는 정보 -> 고유상품id, 사용자id, 가격(문자열 -> 정수), 이미지url, 등록날짜 
+        // 추가하려는 정보 -> 고유 상품 아이디, 고유 사용자 아이디, 가격(문자열 -> 정수), 이미지 url, 등록 날짜 
         id: id,
         uid: userId,
         price: parseInt(product.price),

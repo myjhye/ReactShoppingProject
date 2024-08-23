@@ -1,3 +1,5 @@
+// 상품 생성
+
 import React, { useState } from "react";
 import Button from "../components/ui/Button";
 import { uploadImage } from "../api/uploader";
@@ -15,7 +17,7 @@ export default function NewProduct() {
   const { uid } = useAuthContext();
   const currentDate = new Date();
   
-  // 상품 아이디 -> 랜덤 생성
+  // 고유 상품 아이디 -> 랜덤 생성
   const id = uuid();
 
   // 새로 등록하는 상품 객체
@@ -40,41 +42,40 @@ export default function NewProduct() {
 
 
 
-  //--- 입력 값 변경 핸들러
+  // 입력 값 변경 핸들러
   const handleChange = (e) => {
 
-    // 이벤트에서 필요한 정보 추출
-    const { name, value, files, checked } = e.target;
+    const target = e.target;
 
     // 이미지 파일 선택 시
-    if (name === "file") {
+    if (target.name === "file") {
       
       // 선택한 이미지 파일을 'file' 상태로 설정
-      setFile(files && files[0]);
+      setFile(target.files && target.files[0]);
 
       return;
     }
 
     // 사이즈 옵션 체크박스 처리
-    if (name === "options") {
+    if (target.name === "options") {
 
       // 새로운 사이즈 옵션 배열 생성
-      const updatedOptions = checked
+      const updatedOptions = target.checked
 
         // 체크된 상태면 옵션 추가
-        ? [...product.options, value]
-        // 미체크시 해당 옵션 제거
-        : product.options.filter((option) => option !== value);
+        ? [...product.options, target.value]
+        // 미체크시 해당 옵션 제거 (filter 사용: 배열에서 특정 값 제거)
+        : product.options.filter((option) => option !== target.value);
 
 
       // 옵션을 "XS", "S", "M", "L", "XL" 순서로 정렬하고 업데이트
+      // 사용자가 선택한 옵션들(updatedOptions)를 특정 순서("XS", "S", "M", "L", "XL")대로 유지해 새 배열(sortedOptions) 만들기
+      // filter 사용: 배열에서 주어진 조건을 만족하는 요소들만 선택해 새 배열 만들기
       const sortedOptions = ["XS", "S", "M", "L", "XL"].filter((option) =>
         updatedOptions.includes(option)
       );
 
-
-
-      // product 정보 업데이트 -> 사이즈옵션
+      // 빈 상품 값(product)에 선택한 options(sortedOptions) 추가
       setProduct((product) => ({
         ...product,
         options: sortedOptions,
@@ -84,11 +85,11 @@ export default function NewProduct() {
     }
 
 
-    // 나머지 입력 필드 처리 -> 상품명, 가격, 설명 등
+    // 나머지 입력 필드 처리(sortedOptions 외 다른 상품 값들 업데이트) -> 상품명, 가격, 설명 등
     setProduct((product) => ({
       ...product,
-      // 해당 필드를 업데이트 해서 새 product 정보 생성
-      [name]: value,
+      // 입력한 필드 값을 상태에 반영
+      [target.name]: target.value,
     }));
   };
 
@@ -96,19 +97,24 @@ export default function NewProduct() {
 
 
 
-  //--- 제품 등록 폼 제출 핸들러
+  // 제품 등록
   const handleSubmit = (e) => {
 
     e.preventDefault();
 
-    // 이미지 업로드 중임을 표시
+    // 이미지 업로드 중 표시
     setIsUploading(true);
 
 
-    // 이미지 업로드 후 url을 받아와서 -> firebase에 제품 정보 추가
+    // 이미지 업로드한 파일을 url로 받아와서 -> firebase에 제품 정보 추가
+    // file: 사용자가 선택한 이미지 파일
     uploadImage(file)
       .then((url) => {
         // 상품 추가
+        // id: 고유 상품 아이디
+        // product: 사용자가 입력한 상품 정보 객체
+        // url: 업로드된 이미지 파일 url
+        // uid: 현재 로그인한 사용자 고유 아이디
         addNewProduct(id, product, url, uid)
           .then(() => {
             navigate("/");
@@ -123,7 +129,8 @@ export default function NewProduct() {
 
 
 
-
+  // 필수 항목(사이즈, 성별, 카테고리) 모두 선택했는지 확인
+  // 하나 이상 옵션이 포함되면 true, 아니면 false
   const isOptionsSelected = product.options.length > 0;
   const isGenderSelected = product.gender.length > 0;
   const isCategorySelected = product.category.length > 0;
@@ -135,8 +142,8 @@ export default function NewProduct() {
   return (
     <section className="w-full text-center">
       <h2 className="text-2xl font-bold my-4">새로운 제품 등록</h2>
-      {success && <p className="my-2">{success}</p>}
 
+      {/* 이미지 미리보기 */}
       {file && (
         <img
           className="w-96 mx-auto mb-2"
@@ -145,7 +152,10 @@ export default function NewProduct() {
         />
       )}
 
-      <form className="flex flex-col px-12" onSubmit={handleSubmit}>
+      <form 
+        className="flex flex-col px-12" 
+        onSubmit={handleSubmit}
+      >
         <input
           type="file"
           accept="image/*"
@@ -332,7 +342,9 @@ export default function NewProduct() {
             disabled={isUploading}
           />
         ) : (
-          <p className="text-red-500">모든 필수 선택 사항을 완료 해주세요</p>
+          <p className="text-red-500">
+            모든 필수 선택 사항을 완료 해주세요
+          </p>
         )}
       </form>
     </section>
