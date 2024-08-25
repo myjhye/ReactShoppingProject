@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
-import { addOrUpdateToCart, getCart } from "../api/firebase";
+import { addOrUpdateToCart, getCart, removeProductAndCartData } from "../api/firebase";
 import { useQuery } from "@tanstack/react-query";
 import Comment from "../components/Comment";
 import { formatAgo } from "../components/util/date";
@@ -16,6 +16,7 @@ export default function ProductDetail() {
     
     // 선택된 옵션 -> 사이즈
     const [ selected, setSelected ] = useState(product.options[0]);
+    const navigate = useNavigate();
 
     
     
@@ -33,7 +34,7 @@ export default function ProductDetail() {
         : false;
 
 
-    // '장바구니에 추가' 버튼 클릭 핸들러
+    // '장바구니에 추가' 실행
     const handleClick = () => {
 
         if(isProductInCart) 
@@ -58,6 +59,17 @@ export default function ProductDetail() {
             alert('제품이 장바구니에 추가 되었습니다!');
         }
     }
+
+    // 내 제품 삭제 실행
+    const handleDelete = async () => {
+        const confirmed = window.confirm('정말로 이 제품을 삭제하시겠습니까?');
+        if (confirmed) {
+            await removeProductAndCartData(uid, product.id);
+            alert('제품이 삭제되었습니다.');
+            navigate('/');
+        }
+    };
+
 
 
     return (
@@ -88,6 +100,15 @@ export default function ProductDetail() {
                         text='장바구니에 추가'
                         onClick={handleClick}
                     />
+                    {/* 내 제품 삭제 */}
+                    {product.uid === uid && (
+                        <button
+                            onClick={handleDelete}
+                            className="bg-white text-black border border-black py-2 px-4 mt-2 rounded-lg hover:brightness-110"
+                        >
+                            상품 삭제
+                        </button>
+                    )}
                 </div>
             </section>
 
