@@ -57,9 +57,7 @@ export default function Navbar() {
                     </Link>
                 )}
                 { user && (
-                    <Link to='/myProduct'>
-                        <User user={ user } />
-                    </Link>
+                    <User user={ user } />
                 )}
                 {!user && <FcGoogle className="text-4xl cursor-pointer" onClick={login} />}
                 {!user && (

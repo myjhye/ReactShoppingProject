@@ -11,8 +11,6 @@ import ProductDetail from './pages/ProductDetail';
 import MyCart from './pages/MyCart';
 import ProtectedRoute from './pages/ProtectedRoute';
 import ProtectedRouteLoggedIn from './pages/ProtectedRouteLoggedIn'
-import MyProduct from './pages/MyProduct';
-import EditMyProduct from './pages/EditMyProduct';
 import ProductSearch from './pages/ProductSearch';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
@@ -77,26 +75,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/myProduct',
-        element: (
-          <ProtectedRoute>
-            <MyProduct />
-          </ProtectedRoute>
-        )
-      },
-      {
         path: '/myComment',
         element: (
           <ProtectedRoute>
             <MyComment />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: '/edit/:id',
-        element: (
-          <ProtectedRoute>
-            <EditMyProduct />
           </ProtectedRoute>
         )
       },
