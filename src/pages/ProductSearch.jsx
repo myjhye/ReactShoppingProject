@@ -1,3 +1,5 @@
+// 검색 결과 페이지
+
 import React, { useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import Button from "../components/ui/Button";

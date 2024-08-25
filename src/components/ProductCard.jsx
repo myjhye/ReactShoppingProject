@@ -12,8 +12,10 @@ export default function ProductCard({ product }) {
     return (
         <li
             onClick={() => {
-                handleProductClick(product); // 최근 본 상품 목록 업데이트
-                navigate(`/products/${product.id}`, { state: { product } }); // 페이지 이동
+                // 최근 본 상품 목록 업데이트
+                handleProductClick(product);
+                // 페이지 이동 
+                navigate(`/products/${product.id}`, { state: { product } }); 
             }}
             className="rounded-lg shadow-md overflow-hidden cursor-pointer"
         >

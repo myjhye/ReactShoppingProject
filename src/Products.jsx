@@ -224,32 +224,16 @@ export default function Products() {
 //-------------------- 필터
 
 
-
-    // 필터된 상품 목록
-    const filteredProducts = (selectedCategory || selectedGenderCategory)
-        
-        // sortedProduct 없으면 products 배열로 필터링
-        ? (sortedProducts || products).filter((product) => {
-
-            // !selectedCategory -> 선택한 카테고리 없음 -> 자동으로 true 됨
-            // product.category === selectedCategory -> 상품 카테고리가 선택한 카테고리와 일치하는지 -> 일치하면 true
-            const categoryMatch = !selectedCategory || product.category === selectedCategory;
-            const genderCategoryMatch = !selectedGenderCategory || product.gender === selectedGenderCategory;
-
-            // 두 카테고리가 선택한 카테고리와 일치할 경우 -> 둘 다 true 일 경우 -> 결과 목록 반환
-            return categoryMatch && genderCategoryMatch;
-        })
-
-        // selectedCategory나 selectedGenderCategory 버튼 클릭 안 해서 -> 필터링 안 함
-        // sortedProducts 없으면 -> products 배열 사용
-        : sortedProducts || products;
-
-
-    // selectedCategory나 selectedGenderCategory 버튼 클릭 -> 필터링을 함 -> filteredProducts에 할당 -> 둘 다 클릭 안 하면 필터링 안 함
-
-
-
-
+     // 선택된 상품, 성별 카테고리 기반으로 필터링된 상품 목록 생성
+     const filteredProducts = (selectedCategory || selectedGenderCategory)
+     // 가격, 날짜 정렬된 데이터나 기본 데이터로 카테고리, 성별 필터링
+     ? (sortedProducts || products).filter((product) => {
+         // true: 모두 허용(필터링 통과)
+         const categoryMatch = selectedCategory ? product.category === selectedCategory : true;
+         const genderCategoryMatch = selectedGenderCategory ? product.gender === selectedGenderCategory : true;
+         return categoryMatch && genderCategoryMatch;
+     })
+     : sortedProducts || products;
 
 
 
@@ -278,7 +262,6 @@ export default function Products() {
                     />
                 </div>
 
-                {/* Rest of the content */}
                 <div className="flex-grow w-0">
                     {isLoading ? (
                         <p>Loading...</p>
@@ -287,10 +270,12 @@ export default function Products() {
                     ) : (
                         <div>
                             {filteredProducts.length === 0 ? (
-                                <p>해당 상품이 없습니다</p>
+                                <p>조회되는 상품이 없습니다</p>
                             ) : (
                                 <>
-                                    <div>상품 {filteredProducts.length}개</div>
+                                    <div>
+                                        상품 {filteredProducts.length}개
+                                    </div>
                                     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                                         {filteredProducts.map((product) => (
                                             <ProductCard

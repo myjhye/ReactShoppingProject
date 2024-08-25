@@ -1,3 +1,5 @@
+// 검색 바
+
 import { useEffect, useRef, useState } from "react";
 import Button from "./ui/Button";
 import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
@@ -62,9 +64,6 @@ export default function Search() {
         }
          
     }
-
-
-
 
 
 
@@ -148,12 +147,7 @@ export default function Search() {
 
 
 
-
-    
-
-
-
-    // 검색 실행 핸들러
+    // 검색 실행
     const handleSearch = async () => {
         
         const trimmedSearchTerm = searchTerm.trim();
@@ -202,11 +196,6 @@ export default function Search() {
     };
   
 
-
-
-
-
-
     // 검색 기록 삭제 핸들러
     const handleDeleteSearchHistory = (term, e) => {
 
@@ -223,170 +212,13 @@ export default function Search() {
 
 
 
-
-
-    // 검색 기록 항목 클릭 -> 해당 검색어로 검색 실행
-    const handleSuggestionOrHistoryClick = async (term) => {
-        
-        setSearchTerm(term);
-
-        // 검색 결과 가져와서 상태에 저장
-        const results = await searchProductByName(term);
-        setSearchResults(results);
-
-        // 검색 결과 페이지로 이동
-        navigate(`/search/${term}`);
-        
-    };
-
-
-
-  
-
-    // 유저가 검색어 입력 필드에 텍스트 입력 시 호출
-    const handleInputChange = async (e) => {
-
-      // 입력 텍스트 가져오기
-      const inputText = e.target.value;
-
-      // 검색어 상태 업데이트
-      setSearchTerm(inputText);
-
-      const trimmedInput = inputText.trim();
-
-      // 입력 단어가 없을 시
-      if (trimmedInput.length <= 1) {
-
-        // 검색 기록 창, 자동 완성 검색어 창 닫기
-        setShowSearchHistory(false);
-        setShowAutoComplete(false);
-
-
-
-      // 입력 단어가 있을 시  
-      } else {
-
-        // api에서 상품 목록 -> 상품 제목 가져와서
-        const products = await getProducts();
-        const productTitles = products.map((product) => product.title);
-    
-
-        // 입력된 검색어를 포함하는 상품 제목을 필터링해 자동 완성 검색어 생성
-        const filteredResults = productTitles.filter((title) =>
-          
-            title
-              .toLowerCase()
-              .includes(trimmedInput.toLowerCase())
-        );
-    
-
-        // 첫 번째 자동 완성 검색어 = 입력된 검색어 -> 일치하게
-        const firstSuggestionIndex = filteredResults.findIndex(
-          (result) => result.toLowerCase() === trimmedInput.toLowerCase()
-        );
-    
-
-        // 자동 완성 검색어 상태 업데이트 -> 자동 완성 창 표시
-        setAutoCompleteSuggestions((prevSuggestions) => {
-          
-          if (firstSuggestionIndex !== -1) {
-            
-            // 입력 단어와 일치 시 -> 첫 번째 위치로 이동
-            const suggestionsCopy = [...prevSuggestions];
-            suggestionsCopy.splice(firstSuggestionIndex, 1);
-            
-            return [trimmedInput, ...suggestionsCopy];
-          
-          } else {
-            
-            // 일치하지 않을 시 -> 필터링 된 결과를 제안으로 사용 
-            return [trimmedInput, ...filteredResults];
-          }
-        });
-    
-        // 자동 완성 제안 창 표시
-        setShowAutoComplete(true);
-      }
-    };
-    
-
-
-
-
-
-
-  // 키보드 이벤트
-  const handleKeyDown = (e) => {
-
-    // 화살표 아래키 누름
-    if (e.key === 'ArrowDown') {
-
-      e.preventDefault();
-      
-      setSelectedSuggestionIndex((prevIndex) => 
-
-        // 현재 인덱스가 배열 끝에 도달하지 않았으면
-        prevIndex < autoCompleteSuggestions.length -1
-        
-          // 다음 항목으로 이동
-          ? prevIndex + 1
-          
-          // 그렇지 않으면 배열 처음 항목으로 이동
-          : 0
-      );
-
-
-
-    // 화살표 위키 누름  
-    } else if (e.key === 'ArrowUp') {
-
-      e.preventDefault();
-
-
-      setSelectedSuggestionIndex((prevIndex) => 
-        
-        // 현재 인덱스가 0 보다 크면
-        (prevIndex) > 0 
-
-          // 이전 항목으로 이동
-          ? prevIndex -1
-          
-          // 그렇지 않으면 배열 마지막 항목으로 이동
-          : autoCompleteSuggestions.length - 1
-      );
-
-
-
-    // 엔터키 누름 && 현재 선택된 자동 완성 검색어가 있음 
-    } else if (e.key === 'Enter' && selectedSuggestionIndex !== -1) {
-      
-
-      // 선택된 자동 완성 검색어에 대한 검색 실행
-      handleSuggestionOrHistoryClick(autoCompleteSuggestions[selectedSuggestionIndex]);
-
-      // 자동 완성 검색어 창 닫기
-      setShowAutoComplete(false);
-    
-    
-    // 엔터키 누름 -> 단순 검색
-    } else if (e.key === 'Enter') {
-
-      handleSearch();
-    }
-  }
-
-
-
-
-
   return (
     <div className="relative w-1/2 flex flex-col items-center p-2 rounded-lg">
       <div className="w-full flex items-center p-2 rounded-lg relative">
         <input
           type="text"
           value={searchTerm}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-grow px-2 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 mr-2"
           ref={inputRef}
           onClick={handleInputClick}
@@ -407,30 +239,11 @@ export default function Search() {
           </div>
         </div>
       )}
-        <Button text={"검색"} onClick={handleSearch} />
+        <Button 
+          text={"검색"} 
+          onClick={handleSearch} 
+        />
       </div>
-
-      {/* 검색어 제안 */}
-      {showAutoComplete && autoCompleteSuggestions.length > 0 && (
-        <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
-          <ul className="list-none p-0">
-            {autoCompleteSuggestions.map((suggestion, index) => (
-              <li
-                className={
-                  `py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer 
-                  ${selectedSuggestionIndex === index ? 'bg-indigo-100' : ''}`
-                }
-                key={index}
-                onClick={() => handleSuggestionOrHistoryClick(suggestion)}
-              >
-              <HiMagnifyingGlass className="w-5 h-5" />
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
 
       {/* 검색어 기록 */}
       {showSearchHistory && (
@@ -441,14 +254,8 @@ export default function Search() {
                 className="py-3 px-4 border-b border-gray-200 relative flex items-center"
                 key={index}
               >
-                <BsArrowClockwise
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleSuggestionOrHistoryClick(item)}
-                  className="w-5 h-5"
-                />
                 <span
                   className="flex-grow"
-                  onClick={() => handleSuggestionOrHistoryClick(item)}
                   style={{ cursor: "pointer" }}
                 >
                   {item}
