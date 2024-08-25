@@ -15,10 +15,6 @@ import ProductSearch from './pages/ProductSearch';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Welcome from './pages/Welcome';
-import ProductHelp from './pages/ProductHelp';
-import ProductHelpWrite from './pages/ProductHelpWrite';
-import ProductHelpDetail from './pages/ProductHelpDetail';
-import MyComment from './pages/MyComment';
 
 const router = createBrowserRouter([
   {
@@ -75,14 +71,6 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/myComment',
-        element: (
-          <ProtectedRoute>
-            <MyComment />
-          </ProtectedRoute>
-        )
-      },
-      {
         path: '/search/:searchTerm',
         element: (
           <ProtectedRoute>
@@ -94,24 +82,6 @@ const router = createBrowserRouter([
         path: '/welcome',
         element: (
             <Welcome />
-        )
-      },
-      {
-        path: '/help',
-        element: (
-            <ProductHelp />
-        )
-      },
-      {
-        path: '/help/new',
-        element: (
-            <ProductHelpWrite />
-        )
-      },
-      {
-        path: '/help/:helpId',
-        element: (
-            <ProductHelpDetail />
         )
       },
     ]

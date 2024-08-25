@@ -18,9 +18,6 @@ export default function Navbar() {
         logout, 
     } = useAuthContext();
 
-
-
-    
     return (
         <header className="flex justify-between border-b border-gray-300 p-2">
             <Link 
@@ -46,14 +43,6 @@ export default function Navbar() {
                         className="text-2xl"
                     >
                         <BsFillPencilFill />
-                    </Link>
-                )}
-                { user && (
-                    <Link 
-                        to='/help'
-                        className="text-3xl"
-                    >
-                        <BiHelpCircle />
                     </Link>
                 )}
                 { user && (
