@@ -194,9 +194,18 @@ export default function Search() {
         // 검색 기록 창 닫기
         setShowSearchHistory(false);
     };
+
+
+    // 검색 기록 항목 클릭 -> 해당 검색어로 검색 실행
+    const handleSuggestionOrHistoryClick = async (term) => {
+      setSearchTerm(term);
+      const results = await searchProductByName(term);
+      setSearchResults(results);
+      navigate(`/search/${term}`);
+  };
   
 
-    // 검색 기록 삭제 핸들러
+    // 검색 기록 삭제
     const handleDeleteSearchHistory = (term, e) => {
 
         // 삭제 버튼 클릭 시에도 기록 창이 닫히지 않음
@@ -250,24 +259,22 @@ export default function Search() {
         <div className="absolute top-full left-0 w-full bg-white z-10 mt-2">
           <ul className="list-none p-0">
             {searchHistory.map((item, index) => (
-              <li
-                className="py-3 px-4 border-b border-gray-200 relative flex items-center"
-                key={index}
-              >
-                <span
-                  className="flex-grow"
-                  style={{ cursor: "pointer" }}
-                >
-                  {item}
-                </span>
-                <button
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                  onClick={(e) => handleDeleteSearchHistory(item, e)}
-                >
-                  삭제
-                </button>
-              </li>
-            ))}
+                  <li
+                      className="py-3 px-4 border-b border-gray-200 relative flex items-center cursor-pointer"
+                      key={index}
+                      // 검색어 클릭 시 해당 검색어로 검색 실행
+                      onClick={() => handleSuggestionOrHistoryClick(item)}
+                  >
+                      <BsArrowClockwise className="mr-2" />
+                      {item}
+                      <button
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                          onClick={(e) => handleDeleteSearchHistory(item, e)}
+                      >
+                          삭제
+                      </button>
+                  </li>
+              ))}
           </ul>
         </div>
       )}
