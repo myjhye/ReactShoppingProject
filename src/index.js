@@ -12,9 +12,7 @@ import MyCart from './pages/MyCart';
 import ProtectedRoute from './pages/ProtectedRoute';
 import ProtectedRouteLoggedIn from './pages/ProtectedRouteLoggedIn'
 import ProductSearch from './pages/ProductSearch';
-import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Welcome from './pages/Welcome';
 
 const router = createBrowserRouter([
   {
@@ -28,14 +26,6 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <AllProduct />
           </ProtectedRoute>
-        )
-      },
-      {
-        path: '/signup',
-        element: (
-          <ProtectedRouteLoggedIn>
-            <Signup />
-          </ProtectedRouteLoggedIn>
         )
       },
       {
@@ -76,12 +66,6 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <ProductSearch />
           </ProtectedRoute>
-        )
-      },
-      {
-        path: '/welcome',
-        element: (
-            <Welcome />
         )
       },
     ]

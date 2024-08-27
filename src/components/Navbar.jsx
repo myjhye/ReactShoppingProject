@@ -49,16 +49,6 @@ export default function Navbar() {
                     <User user={ user } />
                 )}
                 {!user && <FcGoogle className="text-4xl cursor-pointer" onClick={login} />}
-                {!user && (
-                    <Link to='signup'>
-                        <button>회원가입</button>
-                    </Link> 
-                )}
-                {!user && (
-                    <Link to='login'>
-                        <button>로그인</button>
-                    </Link> 
-                )}
                 { user  && <Button text={ 'Logout' } onClick={ logout }  />}
             </nav>
         </header>

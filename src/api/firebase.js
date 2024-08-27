@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push, increment } from 'firebase/database';
-import { v4 as uuid } from 'uuid';
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -20,99 +19,6 @@ const database = getDatabase(app);
  
 
 
-
-// 회원가입
-export async function signUpWithEmailandPassword(email, password, displayName, photoURL) {
-
-    
-    try {
-        // 회원가입 처리
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-
-        // 사용자 프로필(userCredential.user) 업데이트 -> 유저 '닉네임, 프로필 사진' 데이터 넘기기
-        await updateProfile(userCredential.user, { displayName, photoURL });
-
-
-        // 회원가입 성공하면 success: true 반환
-        return { 
-            success: true,
-        }
-
-    
-       
-        
-    
-    } catch (error) {
-        
-        let message = '';
-
-
-        // 유효성 검사 -> 이미 사용 중인 이메일
-        if (error.code === 'auth/email-already-in-use') {
-            
-            message = '이미 사용 중인 이메일입니다.'
-
-            return {
-                success: false,
-                message: message
-            };
-
-        } else {
-            // 그 외 오류 처리
-            console.error (error);
-        }
-    }
-}
-
-
-
-
-
-// 이메일, 패스워드로 로그인 -> 일반 로그인
-export async function loginWithEmailandPassword(email, password) {
-
-    try {
-
-        // 로그인 처리
-        await signInWithEmailAndPassword(auth, email, password)
-
-
-
-        // 로그인 성공 여부 -> 성공
-        return {
-            success: true,
-        }
-
-
-
-    // 로그인 실패    
-    } catch(error) {
-        
-        let message = '';
-        
-
-        // 로그인 실패 원인 메세지 설정
-        if(error.code === 'auth/wrong-password') {
-            message = '비밀번호가 틀립니다.'
-        }
-        else if(error.code === 'auth/user-not-found') {
-            message = '존재하지 않는 이메일입니다.'
-        }
-        
-
-        // 로그인 성공 여부 -> 실패 & 로그인 실패 원인 메세지        
-        return {
-            success: false,
-            message
-        }
-    }
-}
-
-
-
-
-
 // 로그인 -> google 로그인
 export function login() {
 
@@ -128,18 +34,12 @@ export function login() {
 }
 
 
-
-
-
-
 // 로그아웃
 export async function logout() {
 
     return signOut(auth)
         .catch(console.error);
 }
-
-
 
 
 
