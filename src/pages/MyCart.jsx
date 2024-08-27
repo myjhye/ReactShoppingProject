@@ -15,24 +15,24 @@ export default function MyCart() {
     
     const { uid } = useAuthContext();
     
-    // 장바구니 데이터 읽어오기
+    // 장바구니 상품 조회
     const { data: products } = useQuery(['carts'], () => getCart(uid));
 
     // 장바구니 내 모든 상품 총 가격 계산
     const updateTotalPrice = () => {
         
+        // reduce: 배열의 모든 요소를 순회하면서, 누적된 값 계산해 하나의 결과로 반환
+        // prev: 누적 값, 초기 값은 0
+        // current.price * current.quantity 요소를 prev 변수에 다 더하기
         return products.reduce((prev, current) => prev + parseInt(current.price) * current.quantity, 0);
     }
 
-    // 장바구니 총 가격 상태관리
+    // 장바구니 총 가격
     const [totalPrice, setTotalPrice] = useState(updateTotalPrice);
 
-    
-    // 장바구니 데이터가 변경될 때마다 -> 총 가격 업데이트 -> useEffect 사용
+    // 장바구니 데이터(가격, 수량)가 변경될 때마다 -> 총 가격 업데이트 (useEffect 사용)
     useEffect(() => { 
-        
         setTotalPrice(updateTotalPrice);
-    
     }, [products]);
 
     // 장바구니에 상품이 있는지 확인

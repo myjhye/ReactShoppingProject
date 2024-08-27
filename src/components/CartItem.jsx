@@ -1,3 +1,5 @@
+// 장바구니 상품 수량 증가, 감소, 삭제
+
 import React, { useState } from "react";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { RiDeleteBin5Fill } from "react-icons/ri";
@@ -6,42 +8,42 @@ import { addOrUpdateToCart, removeFromCart } from "../api/firebase";
 
 export default function CartItem({ product, uid }) {
 
-    // 상품의 현재 상태
+    // 장바구니 상품
     const [productState, setProductState] = useState(product);
 
-    // query client 인스턴스
     const queryClient = useQueryClient();
 
-    // 상품 수량 감소 처리하는 mutation
-    const handleMinus = useMutation(
-        async () => {
+    // 상품 수량 감소 처리
+    // useMutation: 서버에 데이터 수정 요청 <-> useQuery: 서버에 데이터 조회 요청
+    const handleMinus = useMutation(async () => {
             // 수량이 1 이하일 때 감소 중단
             if (productState.quantity < 2) {
                 return;
             }
     
-            // 상품 정보 업데이트해서 새로운 정보 변수 생성
+            // 장바구니 상품 상태에 수량 -1 반영
             const updatedProduct = {
                 ...productState,
                 quantity: productState.quantity - 1,
             };
     
-            // 장바구니의 상품 정보(수량) 업데이트 -> addOrUpdateToCart 함수로 서버에 변경된 상품 정보를 저장
+            // 서버에 변경된 상품 정보(수량 -1) 반영
             await addOrUpdateToCart(uid, updatedProduct);
     
-            // 해당 상품 정보(수량) 업데이트 -> 화면 반영(**단일 상품) 
+            // 화면에 변경된 상품 정보(수량 -1) 반영
             setProductState(updatedProduct);
         },
         {
-            // 서버에서 데이터 변경 작업 완료 후 실행 -> 비낙관적 업데이트(응답 후에 화면 반영) -> 장바구니 전체 상품(**)
+            // 성공 시 후속 작업 
+            // 비낙관적 업데이트(서버 응답 후 데이터 재조회하는 로직이라서): 서버 응답 후에만 화면 업데이트, 서버와 클라이언트의 데이터 일관성 중시
             onSuccess: () => {
-                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
+                // 캐싱된 장바구니 데이터 삭제하고 최신 데이터를 다시 불러와서 실시간 변경을 화면에 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용)
                 queryClient.invalidateQueries("cart");
             },
         }
     );
     
-    // 상품 수량 증가 처리하는 mutation
+    // 상품 수량 증가
     const handlePlus = useMutation(
         async () => {
             const updatedProduct = {
@@ -54,9 +56,7 @@ export default function CartItem({ product, uid }) {
             setProductState(updatedProduct);
         },
         {
-            // 성공 시 실행되는 콜백
             onSuccess: () => {
-                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
                 queryClient.invalidateQueries("cart");
             },
         }
@@ -64,12 +64,10 @@ export default function CartItem({ product, uid }) {
     
 
     
-    // 상품 삭제 처리하는 mutation
-    // (productid): 장바구니 제품을 삭제하는 데 필요한 productId 매개변수로 전달
+    // 상품 삭제
     const handleDelete = useMutation((productId) => removeFromCart(uid, productId), 
         {
             onSuccess: () => {
-                // 카트 데이터 쿼리를 무효화하고 다시 불러와서 실시간 변경을 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용) -> 변경 데이터를 실시간으로 화면에 반영
                 queryClient.invalidateQueries("cart");
             },
         }
@@ -101,7 +99,7 @@ export default function CartItem({ product, uid }) {
                     />
                     <RiDeleteBin5Fill
                         className="transition-all cursor-pointer hover:text-brand hover:scale-105 mx-1"
-                        onClick={() => handleDelete.mutate(product.id)} // Use the mutation here
+                        onClick={() => handleDelete.mutate(product.id)}
                     />
                 </div>
             </div>
