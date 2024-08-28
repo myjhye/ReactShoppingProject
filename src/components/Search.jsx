@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "./ui/Button";
 import { getCookie, setCookie, useSearchHistory } from "./util/cookie";
-import { getProducts, searchProductByName } from "../api/firebase";
+import { searchProductByName } from "../api/firebase";
 import { useAuthContext } from "../context/AuthContext";
 import { BsArrowClockwise } from 'react-icons/bs';
-import { HiMagnifyingGlass } from 'react-icons/hi2';
 import { TbLetterX } from 'react-icons/tb';
 import { useNavigate } from "react-router-dom";
 
@@ -15,30 +14,14 @@ export default function Search() {
 
     // 검색어 입력 필드
     const inputRef = useRef(null);
-
     // 검색어
     const [searchTerm, setSearchTerm] = useState("");
-
-    // 검색어 자동 완성 결과
-    const [autoCompleteSuggestions, setAutoCompleteSuggestions] = useState([]);
-    
     // 검색 기록 창 열고 닫기
     const [showSearchHistory, setShowSearchHistory] = useState(false);
-
-    // 검색어 자동 완성 창 열고 닫기 
-    const [showAutoComplete, setShowAutoComplete] = useState(false);
-    
-    // 현재 선택된 자동 완성 검색어 인덱스
-    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-
     // 검색 기록
     const { searchHistory, setSearchHistory } = useSearchHistory();
-
     // 검색 결과
     const { setSearchResults } = useAuthContext();
-
-    
-
 
     const navigate = useNavigate();
     
@@ -53,13 +36,10 @@ export default function Search() {
 
         // 검색어 입력 중일 때 자동 완성 창 열기 
         if (searchTerm) {
-
           setShowSearchHistory(false);
-          setShowAutoComplete(true);
 
         // 검색어 없으면 검색 기록 창 열기
         } else {
-
           setShowSearchHistory(true);
         }
          
@@ -70,7 +50,6 @@ export default function Search() {
     // 검색 창 외부 클릭 -> 검색 기록 창 닫기
     const handleOutsideClick = (e) => {
 
-
          // 클릭한 곳이 검색 창(inputRef) 외부라면
          if (!inputRef.current || !inputRef.current.contains(e.target)) {
             
@@ -80,36 +59,13 @@ export default function Search() {
      }
 
 
-
-
-
-
-    // 검색 창 외부 클릭 -> 검색어 자동 완성 창 닫기
-    const handleSuggestionOutsideClick = (e) => {
-
-
-        // 클릭한 곳이 검색 창(inputRef) 외부라면
-        if (!inputRef.current || !inputRef.current.contains(e.target)) {
-            
-            
-            // 검색 기록 창 닫기
-            setShowAutoComplete(false);
-        }
-    }
-
-
-
-
     // 저장된 검색 기록을 쿠키에서 가져옴 -> 상태에 반영
     const loadSearchHistory = () => {
     
-        
         // 'searchHistory' 이름의 쿠키 가져오기
         const storedHistory = getCookie("searchItem");
 
-
         if (storedHistory) {
-
             // 가져온 쿠키('검색어1, 검색어2, 검색어3')를 쉼표(,)로 분리 -> 검색 기록 상태에 저장
             setSearchHistory(storedHistory.split(","));
         }
@@ -117,16 +73,10 @@ export default function Search() {
     };
 
 
-
-
     // 저장된 검색 기록 쿠키에서 가져오기 -> 초기 렌더링 시
     useEffect(() => {
-
         loadSearchHistory();
-
     }, []);
-
-
 
 
     // 이벤트 리스너 -> 외부 클릭
@@ -134,7 +84,6 @@ export default function Search() {
 
         // 입력 창 외부 클릭 이벤트 리스너 등록
         document.addEventListener('click', handleOutsideClick);
-        document.addEventListener('click', handleSuggestionOutsideClick);
         
         return () => {
             
@@ -232,8 +181,7 @@ export default function Search() {
           ref={inputRef}
           onClick={handleInputClick}
         />
-
-
+        
        {/* 검색 바 내부 X 버튼 -> 검색 단어 입력 시 나타남 */}
        {searchTerm && ( 
         <div className="absolute right-20 top-1/2 transform -translate-y-1/2">

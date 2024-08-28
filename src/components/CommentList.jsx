@@ -9,9 +9,9 @@ export default function CommentList({ comments }) {
 
     const { uid } = useAuthContext();
 
-    // 댓글 목록 -> comments 참조 -> commentList = comments
+    // (수정될) 댓글 목록
     const [commentList, setCommentList] = useState(comments);
-    // 수정 중인 댓글 id
+    // 수정할 댓글 ID
     const [editingCommentId, setEditingCommentId] = useState('');
 
     // 댓글 삭제 핸들러
@@ -100,7 +100,7 @@ export default function CommentList({ comments }) {
                         <p style={{ color: '#F96162' }}>{comment.userName}</p>
                         <p>{comment.date}</p>
 
-                        {/* 댓글 작성자 id === 접속한 사용자 id (댓글 작성자가 본인일 때) */}
+                        {/* 수정/삭제 버튼 (현재 사용자만 조회) */}
                         {comment.userId === uid && (
                             <div className="ml-auto flex space-x-2">
                                 <button onClick={() => handleEditButtonClick(comment.id)}>수정</button>

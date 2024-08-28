@@ -1,3 +1,5 @@
+// 장바구니
+
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { getCart } from "../api/firebase";

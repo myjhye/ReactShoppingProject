@@ -111,7 +111,7 @@ function adminUser(user) {
 //--------------------- 제품
 
 
-// 새 제품 등록
+// 신규 제품 등록
 export async function addNewProduct(id, product, imageUrl, userId) {
 
     // 현재 시간
@@ -138,7 +138,7 @@ export async function addNewProduct(id, product, imageUrl, userId) {
 
 
 
-// 모든 제품 읽어오기
+// 전체 제품 조회
 export async function getProducts() {
 
     // ref -> products 경로 가져옴
@@ -312,11 +312,8 @@ export async function getCommentsByProductId(productId) {
 
 // 댓글 삭제
 export async function deleteComment(commentId) {
-
-    const commentRef = ref(database, `comments/${commentId}`);
-
     try {
-        await remove(commentRef);
+        await remove(ref(database, `comments/${commentId}`));
         console.log('댓글이 성공적으로 삭제됨');
     } catch(error) {
         console.error(error);
@@ -341,28 +338,9 @@ export async function updateComment(commentId, updatedText) {
 
 // 댓글 좋아요
 export async function likeComment(commentId, userId) {
-
     await set(ref(database, `likes/${commentId}/${userId}`), true);
-
     await update(ref(database, `comments/${commentId}`), { likes: increment(1) }); 
-    
 }
-
-
-
-
-// 댓글 싫어요
-export async function dislikeComment(commentId, userId) {
-
-    const dislikesRef = ref(database, `dislikes/${commentId}/${userId}`);
-    await set(dislikesRef, true);
-
-    const commentRef = ref(database, `comments/${commentId}`);
-    await update(commentRef, { dislikes: increment(1) }); 
-}
-
-
-
 
 
 
@@ -372,14 +350,10 @@ export async function removeMyProducts(productId) {
     return remove(ref(database, `products/${productId}`));
 }
 
-
-
-
 // 내가 등록한 상품과 동일한 장바구니 상품 삭제
 export async function removeProductAndCartData(userId, productId) {
 
     try {
-
         // 상품 삭제
         await removeMyProducts(productId);
 
@@ -388,74 +362,5 @@ export async function removeProductAndCartData(userId, productId) {
          
     } catch(error) {
         console.error(error);
-    }
-}
-
-
-
-
-
-
-
-//--------------------- 내가 등록한 댓글
-
-
-
-// 내가 등록한 댓글 조회
-export async function getMyComments(userId) {
-
-    const commentsRef = ref(database, `comments`);
-    const userCommentsQuery = query(commentsRef, orderByChild('userId'), equalTo(userId));
-
-    const snapshot = await get(userCommentsQuery);
-    const items = snapshot.val() || {};
-
-    // Convert the object to an array of values
-    const commentList = Object.values(items);
-
-    return commentList;
-}
-
-
-
-export async function getProductData(productId) {
-    const productRef = ref(database, `products/${productId}`);
-    const snapshot = await get(productRef);
-    return snapshot.val();
-}
-
-
-
-export async function getMyCommentsWithProductData(userId) {
-    const comments = await getMyComments(userId); // 사용자의 댓글 목록을 가져옵니다.
-
-    // 각 댓글에 대한 상품 제목을 가져옵니다.
-    const commentsWithProductData = await Promise.all(
-        comments.map(async (comment) => {
-            const productData = await getProductData(comment.productId);
-            return {
-                ...comment,
-                productData,
-            };
-        })
-    );
-
-    return commentsWithProductData;
-}
-
-
-
-
-// 내가 작성한 댓글 삭제
-export async function deleteMyComments(commentId) {
-
-    const commentRef = ref(database, `comments/${commentId}`);
-
-    try {
-        await remove(commentRef);
-        return true;
-    } catch (error)  {
-        console.log (error);
-        return false;
     }
 }

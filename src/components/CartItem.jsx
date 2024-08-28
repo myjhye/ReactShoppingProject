@@ -35,7 +35,7 @@ export default function CartItem({ product, uid }) {
         },
         {
             // 성공 시 후속 작업 
-            // 비낙관적 업데이트(서버 응답 후 데이터 재조회하는 로직이라서): 서버 응답 후에만 화면 업데이트, 서버와 클라이언트의 데이터 일관성 중시
+            // 비낙관적 업데이트: 서버 응답 후에만 화면 업데이트, 서버와 클라이언트의 데이터 일관성 중시
             onSuccess: () => {
                 // 캐싱된 장바구니 데이터 삭제하고 최신 데이터를 다시 불러와서 실시간 변경을 화면에 반영 (기존 캐싱 데이터를 재사용하는 게 아닌 데이터를 항상 재요청해서 사용)
                 queryClient.invalidateQueries("cart");
@@ -44,8 +44,7 @@ export default function CartItem({ product, uid }) {
     );
     
     // 상품 수량 증가
-    const handlePlus = useMutation(
-        async () => {
+    const handlePlus = useMutation(async () => {
             const updatedProduct = {
                 ...productState,
                 quantity: productState.quantity + 1,
@@ -64,7 +63,7 @@ export default function CartItem({ product, uid }) {
     
 
     
-    // 상품 삭제
+    // 상품 삭제: 삭제 함수 따로 생성해서 호출 <-> 수량 증가/감소 시에는 기존 장바구니 상품 추가 함수 재사용
     const handleDelete = useMutation((productId) => removeFromCart(uid, productId), 
         {
             onSuccess: () => {
