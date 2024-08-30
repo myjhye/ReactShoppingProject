@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { deleteComment, dislikeComment, getCommentsByProductId, likeComment } from '../api/firebase';
+import { deleteComment, getCommentsByProductId, hasUserLiked, likeComment } from '../api/firebase';
 import CommentEdit from './CommentEdit';
-import { LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
+import { LuThumbsUp } from 'react-icons/lu';
+import { BsFillHandThumbsUpFill } from 'react-icons/bs';
 
 // 댓글 목록
 export default function CommentList({ comments }) {
@@ -13,6 +14,8 @@ export default function CommentList({ comments }) {
     const [commentList, setCommentList] = useState(comments);
     // 수정할 댓글 ID
     const [editingCommentId, setEditingCommentId] = useState('');
+    // 각 댓글에 대한 좋아요 상태
+    const [likedComments, setLikedComments] = useState({});
 
     // 댓글 삭제 핸들러
     const handleDeleteComment = async (commentId, productId) => {
@@ -52,37 +55,46 @@ export default function CommentList({ comments }) {
 
 
 
-    // 댓글 좋아요 클릭 핸들러
+    // 댓글 좋아요 클릭
     const handleLikeButtonClick = async (commentId, productId) => {
 
-        //** 좋아요 증가 처리
-        await likeComment(commentId, uid);
+        if (likedComments[commentId]) {
+            alert('이미 참여하셨습니다');
+            return;
+        }
 
-        // 좋아요 증가 후 -> 댓글 목록 업데이트
-        const updatedComments = await getCommentsByProductId(productId);
-        // reverse -> 최신 댓글 최상단에 조회
-        setCommentList(updatedComments.reverse());
+        try {
+            // 좋아요 클릭
+            await likeComment(commentId, uid);
+
+            // 좋아요 증가 후 댓글 목록 업데이트
+            const updatedComments = await getCommentsByProductId(productId);
+            // 최신 댓글 최상단에 조회
+            setCommentList(updatedComments.reverse());
+
+            setLikedComments((prevState) => ({
+                ...prevState,
+                [commentId]: true,
+            }));
+        } catch (error) {
+            console.error('좋아요 업데이트 오류: ', error);
+        }
 
     }
 
+    useEffect(() => {
+        const checkUserLikes = async() => {
+            const newLikedComments = {};
+            for (const comment of comments) {
+                const hasLiked = await hasUserLiked(comment.id, uid);
+                newLikedComments[comment.id] = hasLiked;
+            }
+            setLikedComments(newLikedComments);
+        };
+        checkUserLikes();
+    }, [comments, uid]);
 
-
-    //댓글 싫어요 클릭 핸들러
-    const handlDislikeButtonClick = async (commentId, productId) => {
-
-        //** 싫어요 증가 처리 
-        await dislikeComment(commentId, uid);
-
-        // 싫어요 수 증가 후 -> 댓글 목록 업데이트
-        const updatedComments = await getCommentsByProductId(productId);
-        // reverse -> 최신 댓글 최상단에 조회
-        setCommentList(updatedComments.reverse());
-
-    }
-
-
-
-    // comments 배열이 변경 될 때마다(새 댓글이 입력 될 때마다) -> 댓글 목록 업데이트 -> commentList를 comments 배열과 동일하게 설정
+    // comments 배열이 변경 될 때마다(새 댓글이 입력 될 때마다) 댓글 목록 업데이트 -> commentList를 comments 배열과 동일하게 설정
     useEffect(() => {
         setCommentList(comments);
     }, [comments]);
@@ -108,15 +120,12 @@ export default function CommentList({ comments }) {
                             </div>
                         )}
 
-                        <button onClick={() => handleLikeButtonClick(comment.id, comment.productId)}>
-                           <LuThumbsUp />
+                        <button 
+                            onClick={() => handleLikeButtonClick(comment.id, comment.productId)}
+                        >
+                           {likedComments[comment.id] ? <BsFillHandThumbsUpFill /> : <LuThumbsUp />}
                         </button>
                             { comment.likes }
-
-                        { <button onClick={() => handlDislikeButtonClick(comment.id, comment.productId)}>
-                            <LuThumbsDown />
-                        </button> }
-                          { comment.dislikes }
 
                     </div>
                     <div className="ml-8">

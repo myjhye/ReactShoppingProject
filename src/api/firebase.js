@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, set, get, remove, equalTo, query, orderByChild, update, push, increment } from 'firebase/database';
 
 const firebaseConfig = {
@@ -22,7 +22,6 @@ const database = getDatabase(app);
 // 로그인 -> google 로그인
 export function login() {
 
-
     // google 팝업으로 로그인 시작
 
     // auth -> 인증 (로그인 시 항상 필요)
@@ -43,75 +42,22 @@ export async function logout() {
 
 
 
-
-
-// 사용자 로그인 상태 감지 -> 관리자 여부를 콜백함수에 전달
+// 사용자 로그인 상태 감지
 export function onUserStateChange(callback) {
-
-
     // 사용자의 로그인 상태 감지
-    onAuthStateChanged(auth, async(user) => {
-
-
-        // 사용자가 로그인 했으면 (user) -> 관리자 여부 확인 (adminUser)
-        const updatedUser = user ? await adminUser(user) : null;
-
-
-        // 콜백함수에 사용자 관리자 여부 전달
-        callback(updatedUser);
+    onAuthStateChanged(auth, (user) => {
+        // 사용자가 로그인 했으면 user 객체 전달, 아니면 null 전달
+        callback(user);
     });
 }
 
 
 
 
+//ㅡㅡㅡㅡ제품
 
 
-
-
-// 접속한 유저가 관리자인지 확인 -> 관리자 여부 추가하고 반환
-function adminUser(user) {
-
-
-    // admins 경로에 저장된 관리자 정보 조회
-    return get(ref(database, 'admins'))
-        
-    
-        .then((snapshot) => {
-            // 관리자 정보 있으면
-            if(snapshot.exists()) {
-                
-                // 관리자 정보를 객체로 변환해서 가져옴 -> .val() : 값 가져오기
-                const admins = snapshot.val(); 
-                
-
-
-                // 접속한 유저의 고유 식별자(uid)가 관리자 목록(admins)에 포함되어 있는지 확인
-                
-                // true/false로 반환
-                const isAdmin = admins.includes(user.uid); 
-
-
-
-                // 사용자 정보 업데이트 -> 관리자 여부(isAdmin) 추가하고 반환
-                return {
-                    ...user, // 기존 사용자 정보
-                    isAdmin // isAdmin 필드 추가
-                }
-            }
-            return user;
-        })
-}
-
-
-
-
-
-
-//--------------------- 제품
-
-
-// 신규 제품 등록
+// 새 제품 등록
 export async function addNewProduct(id, product, imageUrl, userId) {
 
     // 현재 시간
@@ -138,7 +84,7 @@ export async function addNewProduct(id, product, imageUrl, userId) {
 
 
 
-// 전체 제품 조회
+// 모든 제품 읽어오기
 export async function getProducts() {
 
     // ref -> products 경로 가져옴
@@ -338,8 +284,30 @@ export async function updateComment(commentId, updatedText) {
 
 // 댓글 좋아요
 export async function likeComment(commentId, userId) {
-    await set(ref(database, `likes/${commentId}/${userId}`), true);
-    await update(ref(database, `comments/${commentId}`), { likes: increment(1) }); 
+
+    try {
+        const snapshot = await get(ref(database, `likes/${commentId}/${userId}`));
+        
+        if (!snapshot.exists()) {
+            await set(ref(database, `likes/${commentId}/${userId}`), true);
+
+            await update(ref(database, `comments/${commentId}`), { 
+                likes: increment(1) 
+            }); 
+        }
+
+    } catch (error) {
+        console.error('좋아요 업데이트 오류:', error);
+        throw error;
+    }
+    
+}
+
+
+// 사용자가 이미 좋아요 눌렀는지 확인
+export async function hasUserLiked(commentId, userId) {
+    const snapshot = await get(ref(database, `likes/${commentId}/${userId}`));
+    return snapshot.exists();
 }
 
 
@@ -350,10 +318,14 @@ export async function removeMyProducts(productId) {
     return remove(ref(database, `products/${productId}`));
 }
 
+
+
+
 // 내가 등록한 상품과 동일한 장바구니 상품 삭제
 export async function removeProductAndCartData(userId, productId) {
 
     try {
+
         // 상품 삭제
         await removeMyProducts(productId);
 
@@ -362,5 +334,74 @@ export async function removeProductAndCartData(userId, productId) {
          
     } catch(error) {
         console.error(error);
+    }
+}
+
+
+
+
+
+
+
+//--------------------- 내가 등록한 댓글
+
+
+
+// 내가 등록한 댓글 조회
+export async function getMyComments(userId) {
+
+    const commentsRef = ref(database, `comments`);
+    const userCommentsQuery = query(commentsRef, orderByChild('userId'), equalTo(userId));
+
+    const snapshot = await get(userCommentsQuery);
+    const items = snapshot.val() || {};
+
+    // Convert the object to an array of values
+    const commentList = Object.values(items);
+
+    return commentList;
+}
+
+
+
+export async function getProductData(productId) {
+    const productRef = ref(database, `products/${productId}`);
+    const snapshot = await get(productRef);
+    return snapshot.val();
+}
+
+
+
+export async function getMyCommentsWithProductData(userId) {
+    const comments = await getMyComments(userId); // 사용자의 댓글 목록을 가져옵니다.
+
+    // 각 댓글에 대한 상품 제목을 가져옵니다.
+    const commentsWithProductData = await Promise.all(
+        comments.map(async (comment) => {
+            const productData = await getProductData(comment.productId);
+            return {
+                ...comment,
+                productData,
+            };
+        })
+    );
+
+    return commentsWithProductData;
+}
+
+
+
+
+// 내가 작성한 댓글 삭제
+export async function deleteMyComments(commentId) {
+
+    const commentRef = ref(database, `comments/${commentId}`);
+
+    try {
+        await remove(commentRef);
+        return true;
+    } catch (error)  {
+        console.log (error);
+        return false;
     }
 }
