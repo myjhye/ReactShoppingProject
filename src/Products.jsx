@@ -51,32 +51,23 @@ export default function Products() {
 //-------------------- 최근 본 상품
 
 
-    // 상품 클릭시 로컬 스토리지에 저장 실행 -> setRecentlyViewedToLocalStorage
+    // 사용자가 최근에 본 상품 목록(recentlyViewed)을 지속적([recentlyViewed])으로 로컬 스토리지에 저장
     useEffect(() => {
-        
         // 로컬 스토리지에 최근에 본 상품 목록 저장
         setRecentlyViewedToLocalStorage(recentlyViewed);
-    
     }, [recentlyViewed]);
-
 
 
 
     // 최근에 본 상품 전체 삭제
     const clearRecentlyViewed = () => {
-
         // 최근에 본 상품 목록 빈 배열로 초기화
         const updatedRecentlyViewed = [];
-
         // 로컬 스토리지에 초기화된 목록 저장
         setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-
         // 최근 본 목록 상태 변수에 초기화된 목록 저장
         setRecentlyViewed(updatedRecentlyViewed);
     }
-
-
-
 
 
 
@@ -86,7 +77,6 @@ export default function Products() {
 
     // 화면 최상단으로 스크롤 핸들러
     const scrollToTop = () => {
-
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -94,14 +84,10 @@ export default function Products() {
 
     // 화면 스크롤 버튼 보이기 핸들러 
     const handleScroll = () => {
-        
         if (window.scrollY > 200) {
-
             // 화면 아래로 200px 이상 스크롤 시 스크롤 버튼 표시
             setScrollVisible(true);
-        
         } else {
-        
             // 스크롤이 200px 미만이면 스크롤 버튼 숨김
             setScrollVisible(false);
         }
@@ -111,22 +97,15 @@ export default function Products() {
 
     // 화면 스크롤 버튼 보이기 핸들러 실행 -> handleScroll
     useEffect(() => {
-
         // 컴포넌트가 마운트 시 실행 -> 유저가 스크롤 시 -> handleScroll 실행
         window.addEventListener("scroll", handleScroll);
-        
 
         // 컴포넌트가 언마운트(화면 변경 같은) 시 함수 제거 -> 클린업 함수 -> return문에 작성
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-
-
     // 컴포넌트 마운트 시 한 번만 실행    
     }, []);
-
-
-
 
 
 
@@ -138,31 +117,20 @@ export default function Products() {
 
     // 상품 정렬 핸들러 -> 가격
     const handleSortByPrice = (order) => {
-        
-
         // 정렬된 상품 저장 변수
         let sorted = [...products];
 
-
         // 제공된 정렬 순서 -> 오름차순 -> 1, 2, 3...
         if (order === 'asc') {
-            
             sorted.sort((a, b) => a.price - b.price);
-        
         // 제공된 정렬 순서 -> 내림차순 -> 3, 2, 1...   
         } else if (order === 'desc') {
-            
             sorted.sort((a, b) => b.price - a.price);
-        
         } 
-
         // 정렬된 상품 배열로 setSortedProducts 업데이트
         setSortedProducts(sorted);
     };
-
-
     // 비교 함수   ->   '(a, b) => a.price - b.price'   ->   a.price - b.price 결과가 양수면 a가 더 크므로 a가 뒤에 위치
-
 
 
 
@@ -174,49 +142,32 @@ export default function Products() {
         let sorted = [...products];
 
         if (order === 'latest') {
-        
             sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
         } else if (order === 'oldest') {
-        
             sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
-        
         }
-
         setSortedProducts(sorted);
     };
 
 
-
-
-
-
-
-    
  
 //-------------------- 선택 : 상품, 성별   
 
 
     // 카테고리 선택 핸들러 -> 상품
     const handleCategorySelect = (category) => {
-        
         // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
         setSelectedCategory(category === "전체" ? null : category);
     };
 
 
-
-
     // 카테고리 선택 핸들러 -> 성별
     const handleGenderCategorySelect = (genderCategory) => {
-        
         // 선택한 카테고리가 '전체' -> 선택한 카테고리를 null로 설정 -> 그렇지 않으면 선택한 카테고리를 설정
         setSelectedGenderCategory(genderCategory === "전체" ? null : genderCategory);
     };
 
 
-
-    
 
 
 

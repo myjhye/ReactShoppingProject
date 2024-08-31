@@ -6,6 +6,7 @@ import { login, logout } from '../api/firebase';
 const authContext = createContext();
 
 // 로컬 스토리지에 최근에 본 상품 목록 저장
+// recentlyViewed: 최근에 본 모든 상품들 배열
 const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
     // 로컬 스토리지에 최근에 본 상품 목록을 -> "recentlyViewed"키로 -> json 형식으로 저장
     localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));
@@ -17,15 +18,14 @@ const setRecentlyViewedToLocalStorage = (recentlyViewed) => {
 const getRecentlyViewedFromLocalStorage = () => {
     // 로컬 스토리지에서 "recentlyViewed" 키로 저장된 데이터 가져옴 
     const recentlyViewedJson = localStorage.getItem("recentlyViewed");
-    // 가져온 데이터가 있으면 json으로 파싱 (json -> 자바스크립트 객체) -> 없으면 빈 배열 반환
+    // 가져온 데이터가 있으면 json으로 파싱 (json -> 자바스크립트 객체 = 자바스크립트에서 사용하도록 변환)
+    // 없으면 빈 배열 반환
     return recentlyViewedJson ? JSON.parse(recentlyViewedJson) : [];
-    // 로컬 스토리지에서 데이터를 다시 가져올 때 -> json 문자열을 자바스크립트 객체로 변환 (parsing)
 };
 
 
 
 
-// 인증 관련 컨텍스트
 export function AuthContextProvider({ children }) {
 
     const [user, setUser] = useState();
@@ -46,32 +46,35 @@ export function AuthContextProvider({ children }) {
 
 
 
-    // 상품 클릭 시 로컬 스토리지에 저장 핸들러
+    // 상품 클릭 시 로컬 스토리지에 저장
+    // product: 유저가 클릭한 상품
     const handleProductClick = (product) => {
         
-        // product -> 유저가 클릭한 상품
-        // 최근 본 상품이 목록에 있는 지 확인
+        // 최근 본 상품이 목록에 있는 지 확인 (findIndex)
         const isAlreadyViewedIndex = recentlyViewed.findIndex((item) => item.id === product.id);
 
-        // findIndex -> 목록에 중복된 아이템 찾기
-        // 최근 본 상품이 목록에 있으면 -> 인덱스가 0 이상
+        // 최근 본 상품이 목록에 있으면
         if (isAlreadyViewedIndex !== -1) {
-            // 목록에서 제거
+            // 최근 본 상품 목록 상태 복사 (복사본을 수정하고 원본 상태에 반영)
             const updatedRecentlyViewed = [...recentlyViewed];
+            // 기존 위치에서 상품을 목록에서 제거 (splice)
             updatedRecentlyViewed.splice(isAlreadyViewedIndex, 1);
-            // **목록 맨 앞에 다시 추가
+            // 클릭한 상품을 목록 맨 앞에 다시 추가 (unshift)
             updatedRecentlyViewed.unshift(product);
-            // 로컬 스토리지 업데이트
-            setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-            // 최근 본 상품 목록 업데이트
+            // '로컬 스토리지(setRecentlyViewedToLocalStorage)'에 순서 변경된 최근 본 상품 목록(updatedRecentlyViewed) 저장
+            setRecentlyViewedToLocalStorage(updatedRecentlyViewed); 
+            // '최근 본 상품 목록 상태(setRecentlyViewed)'를 순서 변경된 최근 본 상품 목록(updatedRecentlyViewed)으로 갱신
             setRecentlyViewed(updatedRecentlyViewed);
         // 이미 본 상품 아니면    
         } else {
-            // 목록에 추가 -> 유저가 클릭한 상품(product) 맨 앞에 추가(0) -> 마지막 인덱스(4) 아이템은 삭제됨 -> 총 5개 아이템 표시
-            const updatedRecentlyViewed = [product, ...recentlyViewed.slice(0, 4)];
-            // 로컬 스토리지 업데이트
+            // 클릭한 상품(product)을 목록 맨 앞에 추가 (총 5개 아이템 표시)
+            const updatedRecentlyViewed = [
+                product, 
+                ...recentlyViewed.slice(0, 4)
+            ];
+            // '로컬 스토리지'에 새로운 최근 본 상품 목록(updatedRecentlyViewed) 저장
             setRecentlyViewedToLocalStorage(updatedRecentlyViewed);
-            // 최근 본 상품 목록 업데이트
+            // '최근 본 상품 목록 상태' 새로운 최근 본 상품 목록(updatedRecentlyViewed)으로 갱신
             setRecentlyViewed(updatedRecentlyViewed);
         }
     };
